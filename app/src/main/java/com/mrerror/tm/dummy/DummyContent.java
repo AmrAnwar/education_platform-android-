@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments.dummy;
+package com.mrerror.tm.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
