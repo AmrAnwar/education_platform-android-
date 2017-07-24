@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments.connection;
+package com.mrerror.tm.connection;
 
 /**
  * Created by ahmed on 23/07/17.
