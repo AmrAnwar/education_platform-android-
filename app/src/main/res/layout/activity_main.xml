@@ -15,7 +15,16 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/navigation"
             />
-
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="20dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_pan_tool_black_24dp"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_above="@+id/navigation"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/navigation"
             android:layout_width="match_parent"

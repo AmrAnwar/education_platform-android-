@@ -18,12 +18,12 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
-public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>  {
+class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>  {
 
     private  ArrayList<News> mValues;
-    Context mContext ;
-    OnListFragmentInteractionListener mListener;
-    public MyNewsRecyclerViewAdapter(ArrayList<News> items,OnListFragmentInteractionListener listener) {
+    private Context mContext ;
+    private OnListFragmentInteractionListener mListener;
+    MyNewsRecyclerViewAdapter(ArrayList<News> items,OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
@@ -39,7 +39,10 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-
+        if(holder.mItem.getFile_url().length()<=0 || holder.mItem.getFile_url() == null ||
+                holder.mItem.getFile_url().equals("null")){
+            holder.mFileView.setVisibility(View.GONE);
+        }
         if(holder.mItem.getImg_url().length()<=0 || holder.mItem.getImg_url() == null||
                 holder.mItem.getImg_url().equals("null")){
             holder.mImgView.setVisibility(View.GONE);
@@ -68,7 +71,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         holder.mContentView.setText(mValues.get(position).getContent());
 
     }
-    public void newData(ArrayList<News> items){
+    void newData(ArrayList<News> items){
         this.mValues = items;
         this.notifyDataSetChanged();
 
@@ -79,14 +82,14 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final View mView;
-        public final TextView mFileView;
-        public final ImageView mImgView;
-        public final TextView mContentView;
-        public News mItem;
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        final View mView;
+        final TextView mFileView;
+        final ImageView mImgView;
+        final TextView mContentView;
+        News mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mFileView = (TextView) view.findViewById(R.id.file);
@@ -112,7 +115,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             }
         }
     }
-    public interface OnListFragmentInteractionListener {
+    interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(News item);
     }
