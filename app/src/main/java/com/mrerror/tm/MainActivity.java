@@ -8,8 +8,17 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mrerror.tm.fragments.GeneralNews;
+import com.mrerror.tm.fragments.GeneralWords;
+import com.mrerror.tm.fragments.PartsFragment;
+import com.mrerror.tm.fragments.UnitFragment;
+import com.mrerror.tm.fragments.WordsFragment;
+import com.mrerror.tm.models.Unit;
+import com.mrerror.tm.models.Word;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
+PartsFragment.OnListFragmentInteractionListener{
 
     private TextView mTextMessage;
 
@@ -23,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
                     return true;
                 case R.id.navigation_words:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralWords()).commit();
                     return true;
 //                case R.id.inbox:
 //                    mTextMessage.setText(R.string.title_inbox);
@@ -44,4 +54,16 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
+    // For unit list
+    @Override
+
+    public void onListFragmentInteraction(Unit item) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.content,PartsFragment.newInstance(item.getParts())).addToBackStack(null).commit();
+    }
+
+    // For parts list
+    @Override
+    public void onListFragmentInteraction(ArrayList<Word> item) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, WordsFragment.newInstance(item)).addToBackStack(null).commit();
+    }
 }
