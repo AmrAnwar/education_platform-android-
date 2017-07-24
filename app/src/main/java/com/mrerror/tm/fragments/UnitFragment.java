@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.adapter.UnitsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.models.Unit;
 import com.mrerror.tm.models.Word;

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.adapter.PartsRecyclerViewAdapter;
 import com.mrerror.tm.models.Word;
 
 import java.util.ArrayList;

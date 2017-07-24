@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.mrerror.tm.connection.NetworkConnection;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -144,8 +145,10 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
     public void onCompleted(String result) throws JSONException {
         onLoginSuccess();
         // onLoginFailed();
+        JSONObject obj = new JSONObject(result);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("id",obj.getInt("id"));
         editor.putBoolean("logged",true);
         editor.commit();
         progressDialog.dismiss();

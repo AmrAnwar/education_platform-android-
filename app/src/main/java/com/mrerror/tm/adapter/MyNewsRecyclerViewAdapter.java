@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments;
+package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,12 +18,12 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
-class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>  {
+public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>  {
 
     private  ArrayList<News> mValues;
     private Context mContext ;
     private OnListFragmentInteractionListener mListener;
-    MyNewsRecyclerViewAdapter(ArrayList<News> items,OnListFragmentInteractionListener listener) {
+    public MyNewsRecyclerViewAdapter(ArrayList<News> items,OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
@@ -71,7 +71,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         holder.mContentView.setText(mValues.get(position).getContent());
 
     }
-    void newData(ArrayList<News> items){
+    public void newData(ArrayList<News> items){
         this.mValues = items;
         this.notifyDataSetChanged();
 
@@ -115,7 +115,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
         }
     }
-    interface OnListFragmentInteractionListener {
+    public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(News item);
     }

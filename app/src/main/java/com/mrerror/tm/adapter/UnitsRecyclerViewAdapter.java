@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments;
+package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,16 +8,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.fragments.UnitFragment;
 import com.mrerror.tm.models.Unit;
 
 import java.util.ArrayList;
 
-class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecyclerViewAdapter.ViewHolder>  {
+public class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecyclerViewAdapter.ViewHolder>  {
 
     private  ArrayList<Unit> mValues;
     private Context mContext ;
     private UnitFragment.OnListFragmentInteractionListener mListener;
-    UnitsRecyclerViewAdapter(ArrayList<Unit> items, UnitFragment.OnListFragmentInteractionListener listener) {
+    public UnitsRecyclerViewAdapter(ArrayList<Unit> items, UnitFragment.OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
@@ -46,7 +47,7 @@ class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecyclerViewAda
             }
         });
     }
-    void newData(ArrayList<Unit> items){
+    public void newData(ArrayList<Unit> items){
         this.mValues = items;
         this.notifyDataSetChanged();
 

@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments;
+package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,17 +8,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.fragments.PartsFragment;
 import com.mrerror.tm.models.Word;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecyclerViewAdapter.ViewHolder>  {
+public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecyclerViewAdapter.ViewHolder>  {
 
     private  HashMap<String, ArrayList<Word>> mValues;
     private Context mContext ;
     private PartsFragment.OnListFragmentInteractionListener mListener;
-    PartsRecyclerViewAdapter(HashMap<String, ArrayList<Word>> items, PartsFragment.OnListFragmentInteractionListener listener) {
+    public PartsRecyclerViewAdapter(HashMap<String, ArrayList<Word>> items, PartsFragment.OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
