@@ -91,6 +91,7 @@ public class SignupActivity extends AppCompatActivity  {
                         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putInt("id",obj.getInt("id"));
+                        editor.putString("username",obj.getString("username"));
                         editor.putBoolean("logged",true);
                         editor.commit();
                         startActivity(new Intent(SignupActivity.this,MainActivity.class));

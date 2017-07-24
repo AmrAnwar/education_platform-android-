@@ -149,6 +149,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("id",obj.getInt("id"));
+        editor.putString("username",obj.getString("username"));
         editor.putBoolean("logged",true);
         editor.commit();
         progressDialog.dismiss();
