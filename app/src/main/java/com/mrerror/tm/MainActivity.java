@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -41,8 +40,8 @@ import com.mrerror.tm.models.Word;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
-PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
-PartsFragment.OnListFragmentInteractionListener ,ModelAnswerFragment.OnItemClick{
+PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
+    {
 
     private TextView mTextMessage;
     DownloadManager downloadManager;
