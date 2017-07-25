@@ -1,4 +1,4 @@
-package com.mrerror.tm.fragments;
+package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
@@ -18,12 +18,12 @@ import java.util.Locale;
 import static com.mrerror.tm.R.id.listen;
 import static com.mrerror.tm.R.id.word;
 
-class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.ViewHolder>  {
+public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.ViewHolder>  {
 
     private  ArrayList<Word> mValues;
     public static TextToSpeech ttobj;
     private Context mContext ;
-    WordsRecyclerViewAdapter(ArrayList<Word> items) {
+    public WordsRecyclerViewAdapter(ArrayList<Word> items) {
         mValues = items;
     }
 

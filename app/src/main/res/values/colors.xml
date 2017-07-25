@@ -3,7 +3,7 @@
     <color name="colorPrimary">#844D9E</color>
     <color name="colorPrimaryDark">#4a1663</color>
     <color name="primary_darker">#2d0a3e</color>
-    <color name="colorAccent">#F9ED3A</color>
+    <color name="colorAccent">#f9b03a</color>
     <color name="white">#fff</color>
     <color name="iron">#dadada</color>
 </resources>

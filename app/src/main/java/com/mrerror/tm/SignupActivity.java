@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.mrerror.tm.connection.NetworkConnection;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -86,8 +87,11 @@ public class SignupActivity extends AppCompatActivity  {
                     public void onCompleted(String result) throws JSONException {
                         onSignupSuccess();
                         progressDialog.dismiss();
+                        JSONObject obj = new JSONObject(result);
                         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
                         SharedPreferences.Editor editor = sp.edit();
+                        editor.putInt("id",obj.getInt("id"));
+                        editor.putString("username",obj.getString("username"));
                         editor.putBoolean("logged",true);
                         editor.commit();
                         startActivity(new Intent(SignupActivity.this,MainActivity.class));
