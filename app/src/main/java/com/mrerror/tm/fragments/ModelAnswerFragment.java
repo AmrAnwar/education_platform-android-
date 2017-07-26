@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.mrerror.tm.R;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -41,7 +42,8 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     CheckBox cExam;
     CheckBox cSheet;
     CheckBox cOther;
-
+    String nextURl;
+   String url = "http://educationplatform.pythonanywhere.com/api/answers/";
 
     @Override
     public void onAttach(Context context) {
@@ -116,11 +118,6 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
             if(refrence.getType().equals("Sheet"))sheets.add(refrence);
             if (refrence.getType().equals("others"))others.add(refrence);
 
-
-
-
-
-
             arryWithOutNetAll.add(refrence);
             itemInDataBase.put(id, refrence);
         }
@@ -130,7 +127,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
     public ModelAnswerFragment() {
     }
-
+LoadMoreData loadMoreData;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -140,14 +137,27 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         cSheet=(CheckBox) rootView.findViewById(R.id.sheet);
         cOther=(CheckBox) rootView.findViewById(R.id.other);
 
+
         cExam.setOnClickListener(check);
         cSheet.setOnClickListener(check);
         cOther.setOnClickListener(check);
+        loadMoreData=new LoadMoreData() {
+            @Override
+            public void loadMorData() {
+
+                if(!nextURl.equals("null")){
+                    getData(nextURl);
+                    Toast.makeText(getContext(),nextURl , Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.model_answerlist);
-        mAdabter = new ModelAnswerAdapter(arryWithOutNetAll, this);
+        mAdabter = new ModelAnswerAdapter(arryWithOutNetAll, this,loadMoreData);
         mAdabter.inilaize(exams,sheets,others);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        getData();
+        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager( linearLayoutManager);
+        getData(url);
         recyclerView.setAdapter(mAdabter);
         return rootView;
     }
@@ -187,8 +197,7 @@ else if(cSheet.isChecked()){mAdabter.addNewData(sheets);}
        }
    };
 
-    private void getData() {
-        String url = "http://educationplatform.pythonanywhere.com/api/answers/";
+    private void getData(String url) {
         NetworkConnection.url = url;
         new NetworkConnection(this).getDataAsJsonObject(getContext());
     }
@@ -197,6 +206,7 @@ else if(cSheet.isChecked()){mAdabter.addNewData(sheets);}
     public void onCompleted(String result) throws JSONException {
 
         JSONObject newsObj = new JSONObject(result);
+         nextURl =newsObj.getString("next");
 
         JSONArray resultArray = newsObj.getJSONArray("results");
         for (int i = 0; i < resultArray.length(); i++) {
