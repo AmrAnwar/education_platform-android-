@@ -58,6 +58,7 @@ public class AskActivity extends AppCompatActivity implements NetworkConnection.
                 AskActivity.this.finish();
             }
         });
+        dialog.setCancelable(false);
         dialog.setNegativeButton("Another question?", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

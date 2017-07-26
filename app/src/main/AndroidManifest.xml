@@ -41,6 +41,10 @@
         <activity
             android:name=".ReplyActivity"
             android:label="@string/title_activity_reply"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ReplyForStaffActivity"
+            android:label="@string/title_activity_reply_for_staff"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

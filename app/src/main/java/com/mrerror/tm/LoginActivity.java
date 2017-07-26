@@ -131,8 +131,8 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 6) {
+            _passwordText.setError("at least 6 characters");
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -150,6 +150,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("id",obj.getInt("id"));
         editor.putString("username",obj.getString("username"));
+        editor.putString("group",obj.getString("group"));
         editor.putBoolean("logged",true);
         editor.commit();
         progressDialog.dismiss();

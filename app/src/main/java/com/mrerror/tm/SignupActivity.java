@@ -92,6 +92,7 @@ public class SignupActivity extends AppCompatActivity  {
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putInt("id",obj.getInt("id"));
                         editor.putString("username",obj.getString("username"));
+                        editor.putString("group",obj.getString("group"));
                         editor.putBoolean("logged",true);
                         editor.commit();
                         startActivity(new Intent(SignupActivity.this,MainActivity.class));

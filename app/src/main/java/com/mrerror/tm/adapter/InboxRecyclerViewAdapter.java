@@ -2,6 +2,8 @@ package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +67,12 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
 
         @Override
         public void onClick(View v) {
-            mContext.startActivity(new Intent(mContext, ReplyActivity.class).putExtra("question",mValues.get(getAdapterPosition())));
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+            if (sp.getString("group", "normal").equals("normal")) {
+                mContext.startActivity(new Intent(mContext, ReplyActivity.class).putExtra("question", mValues.get(getAdapterPosition())));
+            }else{
+
+            }
         }
     }
 }
