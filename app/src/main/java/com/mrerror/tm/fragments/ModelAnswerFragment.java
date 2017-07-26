@@ -145,7 +145,7 @@ LoadMoreData loadMoreData;
             @Override
             public void loadMorData() {
 
-                if(!nextURl.equals("null")){
+                if(nextURl!=null&&!nextURl.isEmpty()&&!nextURl.equals("null")){
                     getData(nextURl);
                     Toast.makeText(getContext(),nextURl , Toast.LENGTH_SHORT).show();
                 }
