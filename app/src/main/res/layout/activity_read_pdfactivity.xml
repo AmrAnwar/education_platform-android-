@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mrerror.tm.ReadPDFactivity">
+    tools:context="com.mrerror.tm.ReadPDFactivity"
+    android:background="#000"
+    >
 
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
@@ -13,4 +15,10 @@
         android:layout_height="match_parent"
         />
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ImageViewWithzoom"
+        android:adjustViewBounds="true"/>
+
+</FrameLayout>

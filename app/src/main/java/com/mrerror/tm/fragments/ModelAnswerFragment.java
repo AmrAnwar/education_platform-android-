@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.mrerror.tm.R;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -29,27 +30,36 @@ import java.util.HashMap;
  * Created by kareem on 7/24/2017.
  */
 
-public class ModelAnswerFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData,ModelAnswerAdapter.OnModelAnswerClick{
-      ArrayList<ModelAnswer> mModelArray;
+public class ModelAnswerFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData, ModelAnswerAdapter.OnModelAnswerClick {
+
 
     ModelAnswerAdapter mAdabter;
     ModelAnswerDbHelper mDbHelper;
     OnItemClick mOnclick;
+    ModelAnswer refrence;
+
+    CheckBox cExam;
+    CheckBox cSheet;
+    CheckBox cOther;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-     try {
-         mOnclick = (OnItemClick) context;
-     }catch (ClassCastException e){throw new ClassCastException();}
+        try {
+            mOnclick = (OnItemClick) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException();
+        }
     }
 
-    HashMap<Integer,String> filePathInDataBase;
+    HashMap<Integer, ModelAnswer> itemInDataBase;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        filePathInDataBase=new HashMap<>();
-        mDbHelper=new ModelAnswerDbHelper(getContext());
+        itemInDataBase = new HashMap<>();
+        mDbHelper = new ModelAnswerDbHelper(getContext());
         initializeDb();
     }
 
@@ -58,45 +68,126 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         mOnclick.onItemClickLestiner(modelAnswer);
     }
 
-    public  interface  OnItemClick{
+    public interface OnItemClick {
 
         public void onItemClickLestiner(ModelAnswer item);
     }
 //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
-    public void initializeDb(){
+
+    ArrayList<ModelAnswer> arryWithOutNetAll;
+    ArrayList<ModelAnswer>exams;
+    ArrayList<ModelAnswer> sheets;
+    ArrayList<ModelAnswer>others;
+
+    public void initializeDb() {
+        arryWithOutNetAll = new ArrayList<>();
+        exams= new ArrayList<>();
+        sheets= new ArrayList<>();
+        others= new ArrayList<>();
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String[] projection = {
                 Contract.TableForModelAnswer._ID,
-                Contract.TableForModelAnswer.COLUMN_FILE_PATH,};
+                Contract.TableForModelAnswer.COLUMN_FILE_PATH,
+                Contract.TableForModelAnswer.COLUMN_EXTENSION,
+                Contract.TableForModelAnswer.COLUMN_TYPE,
+                Contract.TableForModelAnswer.COLUMN_TITLE,
+                Contract.TableForModelAnswer.COLUMN_NOTE};
 
         Cursor cursor = db.query(
                 Contract.TableForModelAnswer.TABLE_NAME,
-                projection,null,null,null,null,null);
-        while(cursor.moveToNext()) {
+                projection, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            refrence = new ModelAnswer();
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.TableForModelAnswer._ID));
-            String filepath=cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_PATH));
-            filePathInDataBase.put(id,filepath);
+            refrence.setId(id);
+            String filePath = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_PATH));
+            refrence.setFilePath(filePath);
+            String fileExtesion = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_EXTENSION));
+            refrence.setFileExtention(fileExtesion);
+            String title = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_TITLE));
+            refrence.setTitle(title);
+            String note = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_NOTE));
+            refrence.setNote(note);
+            String type = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_TYPE));
+            refrence.setType(type);
+
+            if(refrence.getType().equals("Exam")) exams.add(refrence);
+            if(refrence.getType().equals("Sheet"))sheets.add(refrence);
+            if (refrence.getType().equals("others"))others.add(refrence);
+
+
+
+
+
+
+            arryWithOutNetAll.add(refrence);
+            itemInDataBase.put(id, refrence);
         }
         cursor.close();
 
     }
 
-    public ModelAnswerFragment(){}
+    public ModelAnswerFragment() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView=inflater.inflate(R.layout.fragment_news_list,container,false);
-        RecyclerView recyclerView= (RecyclerView) rootView.findViewById(R.id.list);
-         mAdabter=new ModelAnswerAdapter(new ArrayList<ModelAnswer>(),this);
+        View rootView = inflater.inflate(R.layout.fragment_modelanswer_with_checbox, container, false);
+
+        cExam= (CheckBox) rootView.findViewById(R.id.exams);
+        cSheet=(CheckBox) rootView.findViewById(R.id.sheet);
+        cOther=(CheckBox) rootView.findViewById(R.id.other);
+
+        cExam.setOnClickListener(check);
+        cSheet.setOnClickListener(check);
+        cOther.setOnClickListener(check);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.model_answerlist);
+        mAdabter = new ModelAnswerAdapter(arryWithOutNetAll, this);
+        mAdabter.inilaize(exams,sheets,others);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         getData();
         recyclerView.setAdapter(mAdabter);
         return rootView;
     }
+    ArrayList<ModelAnswer> examAndsheets;
+    ArrayList<ModelAnswer> examAndOther;
+    ArrayList<ModelAnswer> sheetAndOther;
+   View.OnClickListener check= new View.OnClickListener() {
+       @Override
+       public void onClick(View v) {
 
-    private void getData( ) {
+           if(cExam.isChecked()&&cSheet.isChecked()){
+             if(examAndsheets==null) { examAndsheets  =new ArrayList<>();
+               examAndsheets.addAll(exams);
+               examAndsheets.addAll(sheets);}
+               mAdabter.addNewData(examAndsheets);
+           }else if(cExam.isChecked()&&cOther.isChecked()){
+
+               if(examAndOther==null) { examAndOther  =new ArrayList<>();
+                   examAndOther.addAll(exams);
+                   examAndOther.addAll(others);}
+
+               mAdabter.addNewData(examAndOther);}
+           else if(cSheet.isChecked()&&cOther.isChecked()){
+
+               if(sheetAndOther==null) { sheetAndOther  =new ArrayList<>();
+                   sheetAndOther.addAll(exams);
+                   sheetAndOther.addAll(others);}
+
+               mAdabter.addNewData(sheetAndOther);}
+           else if(cExam.isChecked()){
+               mAdabter.addNewData(exams);
+           }
+else if(cSheet.isChecked()){mAdabter.addNewData(sheets);}
+           else if(cOther.isChecked()){mAdabter.addNewData(others);}else {mAdabter.addNewData(arryWithOutNetAll);}
+
+
+       }
+   };
+
+    private void getData() {
         String url = "http://educationplatform.pythonanywhere.com/api/answers/";
         NetworkConnection.url = url;
         new NetworkConnection(this).getDataAsJsonObject(getContext());
@@ -106,27 +197,31 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     public void onCompleted(String result) throws JSONException {
 
         JSONObject newsObj = new JSONObject(result);
-        mModelArray = new ArrayList<>();
-        JSONArray resultArray = newsObj.getJSONArray("results");
-        for(int i = 0 ; i < resultArray.length();i++) {
-            ModelAnswer modelAnswer = new ModelAnswer();
-            JSONObject obj = resultArray.getJSONObject(i);
-            int id= obj.getInt("id");
-            if(filePathInDataBase.keySet().contains(id)){
-                modelAnswer.setFilePath(filePathInDataBase.get(id));
 
+        JSONArray resultArray = newsObj.getJSONArray("results");
+        for (int i = 0; i < resultArray.length(); i++) {
+             refrence = new ModelAnswer();
+            JSONObject obj = resultArray.getJSONObject(i);
+            int id = obj.getInt("id");
+            if (itemInDataBase.keySet().contains(id)) {
+                continue;
             }
-            modelAnswer.setId(id);
-            modelAnswer.setTitle(obj.getString("title"));
-            modelAnswer.setFileUrl(obj.getString("file"));
-            modelAnswer.setNote(obj.getString("note"));
-            modelAnswer.setType(obj.getString("type"));
-            mModelArray.add(modelAnswer);
+            refrence.setId(id);
+            refrence.setTitle(obj.getString("title"));
+            refrence.setFileUrl(obj.getString("file"));
+            refrence.setNote(obj.getString("note"));
+            refrence.setType(obj.getString("type"));
+
+            if(refrence.getType().equals("Exam")) exams.add(refrence);
+            if(refrence.getType().equals("Sheet"))sheets.add(refrence);
+            if (refrence.getType().equals("others"))others.add(refrence);
+
+            arryWithOutNetAll.add(refrence);
         }
-        mAdabter.addNewData(mModelArray);
+        mAdabter.inilaize(exams,sheets,others);
+        mAdabter.addNewData(arryWithOutNetAll);
 
     }
-
 
 
 }

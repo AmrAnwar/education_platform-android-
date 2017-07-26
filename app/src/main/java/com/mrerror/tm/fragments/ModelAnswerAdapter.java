@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
@@ -19,8 +19,22 @@ import java.util.ArrayList;
 public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.ModelAnswerViewHolder> {
 
 
-ArrayList<ModelAnswer> mModelAnswers;
+    ArrayList<ModelAnswer> mModelAnswers;
     OnModelAnswerClick mModelAnswerClick;
+
+    ArrayList<ModelAnswer> mExam;
+    ArrayList<ModelAnswer>mSheet;
+    ArrayList<ModelAnswer>mOthers;
+
+
+    public  void inilaize(ArrayList<ModelAnswer> exam,ArrayList<ModelAnswer>sheet,ArrayList<ModelAnswer> others){
+
+        mExam=exam;
+        mOthers=others;
+        mSheet=sheet;
+
+    }
+
 
     public interface OnModelAnswerClick{
 
@@ -44,7 +58,10 @@ ArrayList<ModelAnswer> mModelAnswers;
     public ModelAnswerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater= LayoutInflater.from(parent.getContext());
         View view= inflater.inflate(R.layout.fragment_modelanswer,parent,false);
-        return new ModelAnswerViewHolder(view);
+
+        ModelAnswerViewHolder viewHolder=new ModelAnswerViewHolder(view);
+
+        return viewHolder;
     }
 
 
@@ -52,13 +69,7 @@ ArrayList<ModelAnswer> mModelAnswers;
     public void onBindViewHolder(ModelAnswerViewHolder holder, int position) {
 
       final ModelAnswer modelAnswer=mModelAnswers.get(position);
-
-       holder.title.setText(modelAnswer.getTitle());
-        holder.note.setText(modelAnswer.getNote());
-        if(modelAnswer.getDwonload()){
-            holder.download.setVisibility(View.INVISIBLE);
-        }
-
+        holder.bind(modelAnswer,modelAnswer.getDwonload());
 
     }
 
@@ -73,16 +84,29 @@ ArrayList<ModelAnswer> mModelAnswers;
 
         TextView title;
         TextView note;
-        Button download;
+        TextView download;
+        ImageView readOrDownLoad;
 
         ModelAnswerViewHolder(View view){
             super(view);
             title= (TextView) view.findViewById(R.id.title);
             note=(TextView) view.findViewById(R.id.note);
-            download=(Button) view.findViewById(R.id.downlaodbutton);
+            download=(TextView) view.findViewById(R.id.downlaodbutton);
+            readOrDownLoad=(ImageView)view.findViewById(R.id.readOrDwonload);
             view.setOnClickListener(this);
 
 
+        }
+        public  void bind(ModelAnswer modelAnswer,boolean downloadOrNot){
+            download.setText("Click To DownLoad");
+            readOrDownLoad.setImageResource(R.drawable.ic_cloud_download_black_48px);
+            title.setText(modelAnswer.getTitle());
+            note.setText(modelAnswer.getNote());
+            if(downloadOrNot){download.setText("Read");
+                readOrDownLoad.setImageResource(R.drawable.ic_import_contacts_black_48px);
+
+
+            }
         }
         @Override
         public void onClick(View v) {

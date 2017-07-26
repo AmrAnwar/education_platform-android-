@@ -15,6 +15,15 @@ public class ModelAnswer {
     private int id;
     private String filePath;
     private Boolean dwonload;
+    String fileExtention;
+
+    public String getFileExtention() {
+        return fileExtention;
+    }
+
+    public void setFileExtention(String fileExtention) {
+        this.fileExtention = fileExtention;
+    }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;

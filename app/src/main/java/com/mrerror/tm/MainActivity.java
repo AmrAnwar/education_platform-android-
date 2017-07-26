@@ -98,7 +98,10 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-         dpHelper=new ModelAnswerDbHelper(this);
+
+        //download section
+
+        dpHelper=new ModelAnswerDbHelper(this);
         BroadcastReceiver receiver =new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -114,6 +117,10 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
                         int coulmIndex=c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                         if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
                             String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                            String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            String extision= getMimeType(filelocation);
+
+                            mModelAnswer.setFileExtention(extision);
 
                             saveToDataBase(uriString,mModelAnswer);
 
@@ -125,6 +132,8 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
             }
         };
         registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
 
     }
 
@@ -142,14 +151,21 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
     }
     public  void saveToDataBase(String uri,ModelAnswer modelAnswer){
 
-        Toast.makeText(this, uri+ " "+ modelAnswer.getId(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, uri+ " "+ modelAnswer.getId(), Toast.LENGTH_SHORT).show();
         SQLiteDatabase db = dpHelper.getWritableDatabase();
+
+
         ContentValues values = new ContentValues();
         values.put(Contract.TableForModelAnswer._ID, modelAnswer.getId());
         values.put(Contract.TableForModelAnswer.COLUMN_FILE_PATH,uri.toString());
+        values.put(Contract.TableForModelAnswer.COLUMN_EXTENSION,modelAnswer.getFileExtention());
+        values.put(Contract.TableForModelAnswer.COLUMN_NOTE,modelAnswer.getNote());
+        values.put(Contract.TableForModelAnswer.COLUMN_TITLE,modelAnswer.getTitle());
+        values.put(Contract.TableForModelAnswer.COLUMN_TYPE,modelAnswer.getType());
 
 
       long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
+//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
 
         if(check>=0)
             Toast.makeText(this, "Done add to dataBase", Toast.LENGTH_SHORT).show();
@@ -215,18 +231,16 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 
          Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
          i.putExtra("file_path",mModelAnswer.getFilePath());
+         i.putExtra("ext",mModelAnswer.getFileExtention());
          startActivity(i);
-//         Toast.makeText(this, getMimeType(item.getFilePath()), Toast.LENGTH_SHORT).show();
      }
 
     }
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        }
-        return type;
+
+        return extension;
     }
     protected void onDestroy() {
         dpHelper.close();
