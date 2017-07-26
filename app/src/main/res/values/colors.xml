@@ -6,4 +6,6 @@
     <color name="colorAccent">#f9b03a</color>
     <color name="white">#fff</color>
     <color name="iron">#dadada</color>
+    <color name="sheet">#d9cbd9</color>
+    <color name="exam">#ee7c3e83</color>
 </resources>
