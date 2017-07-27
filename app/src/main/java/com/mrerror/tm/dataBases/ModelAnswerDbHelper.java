@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class ModelAnswerDbHelper extends SQLiteOpenHelper {
 
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "ModelAnswer.db";
 
     public ModelAnswerDbHelper(Context context) {
@@ -29,7 +29,8 @@ public class ModelAnswerDbHelper extends SQLiteOpenHelper {
                         Contract.TableForModelAnswer.COLUMN_EXTENSION +" TEXT,"+
                         Contract.TableForModelAnswer.COLUMN_NOTE+" TEXT,"+
                         Contract.TableForModelAnswer.COLUMN_TITLE+" TEXT,"+
-                        Contract.TableForModelAnswer.COLUMN_TYPE+" TEXT)";
+                        Contract.TableForModelAnswer.COLUMN_TYPE+" TEXT,"+
+                         Contract.TableForModelAnswer.COLUMN_FILE_LOCATION+" TEXT)";
         db.execSQL(SQL_CREATE_ENTRIES);
 
 

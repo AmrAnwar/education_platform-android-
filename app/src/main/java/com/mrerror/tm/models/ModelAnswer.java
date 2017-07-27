@@ -16,6 +16,15 @@ public class ModelAnswer {
     private String filePath;
     private Boolean dwonload;
     String fileExtention;
+    String fileLocal;
+
+    public void setFileLocal(String fileLocal) {
+        this.fileLocal = fileLocal;
+    }
+
+    public String getFileLocal() {
+        return fileLocal;
+    }
 
     public String getFileExtention() {
         return fileExtention;

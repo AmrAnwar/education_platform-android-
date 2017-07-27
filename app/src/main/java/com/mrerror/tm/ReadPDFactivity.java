@@ -14,6 +14,9 @@ import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 
+import java.io.File;
+import java.net.URI;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ReadPDFactivity extends AppCompatActivity {
@@ -35,26 +38,32 @@ public class ReadPDFactivity extends AppCompatActivity {
         Intent m=getIntent();
        String filePath= m.getStringExtra("file_path");
         String ext=m.getStringExtra("ext");
-        if(ext.equals("pdf")) {
-             imageView.setVisibility(View.INVISIBLE);
-            pdfView.setVisibility(View.VISIBLE);
-            pdfView.fromUri(Uri.parse(filePath)).load();
-            if(pdfView.getChildAt(0)==null){
+        String location=m.getStringExtra("file_loc");
+        File file=new File(URI.create(location).getPath());
 
-                deleteFromDataBase(filePath);
-            }
-        }else {
-            pdfView.setVisibility(View.INVISIBLE);
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setImageURI(Uri.parse(filePath));
-            if(imageView.getDrawable()!=null){
+        if(!file.exists()){
 
-             ph = new PhotoViewAttacher(imageView);}
-            else {
-                deleteFromDataBase(filePath);
-            }
+            deleteFromDataBase(filePath);
         }
+        else {
+            if (ext.equals("pdf")) {
+                imageView.setVisibility(View.INVISIBLE);
+                pdfView.setVisibility(View.VISIBLE);
+                pdfView.fromUri(Uri.parse(filePath)).load();
 
+            } else {
+                pdfView.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageURI(Uri.parse(filePath));
+//                if (imageView.getDrawable() != null) {
+//
+//                    ph = new PhotoViewAttacher(imageView);
+//                } else {
+//                    deleteFromDataBase(filePath);
+//                }
+            }
+
+        }
         dbHelper.close();
     }
     private void deleteFromDataBase(String filepath){
