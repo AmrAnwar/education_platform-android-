@@ -15,7 +15,7 @@ public class Contract {
         public  static  final String COLUMN_NOTE="note";
         public  static  final String COLUMN_EXTENSION="extension";
         public  static  final String COLUMN_TITLE="title";
-
+        public  static final  String COLUMN_FILE_LOCATION="location";
     }
 
 }

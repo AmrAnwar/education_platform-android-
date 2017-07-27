@@ -127,9 +127,11 @@ public  void loadModelAnswerFragment(){
                         int coulmIndex=c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                         if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
                             String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                            System.out.println(uriString);
                             String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            System.out.println(filelocation);
                             String extision= getMimeType(filelocation);
-
+                            mModelAnswer.setFileLocal(filelocation);
                             mModelAnswer.setFileExtention(extision);
 
                             saveToDataBase(uriString,mModelAnswer);
@@ -171,6 +173,7 @@ public  void loadModelAnswerFragment(){
         values.put(Contract.TableForModelAnswer.COLUMN_NOTE,modelAnswer.getNote());
         values.put(Contract.TableForModelAnswer.COLUMN_TITLE,modelAnswer.getTitle());
         values.put(Contract.TableForModelAnswer.COLUMN_TYPE,modelAnswer.getType());
+        values.put(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION,modelAnswer.getFileLocal());
 
 
       long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
@@ -248,6 +251,7 @@ public  void loadModelAnswerFragment(){
         Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
         i.putExtra("file_path",mModelAnswer.getFilePath());
         i.putExtra("ext",mModelAnswer.getFileExtention());
+        i.putExtra("file_loc",mModelAnswer.getFileLocal());
         startActivity(i);}
     public static String getMimeType(String url) {
         String type = null;

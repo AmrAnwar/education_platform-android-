@@ -122,7 +122,8 @@ public boolean isOnline() {
                 Contract.TableForModelAnswer.COLUMN_EXTENSION,
                 Contract.TableForModelAnswer.COLUMN_TYPE,
                 Contract.TableForModelAnswer.COLUMN_TITLE,
-                Contract.TableForModelAnswer.COLUMN_NOTE};
+                Contract.TableForModelAnswer.COLUMN_NOTE,
+                Contract.TableForModelAnswer.COLUMN_FILE_LOCATION};
 
         Cursor cursor = db.query(
                 Contract.TableForModelAnswer.TABLE_NAME,
@@ -141,6 +142,8 @@ public boolean isOnline() {
             refrence.setNote(note);
             String type = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_TYPE));
             refrence.setType(type);
+            String location=cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION));
+            refrence.setFileLocal(location);
 
             if (refrence.getType().equals("Exam"))
             { exams.add(refrence);
@@ -408,7 +411,7 @@ public boolean isOnline() {
                 upDateUi(sheetAndOther);
             }
         } else if (cExam.isChecked() && !cOther.isChecked() && !cSheet.isChecked()) {
-            Toast.makeText(getContext(),String.valueOf( exams.size()), Toast.LENGTH_SHORT).show();
+
 upDateUi(exams);
         } else if (cSheet.isChecked() && !cOther.isChecked() && !cExam.isChecked()) {
           upDateUi(sheets);
