@@ -3,6 +3,8 @@ package com.mrerror.tm.fragments;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -96,7 +98,12 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         public void onItemClickLestiner(ModelAnswer item);
     }
 //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
-
+public boolean isOnline() {
+    ConnectivityManager cm =
+            (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+    return netInfo != null && netInfo.isConnectedOrConnecting();
+}
 
     public void initializeDb() {
         itemInDataBase = new HashMap<>();
@@ -172,7 +179,10 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                reFresh();
+              if(isOnline()) { reFresh();}else {
+                  Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                  swipeRefreshLayout.setRefreshing(false);
+              }
             }
         });
 

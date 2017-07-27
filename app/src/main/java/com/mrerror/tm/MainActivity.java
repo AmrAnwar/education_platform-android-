@@ -240,14 +240,15 @@ public  void loadModelAnswerFragment(){
      {
          downLoad(item);}
      else {
-
-         Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
-         i.putExtra("file_path",mModelAnswer.getFilePath());
-         i.putExtra("ext",mModelAnswer.getFileExtention());
-         startActivity(i);
+         openInReader(item);
      }
 
     }
+    private  void openInReader(ModelAnswer item){
+        Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
+        i.putExtra("file_path",mModelAnswer.getFilePath());
+        i.putExtra("ext",mModelAnswer.getFileExtention());
+        startActivity(i);}
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
