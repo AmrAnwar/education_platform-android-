@@ -63,6 +63,9 @@ public class GeneralNews extends Fragment {
         tabLayout.setupWithViewPager(mViewPager);
         return v;
     }
+
+
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
