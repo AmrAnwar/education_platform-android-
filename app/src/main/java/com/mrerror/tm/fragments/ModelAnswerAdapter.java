@@ -41,12 +41,12 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         public void onModelAnserClicked(ModelAnswer modelAnswer);
     }
 
-public LoadMoreData mLoadMoreData;
 
-   public ModelAnswerAdapter(ArrayList<ModelAnswer> answers,OnModelAnswerClick modelAnswerClick,LoadMoreData loadMoreData){
+
+   public ModelAnswerAdapter(ArrayList<ModelAnswer> answers,OnModelAnswerClick modelAnswerClick ){
        mModelAnswers=answers;
        mModelAnswerClick=modelAnswerClick;
-       mLoadMoreData=loadMoreData;
+
 
    }
 
@@ -69,26 +69,11 @@ public LoadMoreData mLoadMoreData;
     @Override
     public void onBindViewHolder(ModelAnswerViewHolder holder, int position) {
 
-      final ModelAnswer modelAnswer=mModelAnswers.get(position);
-        holder.bind(modelAnswer,modelAnswer.getDwonload());
-        checkforLoading(position);
+          final ModelAnswer modelAnswer = mModelAnswers.get(position);
+          holder.bind(modelAnswer, modelAnswer.getDwonload());
 
     }
-    int maxPostion=0;
-   private   void   checkforLoading(int position){
 
-
-       if(maxPostion<position){
-           maxPostion=position;
-       }
-
-       if(position%5==0&&maxPostion<=mModelAnswers.size()){
-
-           mLoadMoreData.loadMorData();
-
-       }
-
-   }
 
 
     @Override

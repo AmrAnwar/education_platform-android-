@@ -5,6 +5,6 @@ package com.mrerror.tm.fragments;
  */
 
 public interface LoadMoreData {
-    public void loadMorData();
+    public void loadMorData(String url);
 
 }

@@ -51,7 +51,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
     long reference;
     ModelAnswerDbHelper dpHelper;
     ModelAnswer mModelAnswer;
-    ModelAnswerFragment modelAnswerFragment;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -68,21 +68,24 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 //                    mTextMessage.setText(R.string.title_inbox);
 //                    return true;
                 case R.id.model_answer:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,modelAnswerFragment).commit();
+                   loadModelAnswerFragment();
                     return true;
             }
             return false;
         }
 
     };
+public  void loadModelAnswerFragment(){
+    getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
 
+}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        modelAnswerFragment=new ModelAnswerFragment();
+
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -131,7 +134,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 
                             saveToDataBase(uriString,mModelAnswer);
 
-                            getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
+                            loadModelAnswerFragment();
                         }
                     }
 

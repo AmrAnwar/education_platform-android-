@@ -34,16 +34,34 @@ import java.util.HashMap;
 public class ModelAnswerFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData, ModelAnswerAdapter.OnModelAnswerClick {
 
 
-    ModelAnswerAdapter mAdabter;
+  public   ModelAnswerAdapter mAdabter;
     ModelAnswerDbHelper mDbHelper;
     OnItemClick mOnclick;
     ModelAnswer refrence;
-
+  public static   boolean shouldResume= false;
+    HashMap<Integer, ModelAnswer> itemInDataBase;
+    ArrayList<ModelAnswer> arryWithOutNetAll;
+    ArrayList<ModelAnswer>exams;
+    ArrayList<ModelAnswer> sheets;
+    ArrayList<ModelAnswer>others;
+    RecyclerView recyclerView;
     CheckBox cExam;
     CheckBox cSheet;
     CheckBox cOther;
-    String nextURl;
+    String nextURl="";
    String url = "http://educationplatform.pythonanywhere.com/api/answers/";
+    String urlExamOnly="http://educationplatform.pythonanywhere.com/api/answers/?type=b";
+    String urlSheetOnly="http://educationplatform.pythonanywhere.com/api/answers/?type=a";
+    String urlOtherOnly="http://educationplatform.pythonanywhere.com/api/answers/?type=c";
+    String urlNextFilter="";
+
+    int countAll=0;
+    int countExam=0;
+    int countSheet=0;
+    int countOther=0;
+    int scrolFalg=0;
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -55,12 +73,12 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         }
     }
 
-    HashMap<Integer, ModelAnswer> itemInDataBase;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        itemInDataBase = new HashMap<>();
+
         mDbHelper = new ModelAnswerDbHelper(getContext());
         initializeDb();
     }
@@ -76,12 +94,10 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     }
 //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
 
-    ArrayList<ModelAnswer> arryWithOutNetAll;
-    ArrayList<ModelAnswer>exams;
-    ArrayList<ModelAnswer> sheets;
-    ArrayList<ModelAnswer>others;
+
 
     public void initializeDb() {
+        itemInDataBase = new HashMap<>();
         arryWithOutNetAll = new ArrayList<>();
         exams= new ArrayList<>();
         sheets= new ArrayList<>();
@@ -127,6 +143,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
     public ModelAnswerFragment() {
     }
+
 LoadMoreData loadMoreData;
     @Nullable
     @Override
@@ -136,29 +153,55 @@ LoadMoreData loadMoreData;
         cExam= (CheckBox) rootView.findViewById(R.id.exams);
         cSheet=(CheckBox) rootView.findViewById(R.id.sheet);
         cOther=(CheckBox) rootView.findViewById(R.id.other);
-
-
         cExam.setOnClickListener(check);
         cSheet.setOnClickListener(check);
         cOther.setOnClickListener(check);
         loadMoreData=new LoadMoreData() {
             @Override
-            public void loadMorData() {
+            public void loadMorData(String url) {
 
-                if(nextURl!=null&&!nextURl.isEmpty()&&!nextURl.equals("null")){
-                    getData(nextURl);
-                    Toast.makeText(getContext(),nextURl , Toast.LENGTH_SHORT).show();
+              Toast.makeText(getContext(),"loading", Toast.LENGTH_SHORT).show();
+                   examAndsheets = null;
+                   examAndOther = null;
+                   sheetAndOther = null;
+
+                       getData(url);
+
+
+
+ }
+ };
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.model_answerlist);
+        mAdabter = new ModelAnswerAdapter(arryWithOutNetAll, this);
+        mAdabter.inilaize(exams,sheets,others);
+        final LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager( linearLayoutManager);
+
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            int x=   linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                if(x %3==0&& x>=3 &&x>scrolFalg &&arryWithOutNetAll.size()<countAll&&!nextURl.equals("null"))
+                { if((cExam.isChecked()||cSheet.isChecked()||cOther.isChecked())&&
+                        (!urlNextFilter.equals("null")&&!urlNextFilter.equals("")))
+                {
+                    loadMoreData.loadMorData(urlNextFilter);
+                    scrolFalg=x;
                 }
 
+                 else   { loadMoreData.loadMorData(nextURl);
+                    System.out.println(x);
+                    scrolFalg=x;
+                 }
+                }
             }
-        };
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.model_answerlist);
-        mAdabter = new ModelAnswerAdapter(arryWithOutNetAll, this,loadMoreData);
-        mAdabter.inilaize(exams,sheets,others);
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager( linearLayoutManager);
+        });
+
+
         getData(url);
         recyclerView.setAdapter(mAdabter);
+
         return rootView;
     }
     ArrayList<ModelAnswer> examAndsheets;
@@ -167,35 +210,57 @@ LoadMoreData loadMoreData;
    View.OnClickListener check= new View.OnClickListener() {
        @Override
        public void onClick(View v) {
-
-           if(cExam.isChecked()&&cSheet.isChecked()){
-             if(examAndsheets==null) { examAndsheets  =new ArrayList<>();
-               examAndsheets.addAll(exams);
-               examAndsheets.addAll(sheets);}
-               mAdabter.addNewData(examAndsheets);
-           }else if(cExam.isChecked()&&cOther.isChecked()){
-
-               if(examAndOther==null) { examAndOther  =new ArrayList<>();
+           if (cExam.isChecked() && cOther.isChecked() && cSheet.isChecked()) {
+               urlNextFilter="";
+               mAdabter.addNewData(arryWithOutNetAll);}
+           else if (cExam.isChecked() && cSheet.isChecked()) {
+               if (examAndsheets == null) {
+                   examAndsheets = new ArrayList<>();
+                   examAndsheets.addAll(exams);
+                   examAndsheets.addAll(sheets);}
+               urlNextFilter = "";
+               mAdabter.addNewData(examAndsheets);}
+           else if (cExam.isChecked() && cOther.isChecked()) {
+               if (examAndOther == null) {
+                   examAndOther = new ArrayList<>();
                    examAndOther.addAll(exams);
-                   examAndOther.addAll(others);}
+                   examAndOther.addAll(others);
+               }
+               urlNextFilter="";
+               mAdabter.addNewData(examAndOther);
+           } else if (cSheet.isChecked() && cOther.isChecked()) {
 
-               mAdabter.addNewData(examAndOther);}
-           else if(cSheet.isChecked()&&cOther.isChecked()){
-
-               if(sheetAndOther==null) { sheetAndOther  =new ArrayList<>();
-                   sheetAndOther.addAll(exams);
-                   sheetAndOther.addAll(others);}
-
-               mAdabter.addNewData(sheetAndOther);}
-           else if(cExam.isChecked()){
+               if (sheetAndOther == null) {
+                   sheetAndOther = new ArrayList<>();
+                   sheetAndOther.addAll(sheets);
+                   sheetAndOther.addAll(others);
+               }
+               urlNextFilter="";
+               mAdabter.addNewData(sheetAndOther);
+           } else if (cExam.isChecked()) {
+               if(arryWithOutNetAll.size()<countAll)
+               { getData(urlExamOnly);
+               scrolFalg=0;}
                mAdabter.addNewData(exams);
+           } else if (cSheet.isChecked()) {
+               if(arryWithOutNetAll.size()<countAll)
+               { getData(urlSheetOnly);
+                   scrolFalg=0;}
+               mAdabter.addNewData(sheets);
+           } else if (cOther.isChecked()) {
+               if(arryWithOutNetAll.size()<countAll)
+               { getData(urlOtherOnly);
+                   scrolFalg=0;}
+               mAdabter.addNewData(others);
+           } else {
+               mAdabter.addNewData(arryWithOutNetAll);
            }
-else if(cSheet.isChecked()){mAdabter.addNewData(sheets);}
-           else if(cOther.isChecked()){mAdabter.addNewData(others);}else {mAdabter.addNewData(arryWithOutNetAll);}
-
-
        }
    };
+
+
+
+
 
     private void getData(String url) {
         NetworkConnection.url = url;
@@ -203,33 +268,103 @@ else if(cSheet.isChecked()){mAdabter.addNewData(sheets);}
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+if(shouldResume) {
+    Toast.makeText(getContext(), "onResume", Toast.LENGTH_SHORT).show();
+
+    exams=null;
+    sheets=null;
+    others=null;
+    arryWithOutNetAll=null;
+
+    examAndsheets = null;
+    examAndOther = null;
+    sheetAndOther = null;
+    itemInDataBase=null;
+    initializeDb();
+    getData(url);
+    mAdabter.notifyDataSetChanged();
+    shouldResume=false;
+}
+
+    }
+
+    @Override
     public void onCompleted(String result) throws JSONException {
 
         JSONObject newsObj = new JSONObject(result);
-         nextURl =newsObj.getString("next");
+
+        if(cExam.isChecked()&&!cOther.isChecked()&&!cSheet.isChecked()){
+            urlNextFilter= newsObj.getString("next");
+            countExam=newsObj.getInt("count");
+        }else if(cSheet.isChecked()&&!cOther.isChecked()&&!cExam.isChecked())
+        { urlNextFilter= newsObj.getString("next");
+        countSheet=newsObj.getInt("count");}
+        else if(cOther.isChecked()&&!cSheet.isChecked()&&!cExam.isChecked()){
+            urlNextFilter= newsObj.getString("next");
+            countOther=newsObj.getInt("count");
+        }else {
+            nextURl =newsObj.getString("next");
+            countAll=newsObj.getInt("count");}
+
 
         JSONArray resultArray = newsObj.getJSONArray("results");
         for (int i = 0; i < resultArray.length(); i++) {
              refrence = new ModelAnswer();
             JSONObject obj = resultArray.getJSONObject(i);
             int id = obj.getInt("id");
-            if (itemInDataBase.keySet().contains(id)) {
+            if (itemInDataBase.keySet().contains(id)&&itemInDataBase.get(id).getDwonload()) {
                 continue;
+            }else if(itemInDataBase.keySet().contains(id)){
+
+                continue;
+
+            }else {
+                refrence.setId(id);
+                refrence.setTitle(obj.getString("title"));
+                refrence.setFileUrl(obj.getString("file"));
+                refrence.setNote(obj.getString("note"));
+                refrence.setType(obj.getString("type"));
+
+                if (refrence.getType().equals("Exam")) exams.add(refrence);
+                if (refrence.getType().equals("Sheet")) sheets.add(refrence);
+                if (refrence.getType().equals("others")) others.add(refrence);
+
+                arryWithOutNetAll.add(refrence);
+                itemInDataBase.put(id,refrence);
             }
-            refrence.setId(id);
-            refrence.setTitle(obj.getString("title"));
-            refrence.setFileUrl(obj.getString("file"));
-            refrence.setNote(obj.getString("note"));
-            refrence.setType(obj.getString("type"));
-
-            if(refrence.getType().equals("Exam")) exams.add(refrence);
-            if(refrence.getType().equals("Sheet"))sheets.add(refrence);
-            if (refrence.getType().equals("others"))others.add(refrence);
-
-            arryWithOutNetAll.add(refrence);
         }
         mAdabter.inilaize(exams,sheets,others);
-        mAdabter.addNewData(arryWithOutNetAll);
+        if(cExam.isChecked()&&cSheet.isChecked()){
+            examAndsheets=null;
+            examAndsheets=new ArrayList<>();
+            examAndsheets.addAll(exams);
+            examAndsheets.addAll(sheets);
+            mAdabter.addNewData(examAndsheets);
+
+        }else if(cExam.isChecked()&&cOther.isChecked()){examAndsheets=null;
+           examAndOther=null;
+            examAndOther=new ArrayList<>();
+            examAndOther.addAll(exams);
+            examAndOther.addAll(others);
+            mAdabter.addNewData(examAndOther);}else if(cSheet.isChecked()&&cOther.isChecked()){
+            sheetAndOther=null;
+            sheetAndOther=new ArrayList<>();
+            sheetAndOther.addAll(sheets);
+            sheetAndOther.addAll(others);
+
+        }
+        else if(cExam.isChecked()&&!cOther.isChecked()&&!cSheet.isChecked()){
+        mAdabter.addNewData(exams);
+        }else if(cSheet.isChecked()&&!cOther.isChecked()&&!cExam.isChecked())
+        {mAdabter.addNewData(sheets); }
+        else if(cOther.isChecked()&&!cSheet.isChecked()&&!cExam.isChecked()){
+           mAdabter.addNewData(others);
+        }else {
+            mAdabter.addNewData(arryWithOutNetAll);
+           }
+
 
     }
 
