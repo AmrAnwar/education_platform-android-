@@ -142,8 +142,7 @@ public  void loadModelAnswerFragment(){
             }
         };
         registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-//SQLiteDatabase db=dpHelper.getWritableDatabase();
-//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
+//SQ
 
     }
 
@@ -178,9 +177,9 @@ public  void loadModelAnswerFragment(){
 //        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
 
         if(check>=0)
-            Toast.makeText(this, "Done add to dataBase", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
                else
-            Toast.makeText(this, "errorHappend", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -234,7 +233,7 @@ public  void loadModelAnswerFragment(){
 
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
-        Toast.makeText(this, item.getNote(), Toast.LENGTH_SHORT).show();
+
         mModelAnswer=item;
 
      if(!mModelAnswer.getDwonload())

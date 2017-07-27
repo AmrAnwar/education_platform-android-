@@ -62,9 +62,8 @@ public class ReadPDFactivity extends AppCompatActivity {
         Toast.makeText(this, "file not exist any more download it again ", Toast.LENGTH_SHORT).show();
         String selection = Contract.TableForModelAnswer.COLUMN_FILE_PATH + " LIKE ?";
         String[] selectionArgs = { filepath };
-        long c=      db.delete(Contract.TableForModelAnswer.TABLE_NAME, selection, selectionArgs);
-        if(c>0)
-        {   Toast.makeText(this, "deleted from dataBase", Toast.LENGTH_SHORT).show();}
+        db.delete(Contract.TableForModelAnswer.TABLE_NAME, selection, selectionArgs);
+
         db.close();
         dbHelper.close();
         ModelAnswerFragment.shouldResume=true;

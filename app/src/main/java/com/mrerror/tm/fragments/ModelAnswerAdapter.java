@@ -22,18 +22,6 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
     ArrayList<ModelAnswer> mModelAnswers;
     OnModelAnswerClick mModelAnswerClick;
 
-    ArrayList<ModelAnswer> mExam;
-    ArrayList<ModelAnswer>mSheet;
-    ArrayList<ModelAnswer>mOthers;
-
-
-    public  void inilaize(ArrayList<ModelAnswer> exam,ArrayList<ModelAnswer>sheet,ArrayList<ModelAnswer> others){
-
-        mExam=exam;
-        mOthers=others;
-        mSheet=sheet;
-
-    }
 
 
     public interface OnModelAnswerClick{
@@ -53,7 +41,7 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
    public  void addNewData(ArrayList<ModelAnswer> answers){
 
        mModelAnswers=answers;
-       this.notifyDataSetChanged();
+     //  this.notifyDataSetChanged();
    }
     @Override
     public ModelAnswerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
