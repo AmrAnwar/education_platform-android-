@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.MyNewsRecyclerViewAdapter;
@@ -41,6 +42,10 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     private String mType = "general";
     private MyNewsRecyclerViewAdapter adapter;
     private ProgressDialog progressdialog;
+    LoadMoreData loadMoreData;
+    int scrolFalg=0;
+    String nextURl="";
+    String url;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,29 +70,61 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
 
         if (getArguments() != null) {
             mType = getArguments().getString(ARG_TYPE);
+
+scrolFalg=0;
         }
+        newsArrayList = new ArrayList<>();
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        loadMoreData=new LoadMoreData() {
+            @Override
+            public void loadMorData(String url) {
+
+                getData(url);
+                Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
+            }
+        };
+        url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
+
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             newsArrayList = new ArrayList<>();
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+          final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
+                recyclerView.setLayoutManager(linearLayoutManager);
+
+            recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    int x = linearLayoutManager.findLastVisibleItemPosition();
+
+                    if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
+                         {
+                            loadMoreData.loadMorData(nextURl);
+                             Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
+
+                            scrolFalg = x;
+                        }
+                    }
+                }
+            });
             adapter =new MyNewsRecyclerViewAdapter(newsArrayList,this);
-            getData(mType);
+            getData(url);
             recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
-    private void getData(String mType) {
-        String url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
+    private void getData(String url) {
+
         NetworkConnection.url = url;
         new NetworkConnection(this).getDataAsJsonObject(getContext());
     }
@@ -95,7 +132,8 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject newsObj = new JSONObject(result);
-        newsArrayList = new ArrayList<>();
+        nextURl=newsObj.getString("next");
+
         JSONArray resultArray = newsObj.getJSONArray("results");
         for(int i = 0 ; i < resultArray.length();i++) {
             News news = new News();
