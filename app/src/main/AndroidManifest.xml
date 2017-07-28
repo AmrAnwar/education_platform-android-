@@ -37,9 +37,6 @@
             android:theme="@style/AppTheme.Dark" />
         <activity android:name=".ReadPDFactivity"></activity>
         <activity
-            android:name=".SignupActivity"
-            android:theme="@style/AppTheme.Dark" />
-        <activity
             android:name=".AskActivity"
             android:label="@string/title_activity_ask"
             android:theme="@style/AppTheme.NoActionBar" />

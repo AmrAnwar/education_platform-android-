@@ -54,7 +54,8 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     for(int i = 0 ; i < jsonArray.length();i++){
                         JSONObject questionObj = jsonArray.getJSONObject(i);
                         Question question;
-                        question = new Question(questionObj.getString("question"), questionObj.getString("replay"));
+                        question = new Question(questionObj.getString("question"), questionObj.getString("replay")
+                                , questionObj.getString("image_staff"), questionObj.getString("file_staff"));
                         questions.add(question);
                     }
                     InboxRecyclerViewAdapter adapter = new InboxRecyclerViewAdapter(questions);
@@ -74,7 +75,9 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     for(int i = 0 ; i < jsonArray.length();i++){
                         JSONObject questionObj = jsonArray.getJSONObject(i);
                         QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
-                                null,questionObj.getString("edit_url"),questionObj.getString("delete_url"),questionObj.getJSONObject("user").getString("username"));
+                                null,questionObj.getString("edit_url"),questionObj.getString("delete_url")
+                                ,questionObj.getJSONObject("user").getString("username")
+                        ,questionObj.getString("image_sender"),questionObj.getString("file_sender"));
                         questions.add(question);
                     }
                     InboxForStaffRecyclerViewAdapter adapter = new InboxForStaffRecyclerViewAdapter(questions);

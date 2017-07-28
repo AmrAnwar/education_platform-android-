@@ -33,5 +33,27 @@
         android:padding="16dp"
         android:gravity="top|left"
         />
-
+    <ImageView
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:maxHeight="400dp"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/replyImg"
+        android:layout_gravity="center"
+        />
+    <ImageButton
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:src="@drawable/ic_play"
+        android:id="@+id/play_btn"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:onClick="playRec"
+        />
 </LinearLayout>

@@ -36,7 +36,11 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mQuest.setText(mValues.get(position).getQuestion());
+        String quest = mValues.get(position).getQuestion();
+        if(quest.length()>2)
+            holder.mQuest.setText(mValues.get(position).getQuestion());
+        else
+            holder.mQuest.setText("you got an answer!");
     }
     public void newData(ArrayList<Question> items){
         this.mValues = items;

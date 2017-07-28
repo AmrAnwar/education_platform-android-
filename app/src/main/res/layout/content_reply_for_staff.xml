@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="?actionBarSize"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.mrerror.tm.ReplyForStaffActivity"
     tools:showIn="@layout/activity_reply_for_staff"
     android:orientation="vertical">
     <TextView
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,6 +25,29 @@
         android:fontFamily="sans-serif-smallcaps"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_darker"
+        />
+    <ImageView
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:maxHeight="400dp"
+        android:layout_height="wrap_content"
+        android:minHeight="200dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/questionImg"
+        android:layout_gravity="center"
+        />
+    <ImageButton
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:src="@drawable/ic_play"
+        android:id="@+id/play_btn"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:onClick="playRec"
         />
     <TextView
         android:id="@+id/username"
@@ -45,8 +74,106 @@
         android:hint="Write your reply here"
         android:gravity="top|left"
         />
+    <LinearLayout
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageButton
+            android:onClick="useRecord"
+            android:background="@drawable/btn_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_mic_black_24dp"
+            android:padding="15dp"
+            android:layout_marginRight="20dp"
+            />
+        <ImageButton
+            android:onClick="attachImg"
+            android:background="@drawable/btn_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_image_black_24dp"
+            android:padding="15dp"
+            />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginBottom="8dp"
+        android:id="@+id/record_layout"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_record"
+            android:id="@+id/start_rec_btn"
+            android:background="@drawable/border"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
+
+        <ImageButton
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:src="@drawable/ic_play"
+            android:id="@+id/play_rec_btn"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
+
+        <ImageButton
+            android:padding="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            android:background="@drawable/border"
+            android:id="@+id/remove_rec_btn"
+            />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/img_layout"
+        android:visibility="gone"
+        android:gravity="left"
+        android:padding="10dp"
+        android:background="@drawable/border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/selected_img"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="32dp"
+            android:src="@drawable/logo"
+            />
+
+        <Button
+            android:onClick="deleteImg"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/delete_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_state"
+            android:text="Delete" />
+    </RelativeLayout>
     <Button
+        android:layout_marginTop="32dp"
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,3 +182,4 @@
         android:background="@drawable/btn_state"
         />
 </LinearLayout>
+</ScrollView>

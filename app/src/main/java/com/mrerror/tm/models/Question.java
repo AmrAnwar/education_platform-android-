@@ -10,10 +10,14 @@ import android.os.Parcelable;
 public class Question implements Parcelable{
     private String question;
     private String answer;
+    private String linkForImg;
+    private String linkForRec;
 
-    public Question(String question, String answer) {
+    public Question(String question, String answer, String img, String rec) {
         this.question = question;
         this.answer = answer;
+        this.linkForImg= img;
+        this.linkForRec = rec;
     }
 
     public String getQuestion() {
@@ -24,9 +28,19 @@ public class Question implements Parcelable{
         return answer;
     }
 
+    public String getLinkForImg() {
+        return linkForImg;
+    }
+
+    public String getLinkForRec() {
+        return linkForRec;
+    }
+
     protected Question(Parcel in) {
         question = in.readString();
         answer = in.readString();
+        linkForImg = in.readString();
+        linkForRec = in.readString();
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
@@ -50,5 +64,7 @@ public class Question implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(question);
         dest.writeString(answer);
+        dest.writeString(linkForImg);
+        dest.writeString(linkForRec);
     }
 }
