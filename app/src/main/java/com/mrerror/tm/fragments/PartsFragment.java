@@ -11,16 +11,15 @@ import android.view.ViewGroup;
 
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.PartsRecyclerViewAdapter;
-import com.mrerror.tm.models.Word;
+import com.mrerror.tm.models.Part;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PartsFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_TYPE = "type";
     // TODO: Customize parameters
-    private HashMap<String,ArrayList<Word>> mPart = null;
+    private ArrayList<Part> mPart = null;
     private PartsRecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener mListener;
 
@@ -33,7 +32,7 @@ public class PartsFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static PartsFragment newInstance(HashMap<String,ArrayList<Word>> part) {
+    public static PartsFragment newInstance(ArrayList<Part> part) {
         PartsFragment fragment = new PartsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_TYPE, part);
@@ -46,7 +45,7 @@ public class PartsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mPart = (HashMap<String, ArrayList<Word>>) getArguments().getSerializable(ARG_TYPE);
+            mPart = (ArrayList<Part>) getArguments().getSerializable(ARG_TYPE);
 
         }
     }
@@ -84,6 +83,6 @@ public class PartsFragment extends Fragment {
     }
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(ArrayList<Word> item);
+        void onListFragmentInteraction(Part item);
     }
 }

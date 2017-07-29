@@ -33,12 +33,9 @@ import com.mrerror.tm.fragments.GeneralWords;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.fragments.PartsFragment;
 import com.mrerror.tm.fragments.UnitFragment;
-import com.mrerror.tm.fragments.WordsFragment;
 import com.mrerror.tm.models.ModelAnswer;
+import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
-import com.mrerror.tm.models.Word;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
@@ -62,7 +59,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
                     return true;
                 case R.id.navigation_words:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralWords()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content,UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
                     return true;
 //                case R.id.inbox:
 //                    mTextMessage.setText(R.string.title_inbox);
@@ -196,8 +193,8 @@ public  void loadModelAnswerFragment(){
 
     // For parts list
     @Override
-    public void onListFragmentInteraction(ArrayList<Word> item) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, WordsFragment.newInstance(item)).addToBackStack(null).commit();
+    public void onListFragmentInteraction(Part item) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, GeneralWords.newInstance(item)).addToBackStack(null).commit();
     }
 
 

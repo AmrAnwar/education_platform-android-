@@ -9,17 +9,16 @@ import android.widget.TextView;
 
 import com.mrerror.tm.R;
 import com.mrerror.tm.fragments.PartsFragment;
-import com.mrerror.tm.models.Word;
+import com.mrerror.tm.models.Part;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecyclerViewAdapter.ViewHolder>  {
 
-    private  HashMap<String, ArrayList<Word>> mValues;
+    private  ArrayList<Part>  mValues;
     private Context mContext ;
     private PartsFragment.OnListFragmentInteractionListener mListener;
-    public PartsRecyclerViewAdapter(HashMap<String, ArrayList<Word>> items, PartsFragment.OnListFragmentInteractionListener listener) {
+    public PartsRecyclerViewAdapter(ArrayList<Part> items, PartsFragment.OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
@@ -34,8 +33,8 @@ public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(mValues.keySet().toArray()[position]);
-        holder.mPartTitle.setText((String)mValues.keySet().toArray()[position]);
+        holder.mItem = mValues.get(position);
+        holder.mPartTitle.setText(mValues.get(position).getTitle());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +55,7 @@ public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecycler
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mPartTitle;
-        ArrayList<Word> mItem;
+        Part mItem;
 
         ViewHolder(View view) {
             super(view);

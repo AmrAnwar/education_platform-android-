@@ -11,16 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.models.Part;
 
 public class GeneralWords extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM = "param1";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Part mPart;
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -29,11 +28,10 @@ public class GeneralWords extends Fragment {
         // Required empty public constructor
     }
 
-    public static GeneralWords newInstance(String param1, String param2) {
+    public static GeneralWords newInstance(Part item) {
         GeneralWords fragment = new GeneralWords();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_PARAM, item);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,8 +41,7 @@ public class GeneralWords extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mPart = getArguments().getParcelable(ARG_PARAM);
         }
     }
 
@@ -75,7 +72,7 @@ public class GeneralWords extends Fragment {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0:
-                    return UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/");
+                    return WordsFragment.newInstance(mPart.getWordsUrl());
                 case 1:
                 default:
                     return NewsFragment.newInstance("a");

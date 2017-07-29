@@ -13,15 +13,14 @@ import android.view.ViewGroup;
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.UnitsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
+import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
-import com.mrerror.tm.models.Word;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class UnitFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData {
     ArrayList<Unit> unitsArrayList;
@@ -84,28 +83,24 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
     @Override
     public void onCompleted(String result) throws JSONException {
+
         JSONObject unitsObj = new JSONObject(result);
         unitsArrayList = new ArrayList<>();
         JSONArray resultArray = unitsObj.getJSONArray("results");
         for(int i = 0 ; i < resultArray.length();i++) {
             JSONObject obj = resultArray.getJSONObject(i);
-            HashMap<String,ArrayList<Word>> partsHashMap = new HashMap<>();
+            ArrayList<Part> partsList = new ArrayList<>();
             JSONArray partsArrayJson = obj.getJSONArray("parts");
-            for(int j = 0 ; j < partsArrayJson.length();j++){
+            for(int j = 0 ; j < partsArrayJson.length();j++) {
                 JSONObject partObj = partsArrayJson.getJSONObject(j);
                 String partTitle = partObj.getString("title");
-                JSONArray wordsArray = partObj.getJSONArray("words");
-                ArrayList<Word> wordArrayList = new ArrayList<>();
-                for(int k = 0 ; k < wordsArray.length();k++) {
-                    Word word = new Word(wordsArray.getJSONObject(k).getString("name")
-                            ,wordsArray.getJSONObject(k).getString("translation"));
-                    wordArrayList.add(word);
-                }
-                partsHashMap.put(partTitle,wordArrayList);
-
+                String wordsLink = partObj.getString("urlwords");
+                String testLink = partObj.getString("urltests");
+                Part part = new Part(partTitle,wordsLink,testLink);
+                partsList.add(part);
             }
 
-            Unit unit = new Unit(obj.getString("title"),partsHashMap);
+            Unit unit = new Unit(obj.getString("title"),partsList);
 
             unitsArrayList.add(unit);
         }
