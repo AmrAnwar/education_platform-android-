@@ -41,7 +41,7 @@ import com.mrerror.tm.models.Unit;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
-    {
+   {
 
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -276,4 +276,6 @@ public  void loadModelAnswerFragment(){
         dpHelper.close();
         super.onDestroy();
     }
+
+
 }

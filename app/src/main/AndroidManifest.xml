@@ -22,20 +22,19 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="" />
-
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SignupActivity"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".ReadPDFactivity"></activity>
+        <activity android:name=".ReadPDFactivity" />
         <activity
             android:name=".AskActivity"
             android:label="@string/title_activity_ask"
@@ -51,7 +50,8 @@
         <activity
             android:name=".ReplyForStaffActivity"
             android:label="@string/title_activity_reply_for_staff"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.com.vansuita.pickimage.provider"
@@ -62,6 +62,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
+
+        <activity android:name=".TestQusetionActivity"></activity>
     </application>
 
 </manifest>
