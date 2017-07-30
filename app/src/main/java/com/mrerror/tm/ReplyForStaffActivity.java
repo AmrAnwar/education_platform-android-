@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.internal.http.multipart.MultipartEntity;
+import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.models.QuestionForStaff;
 import com.squareup.picasso.Picasso;
 import com.vansuita.pickimage.bean.PickResult;
@@ -32,9 +33,6 @@ import com.vansuita.pickimage.listeners.IPickResult;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -45,6 +43,10 @@ import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+//import org.apache.http.entity.mime.MultipartEntity;
+//import org.apache.http.entity.mime.content.FileBody;
+//import org.apache.http.entity.mime.content.StringBody;
 
 public class ReplyForStaffActivity extends AppCompatActivity implements IPickResult {
 
@@ -139,8 +141,8 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                         }
                     }).start();
                     String url = questionForStaff.getLinkToEdit();
-//                    new NetworkConnection(ReplyForStaffActivity.this).putData(ReplyForStaffActivity.this,url,
-//                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
+                    new NetworkConnection(ReplyForStaffActivity.this).putData(ReplyForStaffActivity.this,url,
+                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
                 }
             }
         });

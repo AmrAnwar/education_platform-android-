@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mrerror.tm.R;
@@ -67,7 +69,10 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     ArrayList<ModelAnswer> examAndsheets;
     ArrayList<ModelAnswer> examAndOther;
     ArrayList<ModelAnswer> sheetAndOther;
-
+    ProgressBar progressBar;
+    String noInterNed="No InterNet";
+    String no_list="List_is_empty";
+     TextView blankText;
 
     @Override
     public void onAttach(Context context) {
@@ -179,15 +184,24 @@ public boolean isOnline() {
         View rootView = inflater.inflate(R.layout.fragment_modelanswer_with_checbox, container, false);
 
          swipeRefreshLayout= (SwipeRefreshLayout) rootView.findViewById(R.id.refresher);
+        blankText= (TextView) rootView.findViewById(R.id.blanktextview);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-              if(isOnline()) { reFresh();}else {
+              if(isOnline())
+              {   blankText.setVisibility(View.GONE);
+                  reFresh();
+               }
+              else {
+                  if(arryWithOutNetAll.isEmpty()){blankText.setVisibility(View.VISIBLE);
+                  blankText.setText(noInterNed);}
                   Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
                   swipeRefreshLayout.setRefreshing(false);
               }
             }
         });
+        progressBar= (ProgressBar) rootView.findViewById(R.id.progressbar);
 
         cExam = (CheckBox) rootView.findViewById(R.id.exams);
         cSheet = (CheckBox) rootView.findViewById(R.id.sheet);
@@ -286,8 +300,17 @@ public boolean isOnline() {
     }
 
     private void getData(String url) {
+        if(isOnline())
+        {
+            progressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
         NetworkConnection.url = url;
         new NetworkConnection(this).getDataAsJsonObject(getContext());
+        }else {progressBar.setVisibility(View.GONE);
+            blankText.setVisibility(View.INVISIBLE);
+            if(arryWithOutNetAll.isEmpty()){
+                blankText.setVisibility(View.VISIBLE);
+                blankText.setText(noInterNed);}}
     }
 
     @Override
@@ -301,6 +324,7 @@ public boolean isOnline() {
     }
 
     private void reFresh(){
+        progressBar.setVisibility(View.GONE);
         exams=null;
         sheets=null;
         others=null;
@@ -319,12 +343,14 @@ public boolean isOnline() {
             getData(urlOtherOnly);
         }else {
         getData(url);
+
     }
 
     }
 
     @Override
     public void onCompleted(String result) throws JSONException {
+
 
         JSONObject newsObj = new JSONObject(result);
         swipeRefreshLayout.setRefreshing(false);
@@ -421,7 +447,11 @@ upDateUi(exams);
         } else {
           upDateUi(arryWithOutNetAll);
         }
-
+progressBar.setVisibility(View.GONE);
+        if(arryWithOutNetAll.isEmpty()){
+            blankText.setVisibility(View.VISIBLE);
+            blankText.setText(no_list);
+        }
 
     }
 
