@@ -1,6 +1,5 @@
 package com.mrerror.tm;
 
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -8,10 +7,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,8 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.internal.http.multipart.MultipartEntity;
-import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.models.QuestionForStaff;
 import com.squareup.picasso.Picasso;
 import com.vansuita.pickimage.bean.PickResult;
@@ -31,15 +26,8 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -88,65 +76,65 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         question.setText(questionForStaff.getQuestion());
         username.setText("By : "+questionForStaff.getUsername());
         reply = (EditText) findViewById(R.id.reply);
-        replyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (reply.getText().toString().length() <= 1) {
-                    Toast.makeText(ReplyForStaffActivity.this, "Very short reply!", Toast.LENGTH_SHORT).show();
-                } else {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpClient httpclient = new DefaultHttpClient();
-                            HttpPut httput = new HttpPut(questionForStaff.getLinkToEdit());
-
-                            MultipartEntity entity = new MultipartEntity();
-                            try {
-                                entity.addPart("question", new StringBody(questionForStaff.getQuestion()));
-                                entity.addPart("replay", new StringBody(reply.getText().toString()));
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            if(AudioSavePathInDevice!=null)
-                                entity.addPart("file_staff", new FileBody(new File(AudioSavePathInDevice)));
-                            if(mSelected!=null)
-                                entity.addPart("image_staff", new FileBody(new File(mSelected.getPath())));
-//                    entity.addPart("myAudioFile", new FileBody(audioFile));
-
-                            httput.setEntity(entity);
-                            HttpResponse response;
-                            try {
-                                response = httpclient.execute(httput);
-                                String responseBody = EntityUtils.toString(response.getEntity());
-                                Log.e("Respone",responseBody);
-                                ReplyForStaffActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AlertDialog.Builder dialog = new AlertDialog.Builder(ReplyForStaffActivity.this);
-                                        dialog.setTitle("Answer a question!");
-                                        dialog.setMessage("Your reply has been delivered!");
-                                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                ReplyForStaffActivity.this.finish();
-                                            }
-                                        });
-                                        dialog.setCancelable(false);
-                                        dialog.show();
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    String url = questionForStaff.getLinkToEdit();
-                    new NetworkConnection(ReplyForStaffActivity.this).putData(ReplyForStaffActivity.this,url,
-                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
-                }
-            }
-        });
+//        replyBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (reply.getText().toString().length() <= 1) {
+//                    Toast.makeText(ReplyForStaffActivity.this, "Very short reply!", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            HttpClient httpclient = new DefaultHttpClient();
+//                            HttpPut httput = new HttpPut(questionForStaff.getLinkToEdit());
+//
+//                            MultipartEntity entity = new MultipartEntity();
+//                            try {
+//                                entity.addPart("question", new StringBody(questionForStaff.getQuestion()));
+//                                entity.addPart("replay", new StringBody(reply.getText().toString()));
+//                            } catch (UnsupportedEncodingException e) {
+//                                e.printStackTrace();
+//                            }
+//                            if(AudioSavePathInDevice!=null)
+//                                entity.addPart("file_staff", new FileBody(new File(AudioSavePathInDevice)));
+//                            if(mSelected!=null)
+//                                entity.addPart("image_staff", new FileBody(new File(mSelected.getPath())));
+////                    entity.addPart("myAudioFile", new FileBody(audioFile));
+//
+//                            httput.setEntity(entity);
+//                            HttpResponse response;
+//                            try {
+//                                response = httpclient.execute(httput);
+//                                String responseBody = EntityUtils.toString(response.getEntity());
+//                                Log.e("Respone",responseBody);
+//                                ReplyForStaffActivity.this.runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        AlertDialog.Builder dialog = new AlertDialog.Builder(ReplyForStaffActivity.this);
+//                                        dialog.setTitle("Answer a question!");
+//                                        dialog.setMessage("Your reply has been delivered!");
+//                                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialog, int which) {
+//                                                dialog.dismiss();
+//                                                ReplyForStaffActivity.this.finish();
+//                                            }
+//                                        });
+//                                        dialog.setCancelable(false);
+//                                        dialog.show();
+//                                    }
+//                                });
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }).start();
+//                    String url = questionForStaff.getLinkToEdit();
+//                    new NetworkConnection(ReplyForStaffActivity.this).putData(ReplyForStaffActivity.this,url,
+//                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
+//                }
+//            }
+//        });
         // play record from student
         playBtn = (ImageButton) findViewById(R.id.play_btn);
 
