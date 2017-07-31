@@ -267,7 +267,7 @@ public  void loadModelAnswerFragment(){
         i.putExtra("file_loc",mModelAnswer.getFileLocal());
         startActivity(i);}
     public static String getMimeType(String url) {
-        String type = null;
+
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
 
         return extension;

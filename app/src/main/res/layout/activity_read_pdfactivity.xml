@@ -1,13 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.mrerror.tm.ReadPDFactivity"
     android:background="#000"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/goPage"
+        android:background="@color/colorPrimary"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PageNum :"
+            android:textColor="#fff"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            />
+
+    <EditText
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_for_page_number"
+        android:inputType="number"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:cursorVisible="false"
+        android:textColor="#fff"
+       />
+    <ImageButton
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:background="@color/colorPrimary"
+        android:id="@+id/gotopage"
+        app:srcCompat="@drawable/ic_import_export_black_24px"
+        android:layout_gravity="center"
+        />
+    </LinearLayout>
+
+
 
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
@@ -19,6 +60,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/ImageViewWithzoom"
-        android:adjustViewBounds="true"/>
-
-</FrameLayout>
+        android:adjustViewBounds="true"
+     />
+</LinearLayout>
