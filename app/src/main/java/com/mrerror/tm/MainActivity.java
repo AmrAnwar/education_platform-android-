@@ -24,6 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mrerror.tm.dataBases.Contract;
@@ -39,7 +41,7 @@ import com.mrerror.tm.models.Unit;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
-    {
+   {
 
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -48,6 +50,8 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
     long reference;
     ModelAnswerDbHelper dpHelper;
     ModelAnswer mModelAnswer;
+        ProgressBar mProgressBar;
+        TextView blankText;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -56,15 +60,21 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_news:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
                     return true;
                 case R.id.navigation_words:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
                     return true;
 //                case R.id.inbox:
 //                    mTextMessage.setText(R.string.title_inbox);
 //                    return true;
                 case R.id.model_answer:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
                    loadModelAnswerFragment();
                     return true;
             }
@@ -82,7 +92,8 @@ public  void loadModelAnswerFragment(){
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+         mProgressBar= (ProgressBar) findViewById(R.id.progressbar);
+         blankText=(TextView) findViewById(R.id.no_list_net);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -188,13 +199,18 @@ public  void loadModelAnswerFragment(){
     @Override
 
     public void onListFragmentInteraction(Unit item) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.content,PartsFragment.newInstance(item.getParts())).addToBackStack(null).commit();
+        getSupportFragmentManager().
+                beginTransaction()
+                .replace(R.id.content,PartsFragment.newInstance(item.getParts()))
+                .addToBackStack(null).commit();
     }
 
     // For parts list
     @Override
     public void onListFragmentInteraction(Part item) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, GeneralWords.newInstance(item)).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, GeneralWords.newInstance(item))
+                .addToBackStack(null).commit();
     }
 
 
@@ -251,7 +267,7 @@ public  void loadModelAnswerFragment(){
         i.putExtra("file_loc",mModelAnswer.getFileLocal());
         startActivity(i);}
     public static String getMimeType(String url) {
-        String type = null;
+
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
 
         return extension;
@@ -260,4 +276,6 @@ public  void loadModelAnswerFragment(){
         dpHelper.close();
         super.onDestroy();
     }
+
+
 }

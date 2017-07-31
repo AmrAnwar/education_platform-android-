@@ -2,6 +2,8 @@ package com.mrerror.tm.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.UnitsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -22,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.mrerror.tm.connection.NetworkConnection.url;
+
 public class UnitFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData {
     ArrayList<Unit> unitsArrayList;
     // TODO: Customize parameter argument names
@@ -31,6 +39,15 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     private UnitsRecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener mListener;
     private ProgressDialog progressdialog;
+    LoadMoreData loadMoreData;
+    String nextURl="";
+    int scrolFalg=0;
+    String noInterNet="No_InterNet";
+    String no_list="List_is_empty";
+    TextView blankText;
+    ProgressBar mProgressBar;
+
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,6 +72,8 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
         if (getArguments() != null) {
             mLink = getArguments().getString(ARG_TYPE);
+            scrolFalg=0;
+            unitsArrayList = new ArrayList<>();
         }
     }
 
@@ -62,13 +81,41 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
+        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        loadMoreData=new LoadMoreData() {
+            @Override
+            public void loadMorData(String url) {
 
+                getData(url);
+                Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
+            }
+        };
         // Set the adapter
         if (view instanceof RecyclerView) {
             unitsArrayList = new ArrayList<>();
             Context context = view.getContext();
+         final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
             RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                recyclerView.setLayoutManager(linearLayoutManager);
+
+
+            recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    int x = linearLayoutManager.findLastVisibleItemPosition();
+
+                    if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
+                        {
+                            loadMoreData.loadMorData(nextURl);
+                            Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
+
+                            scrolFalg = x;
+                        }
+                    }
+                }
+            });
+
             adapter =new UnitsRecyclerViewAdapter(unitsArrayList,mListener);
             getData(mLink);
             recyclerView.setAdapter(adapter);
@@ -77,15 +124,32 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     }
 
     private void getData(String link) {
-        NetworkConnection.url = link;
-        new NetworkConnection(this).getDataAsJsonObject(getContext());
+        if(isOnline()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
+
+            url = link;
+            new NetworkConnection(this).getDataAsJsonObject(getContext());
+        }else {
+            mProgressBar.setVisibility(View.GONE);
+            blankText.setText(noInterNet);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
     public void onCompleted(String result) throws JSONException {
 
         JSONObject unitsObj = new JSONObject(result);
-        unitsArrayList = new ArrayList<>();
+        nextURl=unitsObj.getString("next");
+
         JSONArray resultArray = unitsObj.getJSONArray("results");
         for(int i = 0 ; i < resultArray.length();i++) {
             JSONObject obj = resultArray.getJSONObject(i);
@@ -105,6 +169,13 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
             unitsArrayList.add(unit);
         }
         adapter.newData(unitsArrayList);
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
+        if(unitsArrayList.isEmpty()){
+            blankText.setText(no_list);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
     }
     @Override
     public void onAttach(Context context) {

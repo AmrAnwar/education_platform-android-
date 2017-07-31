@@ -1,11 +1,13 @@
 package com.mrerror.tm.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mrerror.tm.R;
@@ -51,11 +55,13 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     CheckBox cExam;
     CheckBox cSheet;
     CheckBox cOther;
+    CheckBox cWait;
     String nextURl = "";
     String url = "http://educationplatform.pythonanywhere.com/api/answers/";
     String urlExamOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=b";
     String urlSheetOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=a";
     String urlOtherOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=c";
+    String urlWait="http://educationplatform.pythonanywhere.com/api/answers/?type=wait";
     String urlNextFilter = "";
 
     int countAll = 0;
@@ -67,7 +73,11 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     ArrayList<ModelAnswer> examAndsheets;
     ArrayList<ModelAnswer> examAndOther;
     ArrayList<ModelAnswer> sheetAndOther;
-
+    ProgressBar progressBar;
+    String noInterNed="No InterNet";
+    String no_list="List_is_empty";
+     TextView blankText;
+    SharedPreferences sp;
 
     @Override
     public void onAttach(Context context) {
@@ -179,22 +189,39 @@ public boolean isOnline() {
         View rootView = inflater.inflate(R.layout.fragment_modelanswer_with_checbox, container, false);
 
          swipeRefreshLayout= (SwipeRefreshLayout) rootView.findViewById(R.id.refresher);
+        blankText= (TextView) rootView.findViewById(R.id.blanktextview);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-              if(isOnline()) { reFresh();}else {
+              if(isOnline())
+              {   blankText.setVisibility(View.GONE);
+                  progressBar.setVisibility(View.GONE);
+
+                  reFresh();
+               }
+              else {
+                  if(arryWithOutNetAll.isEmpty()){blankText.setVisibility(View.VISIBLE);
+                  blankText.setText(noInterNed);}
                   Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
                   swipeRefreshLayout.setRefreshing(false);
               }
             }
         });
+        progressBar= (ProgressBar) rootView.findViewById(R.id.progressbar);
 
         cExam = (CheckBox) rootView.findViewById(R.id.exams);
         cSheet = (CheckBox) rootView.findViewById(R.id.sheet);
         cOther = (CheckBox) rootView.findViewById(R.id.other);
+        cWait = (CheckBox) rootView.findViewById(R.id.wait);
         cExam.setOnClickListener(check);
         cSheet.setOnClickListener(check);
         cOther.setOnClickListener(check);
+        cWait.setOnClickListener(check);
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if(isStuff()){
+            cWait.setVisibility(View.VISIBLE);
+        }else {cWait.setVisibility(View.GONE);}
         loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
@@ -233,7 +260,16 @@ public boolean isOnline() {
 
         return rootView;
     }
+private  Boolean isStuff(){
 
+    String group=sp.getString("group","normal");
+
+    if(group.equals("normal"))
+    {return false;}
+    else {
+        System.out.println(group);
+        return true;}
+}
 
     View.OnClickListener check = new View.OnClickListener() {
         @Override
@@ -245,18 +281,15 @@ public boolean isOnline() {
                 urlNextFilter = "";
                 upDateUi(examAndsheets);
             } else if (cExam.isChecked() && cOther.isChecked()) {
-
                 urlNextFilter = "";
                 upDateUi(examAndOther);
             } else if (cSheet.isChecked() && cOther.isChecked()) {
                 urlNextFilter = "";
                 upDateUi(sheetAndOther);
             } else if (cExam.isChecked()) {
-
                 if (arryWithOutNetAll.size() < countAll) {
                     getData(urlExamOnly);
-                    scrolFalg = 0;
-                }
+                    scrolFalg = 0;}
                 upDateUi(exams);
             } else if (cSheet.isChecked()) {
                 if (arryWithOutNetAll.size() < countAll) {
@@ -271,6 +304,9 @@ public boolean isOnline() {
                 }
                 upDateUi(others);
 
+            }else if(cWait.isChecked()){
+           getData(urlWait);
+                scrolFalg=0;
             } else {
                 upDateUi(arryWithOutNetAll);
             }
@@ -286,8 +322,17 @@ public boolean isOnline() {
     }
 
     private void getData(String url) {
+        if(isOnline())
+        {
+            progressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
         NetworkConnection.url = url;
         new NetworkConnection(this).getDataAsJsonObject(getContext());
+        }else {progressBar.setVisibility(View.GONE);
+            blankText.setVisibility(View.INVISIBLE);
+            if(arryWithOutNetAll.isEmpty()){
+                blankText.setVisibility(View.VISIBLE);
+                blankText.setText(noInterNed);}}
     }
 
     @Override
@@ -301,6 +346,7 @@ public boolean isOnline() {
     }
 
     private void reFresh(){
+        progressBar.setVisibility(View.GONE);
         exams=null;
         sheets=null;
         others=null;
@@ -317,14 +363,20 @@ public boolean isOnline() {
             getData(urlSheetOnly);
         }else if(cOther.isChecked() && !cSheet.isChecked() && !cExam.isChecked()){
             getData(urlOtherOnly);
-        }else {
+        }
+        else {
         getData(url);
+
     }
+     if(cWait.isChecked()){
+            getData(urlWait);
+        }
 
     }
 
     @Override
     public void onCompleted(String result) throws JSONException {
+
 
         JSONObject newsObj = new JSONObject(result);
         swipeRefreshLayout.setRefreshing(false);
@@ -352,12 +404,9 @@ public boolean isOnline() {
             if (itemInDataBase.keySet().contains(id) && itemInDataBase.get(id).getDwonload()) {
 
                 continue;
-            } else if (itemInDataBase.keySet().contains(id)) {
-
-
-                continue;
-
-            } else {
+            }
+            else if (itemInDataBase.keySet().contains(id)) {continue;}
+            else {
                 refrence.setId(id);
                 refrence.setTitle(obj.getString("title"));
                 refrence.setFileUrl(obj.getString("file"));
@@ -421,7 +470,11 @@ upDateUi(exams);
         } else {
           upDateUi(arryWithOutNetAll);
         }
-
+progressBar.setVisibility(View.GONE);
+        if(arryWithOutNetAll.isEmpty()){
+            blankText.setVisibility(View.VISIBLE);
+            blankText.setText(no_list);
+        }
 
     }
 

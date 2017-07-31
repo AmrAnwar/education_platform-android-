@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -15,8 +17,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.MyNewsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -46,7 +51,10 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     int scrolFalg=0;
     String nextURl="";
     String url;
-
+       ProgressBar mProgressBar;
+    String noInterNet="No_InterNet";
+      String no_list="List_is_empty";
+      TextView blankText;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -57,6 +65,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static NewsFragment newInstance(String type) {
+
         NewsFragment fragment = new NewsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
@@ -70,13 +79,12 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
 
         if (getArguments() != null) {
             mType = getArguments().getString(ARG_TYPE);
+            newsArrayList = new ArrayList<>();
+            scrolFalg = 0;
 
-scrolFalg=0;
         }
-        newsArrayList = new ArrayList<>();
-
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,7 +99,8 @@ scrolFalg=0;
         };
         url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-
+         mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+         blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -124,11 +133,25 @@ scrolFalg=0;
     }
 
     private void getData(String url) {
+if(isOnline()) {
+    mProgressBar.setVisibility(View.VISIBLE);
+    blankText.setVisibility(View.GONE);
 
-        NetworkConnection.url = url;
-        new NetworkConnection(this).getDataAsJsonObject(getContext());
+    NetworkConnection.url = url;
+    new NetworkConnection(this).getDataAsJsonObject(getContext());
+}else {
+    mProgressBar.setVisibility(View.GONE);
+    blankText.setText(noInterNet);
+    blankText.setVisibility(View.VISIBLE);
+
+}
     }
-
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject newsObj = new JSONObject(result);
@@ -144,6 +167,13 @@ scrolFalg=0;
             newsArrayList.add(news);
         }
         adapter.newData(newsArrayList);
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
+        if(newsArrayList.isEmpty()){
+            blankText.setText(no_list);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override

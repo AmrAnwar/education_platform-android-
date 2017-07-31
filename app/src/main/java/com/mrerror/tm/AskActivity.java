@@ -84,16 +84,16 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
             @Override
             public void onClick(View v) {
                 boolean canBeSent = false;
-                    if (question.getText().toString().length() > 7 ) {
+                if (question.getText().toString().length() > 7 ) {
+                    canBeSent = true;
+                }else{
+                    if(AudioSavePathInDevice!=null||mSelected!=null){
                         canBeSent = true;
                     }else{
-                        if(AudioSavePathInDevice!=null||mSelected!=null){
-                            canBeSent = true;
-                        }else{
-                            Toast.makeText(AskActivity.this, "check your question! text must be more than 7 characters or include one media atleast", Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(AskActivity.this, "check your question! text must be more than 7 characters or include one media atleast", Toast.LENGTH_SHORT).show();
                     }
-                 if(canBeSent) {
+                }
+                if(canBeSent) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -268,14 +268,14 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
         });
     }
 
-//Recorder
-public void MediaRecorderReady(){
-    mediaRecorder=new MediaRecorder();
-    mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-    mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-    mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-    mediaRecorder.setOutputFile(AudioSavePathInDevice);
-}
+    //Recorder
+    public void MediaRecorderReady(){
+        mediaRecorder=new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+    }
 
     public String CreateRandomAudioFileName(int string){
         StringBuilder stringBuilder = new StringBuilder( string );
@@ -369,4 +369,3 @@ public void MediaRecorderReady(){
         selected_img.setImageResource(R.drawable.ic_close);
     }
 }
-

@@ -46,6 +46,10 @@ import java.util.Random;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+//import org.apache.http.entity.mime.MultipartEntity;
+//import org.apache.http.entity.mime.content.FileBody;
+//import org.apache.http.entity.mime.content.StringBody;
+
 public class ReplyForStaffActivity extends AppCompatActivity implements IPickResult {
 
     private EditText reply;
@@ -138,7 +142,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                             }
                         }
                     }).start();
-                    String url = questionForStaff.getLinkToEdit();
+//                    String url = questionForStaff.getLinkToEdit();
 //                    new NetworkConnection(ReplyForStaffActivity.this).putData(ReplyForStaffActivity.this,url,
 //                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
                 }
@@ -389,4 +393,5 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                 playing = false;
         }
     }
+
 }

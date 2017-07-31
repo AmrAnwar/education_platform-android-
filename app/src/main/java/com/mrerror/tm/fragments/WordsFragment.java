@@ -1,6 +1,8 @@
 package com.mrerror.tm.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.WordsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -27,6 +32,10 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     private String mWordsUrl = null;
     private ArrayList<Word> mWordsList = null;
     private WordsRecyclerViewAdapter adapter;
+    String noInterNet="No_InterNet";
+    String no_list="List_is_empty";
+    TextView blankText;
+    ProgressBar mProgressBar;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,7 +67,8 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-
+        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -73,11 +83,26 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     }
 
     private void getData() {
+        if(isOnline()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
 
-        NetworkConnection.url = mWordsUrl;
-        new NetworkConnection(this).getDataAsJsonObject(getContext());
+            NetworkConnection.url = mWordsUrl;
+            new NetworkConnection(this).getDataAsJsonObject(getContext());
+        }else {
+            mProgressBar.setVisibility(View.GONE);
+            blankText.setText(noInterNet);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
+
     }
-
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject unitsObj = new JSONObject(result);
@@ -90,5 +115,12 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
             mWordsList.add(word);
         }
         adapter.notifyDataSetChanged();
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
+        if(mWordsList.isEmpty()){
+            blankText.setText(no_list);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
     }
 }
