@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,7 +54,6 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +76,8 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             mWordsList = new ArrayList<>();
             adapter =new WordsRecyclerViewAdapter(mWordsList);
+            FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+            fab.setVisibility(View.GONE);
             getData();
             recyclerView.setAdapter(adapter);
         }
@@ -122,5 +124,12 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
             blankText.setVisibility(View.VISIBLE);
 
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
     }
 }

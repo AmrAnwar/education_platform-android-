@@ -1,4 +1,4 @@
-package com.mrerror.tm;
+package com.mrerror.tm.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mrerror.tm.MytestpartRecyclerViewAdapter;
+import com.mrerror.tm.R;
 import com.mrerror.tm.models.Test;
 
 import java.util.ArrayList;

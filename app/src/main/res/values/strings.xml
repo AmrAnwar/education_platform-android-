@@ -4,20 +4,19 @@
     <string name="title_words">Words</string>
     <string name="title_answer">Model Answers</string>
     <string name="title_inbox">Inbox</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_ask">AskActivity</string>
+    <string name="title_activity_ask">Ask</string>
+    <string name="title_activity_exam">Exam</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_inbox">Inbox</string>
-    <string name="title_activity_reply">ReplyActivity</string>
+    <string name="title_activity_reply">Reply</string>
     <string name="title_activity_reply_for_staff">Reply to questions</string>
-    <string name="title_activity_exam">ExamActivity</string>
     <string name="title_activity_ay">ay</string>
     <string name="title_activity_login">Sign in</string>
 

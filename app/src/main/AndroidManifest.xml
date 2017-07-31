@@ -63,7 +63,9 @@
                 android:resource="@xml/picker_provider_paths" />
         </provider>
 
-        <activity android:name=".TestQusetionActivity"></activity>
+        <activity android:name=".ExamActivity"
+            android:label="@string/title_activity_exam"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
     </application>
 
 </manifest>

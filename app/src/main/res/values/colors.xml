@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#844D9E</color>
-    <color name="colorPrimaryDark">#4a1663</color>
-    <color name="primary_darker">#2d0a3e</color>
-    <color name="colorAccent">#f9b03a</color>
+    <color name="colorPrimary">#d72127</color>
+    <color name="colorPrimaryDark">#a71015</color>
+    <color name="primary_darker">#780508</color>
+    <color name="colorAccent">#2793e8</color>
     <color name="white">#fff</color>
     <color name="iron">#dadada</color>
     <color name="sheet">#d9cbd9</color>

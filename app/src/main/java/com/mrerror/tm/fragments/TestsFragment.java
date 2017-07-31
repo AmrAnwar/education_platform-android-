@@ -71,6 +71,7 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             mTestsList = new ArrayList<>();
             mTestsTitlesList = new ArrayList<>();
+
             adapter =new TestsRecyclerViewAdapter(mTestsTitlesList,mTestsList);
             getData();
             recyclerView.setAdapter(adapter);

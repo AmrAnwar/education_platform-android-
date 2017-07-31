@@ -6,17 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mrerror.tm.dummy.DummyContent.DummyItem;
 import com.mrerror.tm.models.Test;
-import com.mrerror.tm.testpartFragment.OnListFragmentInteractionListener;
+import com.mrerror.tm.fragments.testpartFragment.OnListFragmentInteractionListener;
 
 import java.util.ArrayList;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MytestpartRecyclerViewAdapter extends RecyclerView.Adapter<MytestpartRecyclerViewAdapter.ViewHolder> {
 
     private final ArrayList<String> mValues;
