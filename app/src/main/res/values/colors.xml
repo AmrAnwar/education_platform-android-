@@ -8,4 +8,7 @@
     <color name="iron">#dadada</color>
     <color name="sheet">#d9cbd9</color>
     <color name="exam">#ee7c3e83</color>
+    <color name="black">#000</color>
+    <color name="true_text">#0f0</color>
+    <color name="false_text">#f00</color>
 </resources>

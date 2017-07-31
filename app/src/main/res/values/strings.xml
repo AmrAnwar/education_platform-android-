@@ -17,4 +17,13 @@
     <string name="title_activity_inbox">Inbox</string>
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_reply_for_staff">Reply to questions</string>
+    <string name="title_activity_exam">ExamActivity</string>
+    <string name="title_activity_ay">ay</string>
+    <string name="title_activity_login">Sign in</string>
+
+
+    <string name="hint_answer">Your answer</string>
+
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
 </resources>
