@@ -63,11 +63,12 @@ android:layout_height="match_parent">
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/bottom_nav"
         app:itemTextColor="@drawable/bottom_nav"
+        android:background="@android:color/white"
         app:menu="@menu/navigation"
+        app:elevation="8dp"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         />
 

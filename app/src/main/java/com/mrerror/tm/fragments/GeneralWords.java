@@ -76,7 +76,7 @@ public class GeneralWords extends Fragment {
                 case 1:
 
                 default:
-                    return NewsFragment.newInstance("a");
+                    return TestsFragment.newInstance(mPart.getTestUrl());
             }
         }
 

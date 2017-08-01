@@ -1,6 +1,7 @@
 package com.mrerror.tm.fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -55,6 +56,8 @@ public class GeneralNews extends Fragment {
         View v = inflater.inflate(R.layout.fragment_general_news, container, false);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
+        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
