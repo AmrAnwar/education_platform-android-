@@ -158,6 +158,18 @@ public class dialogFragment extends Fragment {
     public void next(View view) {
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
+        answer3True.setVisibility(View.GONE);
+        answer3False.setVisibility(View.GONE);
+        answer2True.setVisibility(View.GONE);
+        answer2False.setVisibility(View.GONE);
+        answerTrue.setVisibility(View.GONE);
+        answerFalse.setVisibility(View.GONE);
+        answer1ET.setEnabled(true);
+        answer2ET.setEnabled(true);
+        answer3ET.setEnabled(true);
+        trueAnswer = true;
+        submit.setVisibility(View.GONE);
+        next.setVisibility(View.VISIBLE);
         if((questionsCounter+1)<testDialogsArrayList.size()) {
             ++questionsCounter;
             setCompleteData();

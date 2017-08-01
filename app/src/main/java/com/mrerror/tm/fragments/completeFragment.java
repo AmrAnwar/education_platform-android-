@@ -121,6 +121,9 @@ public class completeFragment extends Fragment {
     public void next(View view) {
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
+        answerTrue.setVisibility(View.GONE);
+        answerFalse.setVisibility(View.GONE);
+        answerET.setEnabled(true);
         if((questionsCounter+1)<testCompleteArrayList.size()) {
             ++questionsCounter;
             setCompleteData();

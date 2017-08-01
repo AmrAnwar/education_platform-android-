@@ -139,6 +139,15 @@ public class mistakeFragment extends Fragment {
     }
 
     public void next(View view) {
+        answer1ET.setEnabled(true);
+        answer2ET.setEnabled(true);
+        answer3ET.setEnabled(true);
+        answer2True.setVisibility(View.GONE);
+        answer2False.setVisibility(View.GONE);
+        trueAnswer = true;
+        answerTrue.setVisibility(View.GONE);
+        answerFalse.setVisibility(View.GONE);
+
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
         if((questionsCounter+1)<testMistakeArrayList.size()) {
