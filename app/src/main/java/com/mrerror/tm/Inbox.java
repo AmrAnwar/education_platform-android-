@@ -8,10 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.mrerror.tm.adapter.InboxForStaffRecyclerViewAdapter;
 import com.mrerror.tm.adapter.InboxRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
+import com.mrerror.tm.fragments.LoadMoreData;
 import com.mrerror.tm.models.Question;
 import com.mrerror.tm.models.QuestionForStaff;
 
@@ -27,19 +30,48 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
 
     SharedPreferences sp;
     private RecyclerView recyclerView;
-
+    String nextURl="";
+    LoadMoreData loadMoreData;
+    int scrolFalg=0;
+    String urlForStuff="http://educationplatform.pythonanywhere.com/api/asks/";
+    InboxForStaffRecyclerViewAdapter adapter;
+    ArrayList<QuestionForStaff> questionsForStuff;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+        scrolFalg = 0;
+        loadMoreData=new LoadMoreData() {
+            @Override
+            public void loadMorData(String url) {
+               urlForStuff=nextURl;
+                getData(sp.getString("group",""));
+            }
+        };
+        questionsForStuff = new ArrayList<>();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+       final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                int x = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
+                    {
+                        loadMoreData.loadMorData(nextURl);
+                        Toast.makeText(Inbox.this, "loading", Toast.LENGTH_SHORT).show();
+
+                        scrolFalg = x;
+                    }
+                }
+            }
+        });
         getData(sp.getString("group","normal"));
     }
 
@@ -65,23 +97,28 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
             }).getDataAsJsonArray(this);
 
         }else{
-            url = "http://educationplatform.pythonanywhere.com/api/asks/";
+            url = urlForStuff;
+
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
                     JSONObject jsonObject = new JSONObject(result);
+                    nextURl= jsonObject.getString("next");
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
-                    ArrayList<QuestionForStaff> questions = new ArrayList<>();
+
                     for(int i = 0 ; i < jsonArray.length();i++){
                         JSONObject questionObj = jsonArray.getJSONObject(i);
                         QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
                                 null,questionObj.getString("edit_url"),questionObj.getString("delete_url")
                                 ,questionObj.getJSONObject("user").getString("username")
                         ,questionObj.getString("image_sender"),questionObj.getString("file_sender"));
-                        questions.add(question);
+                        questionsForStuff.add(question);
                     }
-                    InboxForStaffRecyclerViewAdapter adapter = new InboxForStaffRecyclerViewAdapter(questions);
-                    recyclerView.setAdapter(adapter);
+                    if(adapter==null) {
+                        adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
+                        recyclerView.setAdapter(adapter);
+                    }else{adapter.notifyDataSetChanged();}
+
                 }
             }).getDataAsJsonObject(this);
         }
