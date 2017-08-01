@@ -1,11 +1,18 @@
 package com.mrerror.tm;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +24,7 @@ import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
+import com.mrerror.tm.models.ModelAnswer;
 
 import java.io.File;
 import java.net.URI;
@@ -24,18 +32,22 @@ import java.net.URI;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeListener {
-    ModelAnswerDbHelper dbHelper;
 
     ImageView imageView;
     PDFView pdfView;
-    PhotoViewAttacher ph;
     SQLiteDatabase db;
     ImageButton go;
+    PhotoViewAttacher ph;
     EditText eGoToPage;
     int currPage;
     LinearLayout mGoToPageLayout;
+    ModelAnswer mModelAnswer;
+
+    DownloadManager downloadManager;
+    long reference;
+    ModelAnswerDbHelper dbHelper;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_pdfactivity);
         dbHelper= new ModelAnswerDbHelper(this);
@@ -43,14 +55,12 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         go= (ImageButton) findViewById(R.id.gotopage);
         eGoToPage=(EditText)findViewById(R.id.edit_for_page_number);
         mGoToPageLayout= (LinearLayout) findViewById(R.id.goPage);
-
         eGoToPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eGoToPage.setCursorVisible(true);
             }
         });
-
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,41 +80,78 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         pdfView = (PDFView) findViewById(R.id.pdfView);
 
         Intent m=getIntent();
-       String filePath= m.getStringExtra("file_path");
-        String ext=m.getStringExtra("ext");
-        String location=m.getStringExtra("file_loc");
-        File file=new File(URI.create(location).getPath());
+         mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
+        show(mModelAnswer);
 
-        if(!file.exists()){
+        //download section
 
-            deleteFromDataBase(filePath);
-        }
-        else {
-            if (ext.equals("pdf")) {
-                imageView.setVisibility(View.GONE);
-                mGoToPageLayout.setVisibility(View.VISIBLE);
-                pdfView.setVisibility(View.VISIBLE);
-                pdfView.fromUri(Uri.parse(filePath))
-                        .onPageChange(this)
-                        .load();
 
-            } else {
-                pdfView.setVisibility(View.GONE);
-                mGoToPageLayout.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setImageURI(Uri.parse(filePath));
-//                if (imageView.getDrawable() != null) {
-//
-//                    ph = new PhotoViewAttacher(imageView);
-//                } else {
-//                    deleteFromDataBase(filePath);
-//                }
+        BroadcastReceiver receiver =new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action=intent.getAction();
+                if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
+                {
+                    DownloadManager.Query req_query= new DownloadManager.Query();
+                    req_query.setFilterById(reference);
+                    Cursor c= downloadManager.query(req_query);
+
+                    if(c.moveToFirst()){
+                        int coulmIndex=c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                        if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
+                            String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+
+                            String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            System.out.println(filelocation);
+                            String extision= getMimeType(filelocation);
+                            mModelAnswer.setFilePath(uriString);
+                            mModelAnswer.setFileLocal(filelocation);
+                            mModelAnswer.setFileExtention(extision);
+
+                            saveToDataBase(uriString,mModelAnswer);
+                            show(mModelAnswer);
+
+                        }
+                    }
+
+                }
             }
+        };
 
-        }
+      registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
         dbHelper.close();
+    }
+
+
+    private  void show(ModelAnswer item){
+        if(mModelAnswer.getDwonload()) {
+
+            File file = new File(URI.create(mModelAnswer.getFileLocal()).getPath());
+
+            if (!file.exists()) {
+
+                deleteFromDataBase(mModelAnswer.getFilePath());
+            } else {
+                if (mModelAnswer.getFileExtention().equals("pdf")) {
+                    imageView.setVisibility(View.GONE);
+                    mGoToPageLayout.setVisibility(View.VISIBLE);
+                    pdfView.setVisibility(View.VISIBLE);
+                    pdfView.fromUri(Uri.parse(mModelAnswer.getFilePath()))
+                            .onPageChange(this)
+                            .load();
+                } else {
+                    pdfView.setVisibility(View.GONE);
+                    mGoToPageLayout.setVisibility(View.GONE);
+                    imageView.setVisibility(View.VISIBLE);
+                    imageView.setImageURI(Uri.parse(mModelAnswer.getFilePath()));
+                    ph=new PhotoViewAttacher(imageView);
+                }
+
+            }
+        }else {downLoad(mModelAnswer);}
+
     }
     private void deleteFromDataBase(String filepath){
       db = dbHelper.getWritableDatabase();
@@ -128,4 +175,46 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         eGoToPage.setText(String.valueOf(currPage));
         Toast.makeText(this, currPage+"/"+pageCount, Toast.LENGTH_SHORT).show();
     }
+    public  void downLoad(ModelAnswer modelAnswer ){
+
+        downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri= Uri.parse(modelAnswer.getFileUrl());
+        DownloadManager.Request request= new DownloadManager.Request(uri);
+        request.setVisibleInDownloadsUi(true);
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        reference= downloadManager.enqueue(request);
+    }
+    public  void saveToDataBase(String uri,ModelAnswer modelAnswer){
+
+//        Toast.makeText(this, uri+ " "+ modelAnswer.getId(), Toast.LENGTH_SHORT).show();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.TableForModelAnswer._ID, modelAnswer.getId());
+        values.put(Contract.TableForModelAnswer.COLUMN_FILE_PATH,uri.toString());
+        values.put(Contract.TableForModelAnswer.COLUMN_EXTENSION,modelAnswer.getFileExtention());
+        values.put(Contract.TableForModelAnswer.COLUMN_NOTE,modelAnswer.getNote());
+        values.put(Contract.TableForModelAnswer.COLUMN_TITLE,modelAnswer.getTitle());
+        values.put(Contract.TableForModelAnswer.COLUMN_TYPE,modelAnswer.getType());
+        values.put(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION,modelAnswer.getFileLocal());
+
+
+        long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
+//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
+
+        if(check>=0)
+            Toast.makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+
+    }
+    public  String getMimeType(String url) {
+
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+
+        return extension;
+    }
+
+
 }

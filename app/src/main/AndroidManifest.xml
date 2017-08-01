@@ -27,7 +27,6 @@
             android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -63,7 +62,7 @@
                 android:resource="@xml/picker_provider_paths" />
         </provider>
 
-        <activity android:name=".TestQusetionActivity"></activity>
+
     </application>
 
 </manifest>

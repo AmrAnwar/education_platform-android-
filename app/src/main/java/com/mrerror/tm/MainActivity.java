@@ -1,15 +1,8 @@
 package com.mrerror.tm;
 
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -23,12 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
 import com.mrerror.tm.fragments.GeneralNews;
 import com.mrerror.tm.fragments.GeneralWords;
@@ -117,82 +107,12 @@ public  void loadModelAnswerFragment(){
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        //download section
 
-        dpHelper=new ModelAnswerDbHelper(this);
-        BroadcastReceiver receiver =new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action=intent.getAction();
-                if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
-                {
-                    DownloadManager.Query req_query= new DownloadManager.Query();
-                    req_query.setFilterById(reference);
-                    Cursor c= downloadManager.query(req_query);
-
-                    if(c.moveToFirst()){
-
-                        int coulmIndex=c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                        if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
-                            String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                            System.out.println(uriString);
-                            String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                            System.out.println(filelocation);
-                            String extision= getMimeType(filelocation);
-                            mModelAnswer.setFileLocal(filelocation);
-                            mModelAnswer.setFileExtention(extision);
-
-                            saveToDataBase(uriString,mModelAnswer);
-
-                            loadModelAnswerFragment();
-                        }
-                    }
-
-                }
-            }
-        };
-        registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 //SQ
 
     }
 
 
-    public  void downLoad(ModelAnswer modelAnswer ){
-
-        downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri= Uri.parse(modelAnswer.getFileUrl());
-        DownloadManager.Request request= new DownloadManager.Request(uri);
-
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-         reference= downloadManager.enqueue(request);
-
-
-    }
-    public  void saveToDataBase(String uri,ModelAnswer modelAnswer){
-
-//        Toast.makeText(this, uri+ " "+ modelAnswer.getId(), Toast.LENGTH_SHORT).show();
-        SQLiteDatabase db = dpHelper.getWritableDatabase();
-
-
-        ContentValues values = new ContentValues();
-        values.put(Contract.TableForModelAnswer._ID, modelAnswer.getId());
-        values.put(Contract.TableForModelAnswer.COLUMN_FILE_PATH,uri.toString());
-        values.put(Contract.TableForModelAnswer.COLUMN_EXTENSION,modelAnswer.getFileExtention());
-        values.put(Contract.TableForModelAnswer.COLUMN_NOTE,modelAnswer.getNote());
-        values.put(Contract.TableForModelAnswer.COLUMN_TITLE,modelAnswer.getTitle());
-        values.put(Contract.TableForModelAnswer.COLUMN_TYPE,modelAnswer.getType());
-        values.put(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION,modelAnswer.getFileLocal());
-
-
-      long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
-//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
-
-        if(check>=0)
-            Toast.makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
-               else
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-
-    }
 
 
     // For unit list
@@ -250,28 +170,15 @@ public  void loadModelAnswerFragment(){
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
 
-        mModelAnswer=item;
-
-     if(!mModelAnswer.getDwonload())
-     {
-         downLoad(item);}
-     else {
-         openInReader(item);
-     }
-
+        openInReader(item);
     }
+
     private  void openInReader(ModelAnswer item){
         Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
-        i.putExtra("file_path",mModelAnswer.getFilePath());
-        i.putExtra("ext",mModelAnswer.getFileExtention());
-        i.putExtra("file_loc",mModelAnswer.getFileLocal());
-        startActivity(i);}
-    public static String getMimeType(String url) {
-
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-
-        return extension;
+        i.putExtra("obj",item);
+        startActivity(i);
     }
+
     protected void onDestroy() {
         dpHelper.close();
         super.onDestroy();
