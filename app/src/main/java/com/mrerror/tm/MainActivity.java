@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
 import com.mrerror.tm.fragments.GeneralNews;
 import com.mrerror.tm.fragments.GeneralWords;
@@ -109,7 +110,16 @@ public  void loadModelAnswerFragment(){
 
 
 //SQ
+        mProgressBar.setVisibility(View.GONE);
+//
 
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        Bundle extras=getIntent().getBundleExtra("where");
+        if(extras !=null ){
+            if(extras.getString("where").equals("modelanswer")){
+                loadModelAnswerFragment();
+            }
+        }
     }
 
 

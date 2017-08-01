@@ -41,7 +41,12 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
         setContentView(R.layout.activity_login);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if(sp.getBoolean("logged",false)){
-            startActivity(new Intent(this,MainActivity.class));
+            Intent mIntent=new Intent(this,MainActivity.class);
+            Bundle bundle=getIntent().getExtras();
+            if(bundle!=null&&bundle.containsKey("where")){
+            mIntent.putExtra("where",bundle);}
+            startActivity(mIntent);
+
             this.finish();
         }
         ButterKnife.inject(this);
