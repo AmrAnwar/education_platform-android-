@@ -31,6 +31,8 @@ import java.net.URI;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+import static android.widget.Toast.makeText;
+
 public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeListener {
 
     ImageView imageView;
@@ -42,10 +44,10 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     int currPage;
     LinearLayout mGoToPageLayout;
     ModelAnswer mModelAnswer;
-
     DownloadManager downloadManager;
     long reference;
     ModelAnswerDbHelper dbHelper;
+    Toast toast;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,8 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                     pdfView.setVisibility(View.VISIBLE);
                     pdfView.fromUri(Uri.parse(mModelAnswer.getFilePath()))
                             .onPageChange(this)
+                            .enableAntialiasing(true)
+                            .spacing(2)
                             .load();
                 } else {
                     pdfView.setVisibility(View.GONE);
@@ -155,7 +159,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     }
     private void deleteFromDataBase(String filepath){
       db = dbHelper.getWritableDatabase();
-        Toast.makeText(this, "file not exist any more download it again ", Toast.LENGTH_SHORT).show();
+        makeText(this, "file not exist any more download it again ", Toast.LENGTH_SHORT).show();
         String selection = Contract.TableForModelAnswer.COLUMN_FILE_PATH + " LIKE ?";
         String[] selectionArgs = { filepath };
         db.delete(Contract.TableForModelAnswer.TABLE_NAME, selection, selectionArgs);
@@ -173,7 +177,13 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         currPage= page;
         currPage++;
         eGoToPage.setText(String.valueOf(currPage));
-        Toast.makeText(this, currPage+"/"+pageCount, Toast.LENGTH_SHORT).show();
+
+        if(toast !=null){
+            toast.cancel();
+        }
+        toast=  Toast.makeText(this, currPage+"/"+pageCount, Toast.LENGTH_SHORT);
+
+        toast.show();
     }
     public  void downLoad(ModelAnswer modelAnswer ){
 
@@ -204,9 +214,9 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
 //        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
 
         if(check>=0)
-            Toast.makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
+            makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            makeText(this, "Error", Toast.LENGTH_SHORT).show();
 
     }
     public  String getMimeType(String url) {
