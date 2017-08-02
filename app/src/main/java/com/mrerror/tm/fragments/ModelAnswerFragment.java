@@ -417,22 +417,22 @@ private  Boolean isStuff(){
                 refrence.setType(obj.getString("type"));
 
                 if (refrence.getType().equals("Exam"))
-                { exams.add(refrence);
-                    examAndOther.add(refrence);
-                    examAndsheets.add(refrence);
+                { exams.add(0,refrence);
+                    examAndOther.add(0,refrence);
+                    examAndsheets.add(0,refrence);
                 }
                else if (refrence.getType().equals("Sheet"))
-                {sheets.add(refrence);
-                    examAndsheets.add(refrence);
-                    sheetAndOther.add(refrence);
+                {sheets.add(0,refrence);
+                    examAndsheets.add(0,refrence);
+                    sheetAndOther.add(0,refrence);
                 }
               else if (refrence.getType().equals("others"))
-                {  others.add(refrence);
-                    examAndOther.add(refrence);
-                    sheetAndOther.add(refrence);
+                {  others.add(0,refrence);
+                    examAndOther.add(0,refrence);
+                    sheetAndOther.add(0,refrence);
                 }
 
-                arryWithOutNetAll.add(refrence);
+                arryWithOutNetAll.add(0,refrence);
                 itemInDataBase.put(id, refrence);
             }
         }

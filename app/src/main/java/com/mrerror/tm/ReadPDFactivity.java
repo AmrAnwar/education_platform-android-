@@ -120,7 +120,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
             }
         };
 
-      registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+ registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
         dbHelper.close();

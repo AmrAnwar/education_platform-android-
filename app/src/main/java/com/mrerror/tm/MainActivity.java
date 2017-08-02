@@ -1,6 +1,5 @@
 package com.mrerror.tm;
 
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
 import com.mrerror.tm.fragments.GeneralNews;
 import com.mrerror.tm.fragments.GeneralWords;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
@@ -34,14 +32,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
    {
 
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
-
-    DownloadManager downloadManager;
-    long reference;
-    ModelAnswerDbHelper dpHelper;
-    ModelAnswer mModelAnswer;
-        ProgressBar mProgressBar;
+       SharedPreferences sp;
+       SharedPreferences.Editor editor;
+       ProgressBar mProgressBar;
         TextView blankText;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -114,7 +107,7 @@ public  void loadModelAnswerFragment(){
 //
 
         FirebaseMessaging.getInstance().subscribeToTopic("news");
-        Bundle extras=getIntent().getBundleExtra("where");
+        Bundle extras=getIntent().getExtras();
         if(extras !=null ){
             if(extras.getString("where").equals("modelanswer")){
                 loadModelAnswerFragment();
@@ -190,7 +183,7 @@ public  void loadModelAnswerFragment(){
     }
 
     protected void onDestroy() {
-        dpHelper.close();
+
         super.onDestroy();
     }
 

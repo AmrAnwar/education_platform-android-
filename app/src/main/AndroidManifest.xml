@@ -66,15 +66,21 @@
         <activity android:name=".ExamActivity"
             android:label="@string/title_activity_exam"
             android:theme="@style/AppTheme.NoActionBar" ></activity>
+        <service android:name=".fcm.MyServiceForFcm">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".fcm.MyMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+
     </application>
-    <service android:name=".fcm.MyMessageService">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
-        </intent-filter>
-    </service>
-    <service android:name=".fcm.MyServiceForFcm">
-        <intent-filter>
-            <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-        </intent-filter>
-    </service>
+
 </manifest>
