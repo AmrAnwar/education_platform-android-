@@ -1,8 +1,6 @@
 package com.mrerror.tm;
 
-import android.app.DownloadManager;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,7 +40,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
        SharedPreferences.Editor editor;
        ProgressBar mProgressBar;
         TextView blankText;
-       DownloadReciver receiver;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -80,14 +78,7 @@ public  void loadModelAnswerFragment(){
 
 
 
-       @Override
-       protected void onResume() {
-           super.onResume();
 
-            receiver= DownloadReciver.getInctance();
-           if(receiver !=null)
-           registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-       }
 
        @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,19 +190,8 @@ public  void loadModelAnswerFragment(){
             Toast.makeText(this, "Wait ...........", Toast.LENGTH_SHORT).show();
         }
     }
-       @Override
-       protected void onPause() {
-           if(receiver !=null)
-               unregisterReceiver(receiver);
-           super.onPause();
-       }
 
-    protected void onDestroy() {
 
-        super.onDestroy();
-        if(receiver !=null)
-        unregisterReceiver(receiver);
-    }
 
 
 }

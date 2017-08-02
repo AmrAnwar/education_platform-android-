@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
+import com.mrerror.tm.fcm.ServiceForDownLoad;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.models.ModelAnswer;
 
@@ -22,14 +23,25 @@ import com.mrerror.tm.models.ModelAnswer;
 public class DownloadReciver extends BroadcastReceiver {
     ModelAnswerDbHelper dbHelper;
     Context mContext;
-   static ModelAnswer mModelAnswer;
-   static long reference;
-   static DownloadManager downloadManager;
+    static ModelAnswer mModelAnswer;
+    static long reference;
+    static DownloadManager downloadManager;
+    static  DownloadReciver mDownloadReciver;
 
-    DownloadReciver(ModelAnswer modelAnswer,long ref,DownloadManager down){
+    public static void setReciver(ModelAnswer modelAnswer,long ref,DownloadManager down){
         mModelAnswer=modelAnswer;
         reference=ref;
         downloadManager=down;
+    }
+    public static Boolean isNotNull(){
+        if(mModelAnswer==null&&reference==0&&downloadManager==null){
+            return false;
+
+        }else {return true;}
+    }
+
+   private DownloadReciver(){
+
     }
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -55,11 +67,14 @@ public class DownloadReciver extends BroadcastReceiver {
                     mModelAnswer.setFileExtention(extision);
 
                     saveToDataBase(uriString,mModelAnswer);
-                    intent.setClass(mContext,ReadPDFactivity.class);
-                    intent.putExtra("obj",mModelAnswer);
-                    ModelAnswerFragment.shouldResume=true;
-                    context.startActivity(intent);
+                    Intent mIntentService=new Intent(mContext, ServiceForDownLoad.class);
+                    context.stopService(mIntentService);
 
+                  Intent mIntentActivity = new Intent (mContext,ReadPDFactivity.class);
+                    mIntentActivity.setFlags((Intent.FLAG_ACTIVITY_NEW_TASK));
+                    mIntentActivity.putExtra("obj",mModelAnswer);
+                    ModelAnswerFragment.shouldResume=true;
+                    context.startActivity(mIntentActivity);
 
                 }
             }
@@ -99,12 +114,11 @@ public class DownloadReciver extends BroadcastReceiver {
         return extension;
     }
     public static DownloadReciver getInctance(){
-
-        if(mModelAnswer!=null&&downloadManager !=null&&reference!=0){
-            return new DownloadReciver(mModelAnswer,reference,downloadManager);
-
+        if(mDownloadReciver==null){
+            mDownloadReciver=new DownloadReciver();
+            return mDownloadReciver;
         }
-        else {return null;}
+        else {return mDownloadReciver;}
     }
 
     }

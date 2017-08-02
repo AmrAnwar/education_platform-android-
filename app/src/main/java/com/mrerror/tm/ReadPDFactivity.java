@@ -3,7 +3,6 @@ package com.mrerror.tm;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
+import com.mrerror.tm.fcm.ServiceForDownLoad;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.models.ModelAnswer;
 
@@ -82,8 +82,9 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         Intent m=getIntent();
          mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
         show(mModelAnswer);
-        receiver  =new DownloadReciver(mModelAnswer,reference,downloadManager) ;
-        registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        receiver  =DownloadReciver.getInctance();
+        DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
+
         //download section
 
 
@@ -124,7 +125,9 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                ModelAnswerFragment.shouldResume=false;
                checkUri= Uri.parse(mModelAnswer.getFileUrl());
 
-              downLoad(checkUri);
+                downLoad(checkUri);
+               Intent intent=new Intent(ReadPDFactivity.this, ServiceForDownLoad.class);
+               startService(intent);
                Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
                finish();
            }
@@ -170,10 +173,4 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     }
 
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiver);
-    }
 }

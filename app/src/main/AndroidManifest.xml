@@ -79,7 +79,8 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
-
+        <service android:name=".fcm.ServiceForDownLoad"
+            android:exported="false"/>
 
     </application>
 
