@@ -101,6 +101,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
     @Override
     public void onModelAnserClicked(ModelAnswer modelAnswer) {
+
         mOnclick.onItemClickLestiner(modelAnswer);
     }
 
@@ -155,6 +156,7 @@ public boolean isOnline() {
             refrence.setType(type);
             String location=cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION));
             refrence.setFileLocal(location);
+            refrence.setFileUrl("null");
 
             if (refrence.getType().equals("Exam"))
             { exams.add(refrence);

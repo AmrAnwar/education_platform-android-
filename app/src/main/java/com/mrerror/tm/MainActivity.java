@@ -1,7 +1,10 @@
 package com.mrerror.tm;
 
+import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mrerror.tm.fragments.GeneralNews;
@@ -28,6 +32,8 @@ import com.mrerror.tm.models.ModelAnswer;
 import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
 
+import static com.mrerror.tm.ReadPDFactivity.checkUri;
+
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
    {
@@ -36,6 +42,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
        SharedPreferences.Editor editor;
        ProgressBar mProgressBar;
         TextView blankText;
+       DownloadReciver receiver;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -70,7 +77,19 @@ public  void loadModelAnswerFragment(){
     getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
 
 }
-    @Override
+
+
+
+       @Override
+       protected void onResume() {
+           super.onResume();
+
+            receiver= DownloadReciver.getInctance();
+           if(receiver !=null)
+           registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+       }
+
+       @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -172,19 +191,26 @@ public  void loadModelAnswerFragment(){
 
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
-
-        openInReader(item);
+        if(!checkUri.equals(Uri.parse(item.getFileUrl()))) {
+            Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
+            i.putExtra("obj", item);
+            startActivity(i);
+        }else {
+            Toast.makeText(this, "Wait ...........", Toast.LENGTH_SHORT).show();
+        }
     }
-
-    private  void openInReader(ModelAnswer item){
-        Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
-        i.putExtra("obj",item);
-        startActivity(i);
-    }
+       @Override
+       protected void onPause() {
+           if(receiver !=null)
+               unregisterReceiver(receiver);
+           super.onPause();
+       }
 
     protected void onDestroy() {
 
         super.onDestroy();
+        if(receiver !=null)
+        unregisterReceiver(receiver);
     }
 
 
