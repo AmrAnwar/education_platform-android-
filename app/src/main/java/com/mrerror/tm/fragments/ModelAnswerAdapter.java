@@ -75,14 +75,16 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         TextView note;
         TextView download;
         ImageView readOrDownLoad;
+        View mView;
 
         ModelAnswerViewHolder(View view){
             super(view);
+            mView=view;
             title= (TextView) view.findViewById(R.id.title);
             note=(TextView) view.findViewById(R.id.note);
             download=(TextView) view.findViewById(R.id.downlaodbutton);
             readOrDownLoad=(ImageView)view.findViewById(R.id.readOrDwonload);
-            view.setOnClickListener(this);
+            mView.setOnClickListener(this);
 
 
         }
@@ -97,8 +99,7 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         public void onClick(View v) {
 
             ModelAnswer item=mModelAnswers.get(getPosition());
-
-        mModelAnswerClick.onModelAnserClicked(item);
+            mModelAnswerClick.onModelAnserClicked(item);
 
         }
     }

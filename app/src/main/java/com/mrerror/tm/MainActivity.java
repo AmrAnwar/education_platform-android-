@@ -29,8 +29,6 @@ import com.mrerror.tm.models.ModelAnswer;
 import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
 
-import java.util.HashSet;
-
 import static com.mrerror.tm.ReadPDFactivity.checkid;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
@@ -185,12 +183,12 @@ public  void loadModelAnswerFragment(){
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
 
-        if(!checkid.contains(item.getId())) {
+        if(!checkid.keySet().contains(item.getId())) {
             Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
             i.putExtra("obj", item);
             startActivity(i);
         }else {
-            Toast.makeText(this, "Wait ya 7mar ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "please..wait ", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -23,7 +23,7 @@ import com.mrerror.tm.models.ModelAnswer;
 
 import java.io.File;
 import java.net.URI;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -41,19 +41,18 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     LinearLayout mGoToPageLayout;
     ModelAnswer mModelAnswer;
     DownloadManager downloadManager;
-    long reference;
+   long reference;
     ModelAnswerDbHelper dbHelper;
     Toast toast;
 
-    public static HashSet<Integer> checkid=new HashSet<>();
+    public static HashMap<Integer,Long> checkid=new HashMap<>();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_pdfactivity);
         dbHelper= new ModelAnswerDbHelper(this);
-if(checkid==null)
-    checkid=new HashSet<>();
+
         go= (ImageButton) findViewById(R.id.gotopage);
         eGoToPage=(EditText)findViewById(R.id.edit_for_page_number);
         mGoToPageLayout= (LinearLayout) findViewById(R.id.goPage);
@@ -85,9 +84,8 @@ if(checkid==null)
          mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
         show(mModelAnswer);
 
-        DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
 
-        //download section
+
 
 
         dbHelper.close();
@@ -124,10 +122,9 @@ if(checkid==null)
         }
         else {
 
-           if(!checkid.contains(mModelAnswer.getId())) {
+           if(!checkid.keySet().contains(mModelAnswer.getId())) {
                ModelAnswerFragment.shouldResume=false;
-              Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
-               checkid.add(mModelAnswer.getId());
+               Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
                downLoad(checkUri);
                Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
                finish();
@@ -170,7 +167,10 @@ if(checkid==null)
         downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request= new DownloadManager.Request(uri);
         request.setVisibleInDownloadsUi(true);
+
         reference= downloadManager.enqueue(request);
+        DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
+        checkid.put(mModelAnswer.getId(),reference);
     }
 
 

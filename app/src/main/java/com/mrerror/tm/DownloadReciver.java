@@ -64,6 +64,7 @@ public class DownloadReciver extends BroadcastReceiver {
 
                     saveToDataBase(uriString,mModelAnswer);
 
+                    checkid.remove(mModelAnswer.getId());
 
                   Intent mIntentActivity = new Intent (mContext,ReadPDFactivity.class);
                     mIntentActivity.setFlags((Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -75,7 +76,7 @@ public class DownloadReciver extends BroadcastReceiver {
             }
 
         }else {
-            downloadManager.remove();
+            downloadManager.remove(reference);
             checkid.remove(mModelAnswer.getId());
         }
         dbHelper.close(); }
@@ -97,7 +98,7 @@ public class DownloadReciver extends BroadcastReceiver {
 
 
         long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
-//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
+  //    db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
 
         if(check>=0)
             Toast.makeText(mContext, "Done add to your device ", Toast.LENGTH_SHORT).show();
