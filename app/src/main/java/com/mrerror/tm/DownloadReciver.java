@@ -12,9 +12,10 @@ import android.widget.Toast;
 
 import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
-import com.mrerror.tm.fcm.ServiceForDownLoad;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.models.ModelAnswer;
+
+import static com.mrerror.tm.ReadPDFactivity.checkid;
 
 /**
  * Created by kareem on 8/2/2017.
@@ -26,21 +27,16 @@ public class DownloadReciver extends BroadcastReceiver {
     static ModelAnswer mModelAnswer;
     static long reference;
     static DownloadManager downloadManager;
-    static  DownloadReciver mDownloadReciver;
+
 
     public static void setReciver(ModelAnswer modelAnswer,long ref,DownloadManager down){
         mModelAnswer=modelAnswer;
         reference=ref;
         downloadManager=down;
     }
-    public static Boolean isNotNull(){
-        if(mModelAnswer==null&&reference==0&&downloadManager==null){
-            return false;
 
-        }else {return true;}
-    }
 
-   private DownloadReciver(){
+   public DownloadReciver(){
 
     }
     @Override
@@ -67,8 +63,7 @@ public class DownloadReciver extends BroadcastReceiver {
                     mModelAnswer.setFileExtention(extision);
 
                     saveToDataBase(uriString,mModelAnswer);
-                    Intent mIntentService=new Intent(mContext, ServiceForDownLoad.class);
-                    context.stopService(mIntentService);
+
 
                   Intent mIntentActivity = new Intent (mContext,ReadPDFactivity.class);
                     mIntentActivity.setFlags((Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -79,6 +74,9 @@ public class DownloadReciver extends BroadcastReceiver {
                 }
             }
 
+        }else {
+            downloadManager.remove();
+            checkid.remove(mModelAnswer.getId());
         }
         dbHelper.close(); }
 
@@ -113,13 +111,7 @@ public class DownloadReciver extends BroadcastReceiver {
 
         return extension;
     }
-    public static DownloadReciver getInctance(){
-        if(mDownloadReciver==null){
-            mDownloadReciver=new DownloadReciver();
-            return mDownloadReciver;
-        }
-        else {return mDownloadReciver;}
-    }
+
 
     }
 

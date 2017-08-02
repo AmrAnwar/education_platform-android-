@@ -2,7 +2,6 @@ package com.mrerror.tm;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -30,7 +29,9 @@ import com.mrerror.tm.models.ModelAnswer;
 import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
 
-import static com.mrerror.tm.ReadPDFactivity.checkUri;
+import java.util.HashSet;
+
+import static com.mrerror.tm.ReadPDFactivity.checkid;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
@@ -84,6 +85,7 @@ public  void loadModelAnswerFragment(){
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
          mProgressBar= (ProgressBar) findViewById(R.id.progressbar);
@@ -182,12 +184,13 @@ public  void loadModelAnswerFragment(){
 
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
-        if(!checkUri.equals(Uri.parse(item.getFileUrl()))) {
+
+        if(!checkid.contains(item.getId())) {
             Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
             i.putExtra("obj", item);
             startActivity(i);
         }else {
-            Toast.makeText(this, "Wait ...........", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Wait ya 7mar ", Toast.LENGTH_SHORT).show();
         }
     }
 

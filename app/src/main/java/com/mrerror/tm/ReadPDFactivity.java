@@ -18,12 +18,12 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.mrerror.tm.dataBases.Contract;
 import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
-import com.mrerror.tm.fcm.ServiceForDownLoad;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.models.ModelAnswer;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashSet;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -44,14 +44,16 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     long reference;
     ModelAnswerDbHelper dbHelper;
     Toast toast;
-    DownloadReciver receiver;
-    public static Uri checkUri=Uri.EMPTY;
+
+    public static HashSet<Integer> checkid=new HashSet<>();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_pdfactivity);
         dbHelper= new ModelAnswerDbHelper(this);
-
+if(checkid==null)
+    checkid=new HashSet<>();
         go= (ImageButton) findViewById(R.id.gotopage);
         eGoToPage=(EditText)findViewById(R.id.edit_for_page_number);
         mGoToPageLayout= (LinearLayout) findViewById(R.id.goPage);
@@ -82,7 +84,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         Intent m=getIntent();
          mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
         show(mModelAnswer);
-        receiver  =DownloadReciver.getInctance();
+
         DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
 
         //download section
@@ -119,15 +121,14 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                 }
 
             }
-        }else {
+        }
+        else {
 
-           if(!checkUri.equals(Uri.parse(mModelAnswer.getFileUrl()))) {
+           if(!checkid.contains(mModelAnswer.getId())) {
                ModelAnswerFragment.shouldResume=false;
-               checkUri= Uri.parse(mModelAnswer.getFileUrl());
-
-                downLoad(checkUri);
-               Intent intent=new Intent(ReadPDFactivity.this, ServiceForDownLoad.class);
-               startService(intent);
+              Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
+               checkid.add(mModelAnswer.getId());
+               downLoad(checkUri);
                Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
                finish();
            }
@@ -144,7 +145,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         dbHelper.close();
 
         ModelAnswerFragment.shouldResume=true;
-        checkUri=Uri.EMPTY;
+
         finish();
     }
 
