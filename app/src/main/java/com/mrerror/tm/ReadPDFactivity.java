@@ -41,7 +41,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     LinearLayout mGoToPageLayout;
     ModelAnswer mModelAnswer;
     DownloadManager downloadManager;
-   long reference;
+  static long reference;
     ModelAnswerDbHelper dbHelper;
     Toast toast;
 
@@ -167,7 +167,16 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request= new DownloadManager.Request(uri);
         request.setVisibleInDownloadsUi(true);
+if(reference!=0){
 
+for(int m:checkid.keySet()){
+
+    if(checkid.get(m)==reference){
+        downloadManager.remove(checkid.get(m));
+        checkid.remove(m);
+    }
+}
+}
         reference= downloadManager.enqueue(request);
         DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
         checkid.put(mModelAnswer.getId(),reference);

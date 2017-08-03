@@ -104,6 +104,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                             try {
                                 entity.addPart("user", new StringBody(String.valueOf(user_id)));
                                 entity.addPart("question", new StringBody(question.getText().toString()));
+                                entity.addPart("token",new StringBody(sp.getString("token","")));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }

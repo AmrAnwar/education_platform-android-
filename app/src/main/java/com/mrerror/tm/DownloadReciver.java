@@ -72,6 +72,8 @@ public class DownloadReciver extends BroadcastReceiver {
                     ModelAnswerFragment.shouldResume=true;
                     context.startActivity(mIntentActivity);
 
+                    ReadPDFactivity.reference=0;
+
                 }
             }
 

@@ -116,7 +116,9 @@ public  void loadModelAnswerFragment(){
         mProgressBar.setVisibility(View.GONE);
 //
 
+
         FirebaseMessaging.getInstance().subscribeToTopic("news");
+           FirebaseMessaging.getInstance().subscribeToTopic("modelanswer");
         Bundle extras=getIntent().getExtras();
         if(extras !=null ){
             if(extras.getString("where").equals("modelanswer")){
