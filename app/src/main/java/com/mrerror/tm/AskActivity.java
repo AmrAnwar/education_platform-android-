@@ -104,7 +104,6 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                             try {
                                 entity.addPart("user", new StringBody(String.valueOf(user_id)));
                                 entity.addPart("question", new StringBody(question.getText().toString()));
-                                entity.addPart("token",new StringBody(sp.getString("token","")));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -156,6 +155,8 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                     String url = "http://educationplatform.pythonanywhere.com/api/asks/create/";
 //                    new NetworkConnection(AskActivity.this).postData(AskActivity.this, url, new String[]{"user", "question"},
 //                            new String[]{String.valueOf(user_id), question.getText().toString()});
+
+
 
                 }
             }

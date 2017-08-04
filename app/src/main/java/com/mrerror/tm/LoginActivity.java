@@ -161,4 +161,9 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
         progressDialog.dismiss();
         startActivity(new Intent(this,MainActivity.class));
     }
+
+    @Override
+    public void onError(String error) {
+
+    }
 }

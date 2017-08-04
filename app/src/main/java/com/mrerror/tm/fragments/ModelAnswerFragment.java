@@ -351,7 +351,7 @@ private  Boolean isStuff(){
     }
 
     private void reFresh(){
-        progressBar.setVisibility(View.GONE);
+
         exams=null;
         sheets=null;
         others=null;
@@ -371,7 +371,7 @@ private  Boolean isStuff(){
         }
         else {
         getData(url);
-
+            swipeRefreshLayout.setRefreshing(false);
     }
      if(cWait.isChecked()){
             getData(urlWait);
@@ -481,6 +481,13 @@ progressBar.setVisibility(View.GONE);
             blankText.setText(no_list);
         }
 
+    }
+    @Override
+    public void onError(String error) {
+        progressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 

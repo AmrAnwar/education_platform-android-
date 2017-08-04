@@ -56,13 +56,13 @@ public class PartsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter =new PartsRecyclerViewAdapter(mPart,mListener);
             recyclerView.setAdapter(adapter);
-        }
+
         return view;
     }
     @Override

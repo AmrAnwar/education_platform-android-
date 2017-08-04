@@ -94,6 +94,11 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     recyclerView.setAdapter(adapter);
 
                 }
+
+                @Override
+                public void onError(String error) {
+
+                }
             }).getDataAsJsonArray(this);
 
         }else{
@@ -120,6 +125,11 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     }else{adapter.notifyDataSetChanged();}
 
                 }
+
+                @Override
+                public void onError(String error) {
+
+                }
             }).getDataAsJsonObject(this);
         }
         Log.e("urlll",url);
@@ -129,6 +139,12 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     public void onCompleted(String result) throws JSONException {
 
     }
+
+    @Override
+    public void onError(String error) {
+
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

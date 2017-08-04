@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mrerror.tm.Inbox;
 import com.mrerror.tm.R;
@@ -94,6 +95,11 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
                                     }
                                 });
                                 dialog.show();
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
                             }
                         }).deleteData(mContext,mValues.get(getAdapterPosition()).getLinkToDelete());
                     }

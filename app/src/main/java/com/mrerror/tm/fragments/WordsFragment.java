@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.mrerror.tm.connection.NetworkConnection.url;
+
 public class WordsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData {
     // TODO: Customize parameter argument names
     private static final String ARG_TYPE = "type";
@@ -37,6 +41,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     String no_list="List_is_empty";
     TextView blankText;
     ProgressBar mProgressBar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,10 +74,29 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
         blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(isOnline())
+                {   blankText.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    mWordsList = new ArrayList<>();
+
+                    getData();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+                else {
+
+                    Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             mWordsList = new ArrayList<>();
             adapter =new WordsRecyclerViewAdapter(mWordsList);
@@ -80,7 +104,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
             fab.setVisibility(View.GONE);
             getData();
             recyclerView.setAdapter(adapter);
-        }
+
         return view;
     }
 
@@ -89,7 +113,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
             mProgressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
 
-            NetworkConnection.url = mWordsUrl;
+            url = mWordsUrl;
             new NetworkConnection(this).getDataAsJsonObject(getContext());
         }else {
             mProgressBar.setVisibility(View.GONE);
@@ -108,6 +132,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject unitsObj = new JSONObject(result);
+        mSwipeRefreshLayout.setRefreshing(false);
         if(mWordsList.size()>0)
             mWordsList = new ArrayList<>();
         JSONArray wordsJsonArray = unitsObj.getJSONArray("words");
@@ -124,6 +149,14 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
             blankText.setVisibility(View.VISIBLE);
 
         }
+    }
+
+    @Override
+    public void onError(String error) {
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

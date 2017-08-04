@@ -116,12 +116,22 @@ public  void loadModelAnswerFragment(){
         mProgressBar.setVisibility(View.GONE);
 //
 
+           //Notifigation Handel
+
+           String group=sp.getString("group","normal");
+           if(group.equals("normal")){
+               FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
+
+           }else {
+               FirebaseMessaging.getInstance().subscribeToTopic("new_question");
+
+           }
 
         FirebaseMessaging.getInstance().subscribeToTopic("news");
-           FirebaseMessaging.getInstance().subscribeToTopic("modelanswer");
+           FirebaseMessaging.getInstance().subscribeToTopic("answers");
         Bundle extras=getIntent().getExtras();
         if(extras !=null ){
-            if(extras.getString("where").equals("modelanswer")){
+            if(extras.getString("where").equals("answers")){
                 loadModelAnswerFragment();
             }
         }

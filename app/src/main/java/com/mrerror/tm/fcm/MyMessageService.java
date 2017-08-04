@@ -49,12 +49,11 @@ public class MyMessageService extends FirebaseMessagingService {
 
         }else if(mWhere.equals("news")){
              intent = new Intent(this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("where",data.get("where"));
 
-        }else if(mWhere.equals("modelanswer")) {
+        }else if(mWhere.equals("answers")) {
              intent = new Intent(this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             intent.putExtra("where", data.get("where"));
         }
 
@@ -62,9 +61,17 @@ public class MyMessageService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
 
+        String message="";
+        String message_title="";
 
+        if(data.keySet().contains("message_body")){
+            message=data.get("message_body");
+        }else {message="empty content";}
 
-String message=data.get("mes");
+        if(data.keySet().contains("message_title")){
+            message_title =data.get("message_title");
+
+        }else {message_title="TM";}
 
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -72,7 +79,9 @@ String message=data.get("mes");
                 .setSmallIcon(R.drawable.ic_school_black_24px)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
-                .setContentTitle("tm")
+//                .setStyle(new NotificationCompat.BigTextStyle()
+//                        .bigText(message))
+                .setContentTitle(message_title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

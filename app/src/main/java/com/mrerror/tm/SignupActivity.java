@@ -97,8 +97,18 @@ public class SignupActivity extends AppCompatActivity  {
                         editor.commit();
                         startActivity(new Intent(SignupActivity.this,MainActivity.class));
                     }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
                 }).postData(SignupActivity.this,url,new String[]{"email","password"},
                         new String[]{email,password});
+            }
+
+            @Override
+            public void onError(String error) {
+
             }
         }).postData(this,url,new String[]{"username","email","email2","password"}
                 ,new String[]{name,email,email,password});
