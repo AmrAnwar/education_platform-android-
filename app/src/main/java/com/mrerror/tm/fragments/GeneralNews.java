@@ -10,7 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 
 public class GeneralNews extends Fragment {
@@ -25,6 +28,8 @@ public class GeneralNews extends Fragment {
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    ProgressBar mProgressBar;
+    TextView blankText;
 
     public GeneralNews() {
         // Required empty public constructor
@@ -55,6 +60,11 @@ public class GeneralNews extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_general_news, container, false);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+
+        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
 
         FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
@@ -81,9 +91,17 @@ public class GeneralNews extends Fragment {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 1:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
                     return NewsFragment.newInstance("b");
+
                 case 0:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
+                    return NewsFragment.newInstance("a");
                 default:
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
                     return NewsFragment.newInstance("a");
             }
         }

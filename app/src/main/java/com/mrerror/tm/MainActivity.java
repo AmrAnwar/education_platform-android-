@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
    {
 
-       SharedPreferences sp;
-       SharedPreferences.Editor editor;
-       ProgressBar mProgressBar;
+        SharedPreferences sp;
+        SharedPreferences.Editor editor;
+        ProgressBar mProgressBar;
         TextView blankText;
 
 
@@ -88,6 +88,8 @@ public  void loadModelAnswerFragment(){
         setSupportActionBar(toolbar);
          mProgressBar= (ProgressBar) findViewById(R.id.progressbar);
          blankText=(TextView) findViewById(R.id.no_list_net);
+           mProgressBar.setVisibility(View.GONE);
+           blankText.setVisibility(View.GONE);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -113,7 +115,7 @@ public  void loadModelAnswerFragment(){
 
 
 //SQ
-        mProgressBar.setVisibility(View.GONE);
+
 //
 
            //Notifigation Handel
@@ -133,6 +135,8 @@ public  void loadModelAnswerFragment(){
         if(extras !=null ){
             if(extras.getString("where").equals("answers")){
                 loadModelAnswerFragment();
+            }else if(extras.getString("where").equals("news")){
+                getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
             }
         }
     }
