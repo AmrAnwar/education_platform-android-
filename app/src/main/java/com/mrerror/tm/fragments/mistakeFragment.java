@@ -32,10 +32,10 @@ public class mistakeFragment extends Fragment {
     Button submit,next;
     //for choices
     TextView questionTV;
-    EditText answer1ET,answer2ET,answer3ET;
+    EditText answer1ET,answer2ET;
     int questionsCounter =0;
     TestMistake mistakeQuestion;
-    ImageView answerTrue,answerFalse,answer2True,answer2False,answer3True,answer3False;
+    ImageView answerTrue,answerFalse,answer2True,answer2False;
     boolean trueAnswer = true;
     private ArrayList<TestMistake> testMistakeArrayList;
 
@@ -132,7 +132,6 @@ public class mistakeFragment extends Fragment {
         if(trueAnswer) {
             answer1ET.setEnabled(false);
             answer2ET.setEnabled(false);
-            answer3ET.setEnabled(false);
             submit.setVisibility(View.GONE);
             next.setVisibility(View.VISIBLE);
         }
@@ -141,7 +140,6 @@ public class mistakeFragment extends Fragment {
     public void next(View view) {
         answer1ET.setEnabled(true);
         answer2ET.setEnabled(true);
-        answer3ET.setEnabled(true);
         answer2True.setVisibility(View.GONE);
         answer2False.setVisibility(View.GONE);
         trueAnswer = true;
