@@ -1,18 +1,13 @@
 package com.mrerror.tm;
 
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +23,7 @@ import com.mrerror.tm.models.ModelAnswer;
 
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -45,9 +41,12 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     LinearLayout mGoToPageLayout;
     ModelAnswer mModelAnswer;
     DownloadManager downloadManager;
-    long reference;
+  static long reference;
     ModelAnswerDbHelper dbHelper;
     Toast toast;
+
+    public static HashMap<Integer,Long> checkid=new HashMap<>();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,42 +84,8 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
          mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
         show(mModelAnswer);
 
-        //download section
 
 
-        BroadcastReceiver receiver =new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action=intent.getAction();
-                if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
-                {
-                    DownloadManager.Query req_query= new DownloadManager.Query();
-                    req_query.setFilterById(reference);
-                    Cursor c= downloadManager.query(req_query);
-
-                    if(c.moveToFirst()){
-                        int coulmIndex=c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                        if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
-                            String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-
-                            String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
-                            System.out.println(filelocation);
-                            String extision= getMimeType(filelocation);
-                            mModelAnswer.setFilePath(uriString);
-                            mModelAnswer.setFileLocal(filelocation);
-                            mModelAnswer.setFileExtention(extision);
-
-                            saveToDataBase(uriString,mModelAnswer);
-                            show(mModelAnswer);
-
-                        }
-                    }
-
-                }
-            }
-        };
-
-      registerReceiver(receiver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
         dbHelper.close();
@@ -154,8 +119,17 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                 }
 
             }
-        }else {downLoad(mModelAnswer);}
+        }
+        else {
 
+           if(!checkid.keySet().contains(mModelAnswer.getId())) {
+               ModelAnswerFragment.shouldResume=false;
+               Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
+               downLoad(checkUri);
+               Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
+               finish();
+           }
+        }
     }
     private void deleteFromDataBase(String filepath){
       db = dbHelper.getWritableDatabase();
@@ -166,7 +140,9 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
 
         db.close();
         dbHelper.close();
+
         ModelAnswerFragment.shouldResume=true;
+
         finish();
     }
 
@@ -185,45 +161,25 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
 
         toast.show();
     }
-    public  void downLoad(ModelAnswer modelAnswer ){
+
+    public  void downLoad(Uri uri ){
 
         downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri= Uri.parse(modelAnswer.getFileUrl());
         DownloadManager.Request request= new DownloadManager.Request(uri);
         request.setVisibleInDownloadsUi(true);
-//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+if(reference!=0){
+
+for(int m:checkid.keySet()){
+
+    if(checkid.get(m)==reference){
+        downloadManager.remove(checkid.get(m));
+        checkid.remove(m);
+    }
+}
+}
         reference= downloadManager.enqueue(request);
-    }
-    public  void saveToDataBase(String uri,ModelAnswer modelAnswer){
-
-//        Toast.makeText(this, uri+ " "+ modelAnswer.getId(), Toast.LENGTH_SHORT).show();
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-
-        ContentValues values = new ContentValues();
-        values.put(Contract.TableForModelAnswer._ID, modelAnswer.getId());
-        values.put(Contract.TableForModelAnswer.COLUMN_FILE_PATH,uri.toString());
-        values.put(Contract.TableForModelAnswer.COLUMN_EXTENSION,modelAnswer.getFileExtention());
-        values.put(Contract.TableForModelAnswer.COLUMN_NOTE,modelAnswer.getNote());
-        values.put(Contract.TableForModelAnswer.COLUMN_TITLE,modelAnswer.getTitle());
-        values.put(Contract.TableForModelAnswer.COLUMN_TYPE,modelAnswer.getType());
-        values.put(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION,modelAnswer.getFileLocal());
-
-
-        long check=  db.insert(Contract.TableForModelAnswer.TABLE_NAME,null,values);
-//        db.delete(Contract.TableForModelAnswer.TABLE_NAME,null,null);
-
-        if(check>=0)
-            makeText(this, "Done add to your device ", Toast.LENGTH_SHORT).show();
-        else
-            makeText(this, "Error", Toast.LENGTH_SHORT).show();
-
-    }
-    public  String getMimeType(String url) {
-
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-
-        return extension;
+        DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
+        checkid.put(mModelAnswer.getId(),reference);
     }
 
 

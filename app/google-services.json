@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "669037934619",
+    "firebase_url": "https://twfiq-english-app.firebaseio.com",
+    "project_id": "twfiq-english-app",
+    "storage_bucket": "twfiq-english-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669037934619:android:563a98e4f8646228",
+        "android_client_info": {
+          "package_name": "com.mrerror.tm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669037934619-30vt04mon4rnj21gle9jm72sfh9igvda.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXNcFHL0vwxa8LdYdQ7gE_HkQ5AvB3meA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

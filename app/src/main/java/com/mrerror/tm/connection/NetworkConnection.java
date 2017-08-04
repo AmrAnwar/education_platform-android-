@@ -60,7 +60,7 @@ public class NetworkConnection {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
-
+                        OnCompleteFetchingData.onError(error.toString());
                     }
                 });
 
@@ -86,6 +86,7 @@ public class NetworkConnection {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
+                        OnCompleteFetchingData.onError(error.toString());
 
                     }
                 });
@@ -98,6 +99,7 @@ public class NetworkConnection {
 
     public interface OnCompleteFetchingData {
         void onCompleted(String result) throws JSONException;
+        void onError(String error) ;
     }
 
     public void postData(final Context context, String webServiceUrl, final String[] queryname, final String[] queryVal) {

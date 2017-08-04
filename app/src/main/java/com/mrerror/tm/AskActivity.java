@@ -156,6 +156,8 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
 //                    new NetworkConnection(AskActivity.this).postData(AskActivity.this, url, new String[]{"user", "question"},
 //                            new String[]{String.valueOf(user_id), question.getText().toString()});
 
+
+
                 }
             }
         });

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,7 +40,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class NewsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData, MyNewsRecyclerViewAdapter.OnListFragmentInteractionListener {
+public class NewsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData,
+        MyNewsRecyclerViewAdapter.OnListFragmentInteractionListener {
     ArrayList<News> newsArrayList;
     // TODO: Customize parameter argument names
     private static final String ARG_TYPE = "type";
@@ -51,11 +53,12 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     int scrolFalg = 0;
     String nextURl = "";
     String url;
-    ProgressBar mProgressBar;
-    String noInterNet = "No_InterNet";
-    String no_list = "List_is_empty";
-    TextView blankText;
 
+       ProgressBar mProgressBar;
+    String noInterNet="No_InterNet";
+      String no_list="List_is_empty";
+      TextView blankText;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -92,24 +95,36 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                              Bundle savedInstanceState) {
         loadMoreData = new LoadMoreData() {
             @Override
-            public void loadMorData(String url) {
-
-                getData(url);
-                Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
-            }
-        };
-        url = "http://educationplatform.pythonanywhere.com/api/news/?type=" + mType;
+            public void loadMorData(String urlNext) {getData(urlNext);}};
+        url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
-        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
-
+         mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+         blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(isOnline())
+                {   blankText.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    newsArrayList=new ArrayList<>();
+                    getData(url);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+                else {
+                    Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
             newsArrayList = new ArrayList<>();
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-            recyclerView.setLayoutManager(linearLayoutManager);
+
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+          final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
+                recyclerView.setLayoutManager(linearLayoutManager);
 
             recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
@@ -129,7 +144,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
             adapter = new MyNewsRecyclerViewAdapter(newsArrayList, this);
             getData(url);
             recyclerView.setAdapter(adapter);
-        }
+
         return view;
     }
 
@@ -158,7 +173,9 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject newsObj = new JSONObject(result);
-        nextURl = newsObj.getString("next");
+
+        mSwipeRefreshLayout.setRefreshing(false);
+        nextURl=newsObj.getString("next");
 
         JSONArray resultArray = newsObj.getJSONArray("results");
         for (int i = 0; i < resultArray.length(); i++) {
@@ -177,6 +194,14 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
             blankText.setVisibility(View.VISIBLE);
 
         }
+    }
+
+    @Override
+    public void onError(String error) {
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

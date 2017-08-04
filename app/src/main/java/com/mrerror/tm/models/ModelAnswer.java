@@ -19,6 +19,16 @@ public class ModelAnswer implements Serializable{
     private Boolean dwonload;
     String fileExtention;
     String fileLocal;
+  private   boolean downloadingNow;
+
+
+    public void setDownloadingNow(boolean downloadingNow) {
+        this.downloadingNow = downloadingNow;
+    }
+
+    public boolean isDownloadingNow() {
+        return downloadingNow;
+    }
 
     public void setFileLocal(String fileLocal) {
         this.fileLocal = fileLocal;

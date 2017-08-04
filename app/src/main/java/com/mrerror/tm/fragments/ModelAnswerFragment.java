@@ -101,6 +101,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
     @Override
     public void onModelAnserClicked(ModelAnswer modelAnswer) {
+
         mOnclick.onItemClickLestiner(modelAnswer);
     }
 
@@ -155,6 +156,7 @@ public boolean isOnline() {
             refrence.setType(type);
             String location=cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION));
             refrence.setFileLocal(location);
+            refrence.setFileUrl("null");
 
             if (refrence.getType().equals("Exam"))
             { exams.add(refrence);
@@ -349,7 +351,7 @@ private  Boolean isStuff(){
     }
 
     private void reFresh(){
-        progressBar.setVisibility(View.GONE);
+
         exams=null;
         sheets=null;
         others=null;
@@ -369,7 +371,7 @@ private  Boolean isStuff(){
         }
         else {
         getData(url);
-
+            swipeRefreshLayout.setRefreshing(false);
     }
      if(cWait.isChecked()){
             getData(urlWait);
@@ -417,22 +419,22 @@ private  Boolean isStuff(){
                 refrence.setType(obj.getString("type"));
 
                 if (refrence.getType().equals("Exam"))
-                { exams.add(refrence);
-                    examAndOther.add(refrence);
-                    examAndsheets.add(refrence);
+                { exams.add(0,refrence);
+                    examAndOther.add(0,refrence);
+                    examAndsheets.add(0,refrence);
                 }
                else if (refrence.getType().equals("Sheet"))
-                {sheets.add(refrence);
-                    examAndsheets.add(refrence);
-                    sheetAndOther.add(refrence);
+                {sheets.add(0,refrence);
+                    examAndsheets.add(0,refrence);
+                    sheetAndOther.add(0,refrence);
                 }
               else if (refrence.getType().equals("others"))
-                {  others.add(refrence);
-                    examAndOther.add(refrence);
-                    sheetAndOther.add(refrence);
+                {  others.add(0,refrence);
+                    examAndOther.add(0,refrence);
+                    sheetAndOther.add(0,refrence);
                 }
 
-                arryWithOutNetAll.add(refrence);
+                arryWithOutNetAll.add(0,refrence);
                 itemInDataBase.put(id, refrence);
             }
         }
@@ -479,6 +481,13 @@ progressBar.setVisibility(View.GONE);
             blankText.setText(no_list);
         }
 
+    }
+    @Override
+    public void onError(String error) {
+        progressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 

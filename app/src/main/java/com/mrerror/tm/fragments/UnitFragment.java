@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     String no_list="List_is_empty";
     TextView blankText;
     ProgressBar mProgressBar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
 
@@ -91,12 +93,29 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
                 Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
             }
         };
+        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(isOnline())
+                {   blankText.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    unitsArrayList = new ArrayList<>();
+                    getData(mLink);
+                }
+                else {
+
+                    Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
             unitsArrayList = new ArrayList<>();
             Context context = view.getContext();
          final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
                 recyclerView.setLayoutManager(linearLayoutManager);
 
 
@@ -119,7 +138,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
             adapter =new UnitsRecyclerViewAdapter(unitsArrayList,mListener);
             getData(mLink);
             recyclerView.setAdapter(adapter);
-        }
+
         return view;
     }
 
@@ -149,6 +168,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
         JSONObject unitsObj = new JSONObject(result);
         nextURl=unitsObj.getString("next");
+        mSwipeRefreshLayout.setRefreshing(false);
 
         JSONArray resultArray = unitsObj.getJSONArray("results");
         for(int i = 0 ; i < resultArray.length();i++) {
@@ -177,6 +197,15 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
         }
     }
+
+    @Override
+    public void onError(String error) {
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -1,6 +1,5 @@
 package com.mrerror.tm;
 
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,8 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.mrerror.tm.dataBases.ModelAnswerDbHelper;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.mrerror.tm.fragments.GeneralNews;
 import com.mrerror.tm.fragments.GeneralWords;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
@@ -29,19 +29,17 @@ import com.mrerror.tm.models.ModelAnswer;
 import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
 
+import static com.mrerror.tm.ReadPDFactivity.checkid;
+
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
 PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
    {
 
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
-
-    DownloadManager downloadManager;
-    long reference;
-    ModelAnswerDbHelper dpHelper;
-    ModelAnswer mModelAnswer;
-        ProgressBar mProgressBar;
+       SharedPreferences sp;
+       SharedPreferences.Editor editor;
+       ProgressBar mProgressBar;
         TextView blankText;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -76,10 +74,16 @@ public  void loadModelAnswerFragment(){
     getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
 
 }
-    @Override
+
+
+
+
+
+       @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
          mProgressBar= (ProgressBar) findViewById(R.id.progressbar);
@@ -109,7 +113,28 @@ public  void loadModelAnswerFragment(){
 
 
 //SQ
+        mProgressBar.setVisibility(View.GONE);
+//
 
+           //Notifigation Handel
+
+           String group=sp.getString("group","normal");
+           if(group.equals("normal")){
+               FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
+
+           }else {
+               FirebaseMessaging.getInstance().subscribeToTopic("new_question");
+
+           }
+
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+           FirebaseMessaging.getInstance().subscribeToTopic("answers");
+        Bundle extras=getIntent().getExtras();
+        if(extras !=null ){
+            if(extras.getString("where").equals("answers")){
+                loadModelAnswerFragment();
+            }
+        }
     }
 
 
@@ -170,19 +195,16 @@ public  void loadModelAnswerFragment(){
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
 
-        openInReader(item);
+        if(!checkid.keySet().contains(item.getId())) {
+            Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
+            i.putExtra("obj", item);
+            startActivity(i);
+        }else {
+            Toast.makeText(this, "please..wait ", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private  void openInReader(ModelAnswer item){
-        Intent i=new Intent(MainActivity.this,ReadPDFactivity.class);
-        i.putExtra("obj",item);
-        startActivity(i);
-    }
 
-    protected void onDestroy() {
-        dpHelper.close();
-        super.onDestroy();
-    }
 
 
 }

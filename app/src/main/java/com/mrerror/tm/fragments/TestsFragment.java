@@ -1,6 +1,8 @@
 package com.mrerror.tm.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 import com.mrerror.tm.adapter.TestsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -24,6 +29,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.mrerror.tm.connection.NetworkConnection.url;
+
 public class TestsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData {
     // TODO: Customize parameter argument names
     private static final String ARG_TYPE = "type";
@@ -32,6 +39,10 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     private ArrayList<Test> mTestsList = null;
     private ArrayList<String> mTestsTitlesList = null;
     private TestsRecyclerViewAdapter adapter;
+    ProgressBar mProgressBar;
+    String noInterNet="No_InterNet";
+    String no_list="List_is_empty";
+    TextView blankText;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,8 +73,9 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_testpart_list, container, false);
+        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -80,9 +92,25 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     }
 
     private void getData() {
+        if(isOnline()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
 
-        NetworkConnection.url = mTestUrl;
-        new NetworkConnection(this).getDataAsJsonObject(getContext());
+            url = mTestUrl;
+            new NetworkConnection(this).getDataAsJsonObject(getContext());
+        }
+        else {
+            mProgressBar.setVisibility(View.GONE);
+            blankText.setText(noInterNet);
+            blankText.setVisibility(View.VISIBLE);
+
+        }
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -140,6 +168,17 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
             mTestsList.add(test);
         }
         adapter.notifyDataSetChanged();
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
+
+
+
+    }
+    @Override
+    public void onError(String error) {
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setText("an error happened ");
+        blankText.setVisibility(View.VISIBLE);
     }
 
 

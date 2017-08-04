@@ -58,7 +58,7 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
     public void onBindViewHolder(ModelAnswerViewHolder holder, int position) {
 
           final ModelAnswer modelAnswer = mModelAnswers.get(position);
-          holder.bind(modelAnswer, modelAnswer.getDwonload());
+          holder.bind(modelAnswer);
 
     }
 
@@ -75,18 +75,20 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         TextView note;
         TextView download;
         ImageView readOrDownLoad;
+        View mView;
 
         ModelAnswerViewHolder(View view){
             super(view);
+            mView=view;
             title= (TextView) view.findViewById(R.id.title);
             note=(TextView) view.findViewById(R.id.note);
             download=(TextView) view.findViewById(R.id.downlaodbutton);
             readOrDownLoad=(ImageView)view.findViewById(R.id.readOrDwonload);
-            view.setOnClickListener(this);
+            mView.setOnClickListener(this);
 
 
         }
-        public  void bind(ModelAnswer modelAnswer,boolean downloadOrNot){
+        public  void bind(ModelAnswer modelAnswer){
             download.setText(modelAnswer.getType());
             readOrDownLoad.setImageResource(R.drawable.ic_import_contacts_black_48px);
             title.setText(modelAnswer.getTitle());
@@ -95,7 +97,9 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         }
         @Override
         public void onClick(View v) {
-        mModelAnswerClick.onModelAnserClicked(mModelAnswers.get(getPosition()));
+
+            ModelAnswer item=mModelAnswers.get(getPosition());
+            mModelAnswerClick.onModelAnserClicked(item);
 
         }
     }
