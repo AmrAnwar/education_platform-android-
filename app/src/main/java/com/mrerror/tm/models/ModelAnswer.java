@@ -2,11 +2,13 @@ package com.mrerror.tm.models;
 
 import com.mrerror.tm.R;
 
+import java.io.Serializable;
+
 /**
  * Created by kareem on 7/24/2017.
  */
 
-public class ModelAnswer {
+public class ModelAnswer implements Serializable{
     private   String title;
     private  String note;
     private String type;

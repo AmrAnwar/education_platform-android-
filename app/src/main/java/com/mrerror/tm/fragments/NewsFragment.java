@@ -48,13 +48,14 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     private MyNewsRecyclerViewAdapter adapter;
     private ProgressDialog progressdialog;
     LoadMoreData loadMoreData;
-    int scrolFalg=0;
-    String nextURl="";
+    int scrolFalg = 0;
+    String nextURl = "";
     String url;
-       ProgressBar mProgressBar;
-    String noInterNet="No_InterNet";
-      String no_list="List_is_empty";
-      TextView blankText;
+    ProgressBar mProgressBar;
+    String noInterNet = "No_InterNet";
+    String no_list = "List_is_empty";
+    TextView blankText;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -89,7 +90,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        loadMoreData=new LoadMoreData() {
+        loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
 
@@ -97,35 +98,35 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                 Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
             }
         };
-        url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
+        url = "http://educationplatform.pythonanywhere.com/api/news/?type=" + mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-         mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
-         blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             newsArrayList = new ArrayList<>();
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-          final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
-                recyclerView.setLayoutManager(linearLayoutManager);
+            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(linearLayoutManager);
 
             recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                     int x = linearLayoutManager.findLastVisibleItemPosition();
 
-                    if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
-                         {
+                    if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                        {
                             loadMoreData.loadMorData(nextURl);
-                             Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
 
                             scrolFalg = x;
                         }
                     }
                 }
             });
-            adapter =new MyNewsRecyclerViewAdapter(newsArrayList,this);
+            adapter = new MyNewsRecyclerViewAdapter(newsArrayList, this);
             getData(url);
             recyclerView.setAdapter(adapter);
         }
@@ -133,32 +134,34 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     }
 
     private void getData(String url) {
-if(isOnline()) {
-    mProgressBar.setVisibility(View.VISIBLE);
-    blankText.setVisibility(View.GONE);
+        if (isOnline()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            blankText.setVisibility(View.GONE);
 
-    NetworkConnection.url = url;
-    new NetworkConnection(this).getDataAsJsonObject(getContext());
-}else {
-    mProgressBar.setVisibility(View.GONE);
-    blankText.setText(noInterNet);
-    blankText.setVisibility(View.VISIBLE);
+            NetworkConnection.url = url;
+            new NetworkConnection(this).getDataAsJsonObject(getContext());
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            blankText.setText(noInterNet);
+            blankText.setVisibility(View.VISIBLE);
 
-}
+        }
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject newsObj = new JSONObject(result);
-        nextURl=newsObj.getString("next");
+        nextURl = newsObj.getString("next");
 
         JSONArray resultArray = newsObj.getJSONArray("results");
-        for(int i = 0 ; i < resultArray.length();i++) {
+        for (int i = 0; i < resultArray.length(); i++) {
             News news = new News();
             JSONObject obj = resultArray.getJSONObject(i);
             news.setContent(obj.getString("content"));
@@ -169,7 +172,7 @@ if(isOnline()) {
         adapter.newData(newsArrayList);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-        if(newsArrayList.isEmpty()){
+        if (newsArrayList.isEmpty()) {
             blankText.setText(no_list);
             blankText.setVisibility(View.VISIBLE);
 
@@ -186,7 +189,7 @@ if(isOnline()) {
         /**
          * Before starting background thread
          * Show Progress Bar Dialog
-         * */
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -196,7 +199,7 @@ if(isOnline()) {
 
         /**
          * Downloading file in background thread
-         * */
+         */
         @Override
         protected String doInBackground(String... f_url) {
             int count;
@@ -212,7 +215,7 @@ if(isOnline()) {
 
                 // Output stream
                 String[] splitlist = url.toString().split("/");
-                OutputStream output = new FileOutputStream("/sdcard/"+splitlist[splitlist.length-1]);
+                OutputStream output = new FileOutputStream("/sdcard/" + splitlist[splitlist.length - 1]);
 
                 byte data[] = new byte[1024];
 
@@ -222,7 +225,7 @@ if(isOnline()) {
                     total += count;
                     // publishing the progress....
                     // After this onProgressUpdate will be called
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
 
                     // writing data to file
                     output.write(data, 0, count);
@@ -244,7 +247,7 @@ if(isOnline()) {
 
         /**
          * Updating progress bar
-         * */
+         */
         protected void onProgressUpdate(String... progress) {
             // setting progress percentage
             progressdialog.setProgress(Integer.parseInt(progress[0]));
@@ -253,7 +256,7 @@ if(isOnline()) {
         /**
          * After completing background task
          * Dismiss the progress dialog
-         * **/
+         **/
         @Override
         protected void onPostExecute(String file_url) {
             // dismiss the dialog after the file was downloaded
@@ -286,7 +289,7 @@ if(isOnline()) {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
+     * <p>
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity

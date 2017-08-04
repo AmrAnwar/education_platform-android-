@@ -87,15 +87,11 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
 
         }
         public  void bind(ModelAnswer modelAnswer,boolean downloadOrNot){
-            download.setText("Click To DownLoad");
-            readOrDownLoad.setImageResource(R.drawable.ic_cloud_download_black_48px);
+            download.setText(modelAnswer.getType());
+            readOrDownLoad.setImageResource(R.drawable.ic_import_contacts_black_48px);
             title.setText(modelAnswer.getTitle());
             note.setText(modelAnswer.getNote());
-            if(downloadOrNot){download.setText("Read");
-                readOrDownLoad.setImageResource(R.drawable.ic_import_contacts_black_48px);
 
-
-            }
         }
         @Override
         public void onClick(View v) {

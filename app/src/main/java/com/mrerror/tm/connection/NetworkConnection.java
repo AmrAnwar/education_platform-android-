@@ -150,10 +150,10 @@ public class NetworkConnection {
         sr.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(sr);
     }
-    public void putData(final Context context, String webServiceUrl, final String[] queryname, final String[] queryVal) {
+    public void patchData(final Context context, String webServiceUrl, final String[] queryname, final String[] queryVal) {
         Log.e("url",webServiceUrl);
 
-        StringRequest sr = new StringRequest(Request.Method.PUT, webServiceUrl.toString(), new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.PATCH, webServiceUrl.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
