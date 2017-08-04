@@ -55,9 +55,10 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     String url;
 
        ProgressBar mProgressBar;
+    TextView blankText;
     String noInterNet="No_InterNet";
       String no_list="List_is_empty";
-      TextView blankText;
+
     SwipeRefreshLayout mSwipeRefreshLayout;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -99,8 +100,12 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
         url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
          mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+
          blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
         mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -189,11 +194,8 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
         adapter.newData(newsArrayList);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-        if (newsArrayList.isEmpty()) {
-            blankText.setText(no_list);
-            blankText.setVisibility(View.VISIBLE);
 
-        }
+
     }
 
     @Override

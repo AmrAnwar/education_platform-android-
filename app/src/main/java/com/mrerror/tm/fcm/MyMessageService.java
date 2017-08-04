@@ -51,6 +51,7 @@ public class MyMessageService extends FirebaseMessagingService {
              intent = new Intent(this, MainActivity.class);
             intent.putExtra("where",data.get("where"));
 
+
         }else if(mWhere.equals("answers")) {
              intent = new Intent(this, MainActivity.class);
 

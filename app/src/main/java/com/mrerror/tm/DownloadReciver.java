@@ -79,6 +79,7 @@ public class DownloadReciver extends BroadcastReceiver {
 
         }else {
             downloadManager.remove(reference);
+            if (mModelAnswer!=null)
             checkid.remove(mModelAnswer.getId());
         }
         dbHelper.close(); }
