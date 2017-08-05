@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -25,13 +25,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+           android:textColorHint="@color/black">
+
             <EditText android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:inputType="numberDecimal"
+                android:hint="Mobile number" />
+
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -39,10 +43,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:textColorHint="@color/black"
+
+            >
             <EditText android:id="@+id/input_password"
+
                 android:layout_width="match_parent"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"/>
@@ -57,14 +66,17 @@
             android:padding="12dp"
             android:text="Login"/>
 
-        <TextView android:id="@+id/about"
+        <TextView
+            android:id="@+id/about"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="developed by Phantom TM"
             android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="16dip"/>
+            android:text="developed by Phantom TM"
+            android:layout_marginTop="40dp"
+
+            android:textColor="@color/black"
+            android:textSize="16dip" />
 
     </LinearLayout>
 </ScrollView>
