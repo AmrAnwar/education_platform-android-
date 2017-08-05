@@ -3,6 +3,7 @@ package com.mrerror.tm;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,13 +27,15 @@ import java.util.ArrayList;
 
 import static com.mrerror.tm.connection.NetworkConnection.url;
 
-public class Inbox extends AppCompatActivity implements NetworkConnection.OnCompleteFetchingData {
+public class Inbox extends AppCompatActivity implements NetworkConnection.OnCompleteFetchingData, ReplyForStaffActivity.onReply {
 
     SharedPreferences sp;
     private RecyclerView recyclerView;
     String nextURl="";
     LoadMoreData loadMoreData;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     int scrolFalg=0;
+    public static ReplyForStaffActivity.onReply replyListener;
     String urlForStuff="http://educationplatform.pythonanywhere.com/api/asks/";
     InboxForStaffRecyclerViewAdapter adapter;
     ArrayList<QuestionForStaff> questionsForStuff;
@@ -48,14 +51,23 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 getData(sp.getString("group",""));
             }
         };
-        questionsForStuff = new ArrayList<>();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
+        mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.refreshnewsunit);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-       final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        replyListener = this;
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                    getData(sp.getString("group","normal"));
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
@@ -76,6 +88,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     }
 
     private void getData(String group) {
+        questionsForStuff = new ArrayList<>();
         if(group.equals("normal")) {
             url = "http://educationplatform.pythonanywhere.com/api/asks/" + sp.getString("username", "");
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
@@ -119,11 +132,8 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                         ,questionObj.getString("image_sender"),questionObj.getString("file_sender"));
                         questionsForStuff.add(question);
                     }
-                    if(adapter==null) {
                         adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
                         recyclerView.setAdapter(adapter);
-                    }else{adapter.notifyDataSetChanged();}
-
                 }
 
                 @Override
@@ -149,5 +159,11 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+
+    @Override
+    public void onReply() {
+        getData(sp.getString("group","normal"));
     }
 }

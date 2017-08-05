@@ -117,7 +117,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
                 else {
-                    Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             }

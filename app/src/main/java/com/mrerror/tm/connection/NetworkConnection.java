@@ -244,4 +244,6 @@ public class NetworkConnection {
         sr.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(sr);
     }
+
+
 }

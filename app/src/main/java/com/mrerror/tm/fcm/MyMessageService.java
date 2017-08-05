@@ -67,7 +67,7 @@ public class MyMessageService extends FirebaseMessagingService {
 
         if(data.keySet().contains("message_body")){
             message=data.get("message_body");
-        }else {message="empty content";}
+        }else {message="New notification";}
 
         if(data.keySet().contains("message_title")){
             message_title =data.get("message_title");

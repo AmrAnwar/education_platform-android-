@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
             return;
         }
 
-        _loginButton.setEnabled(false);
+//        _loginButton.setEnabled(false);
 
         progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);

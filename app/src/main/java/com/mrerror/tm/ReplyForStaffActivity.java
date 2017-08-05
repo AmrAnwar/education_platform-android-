@@ -45,6 +45,7 @@ import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.mrerror.tm.Inbox.replyListener;
 
 //import org.apache.http.entity.mime.MultipartEntity;
 //import org.apache.http.entity.mime.content.FileBody;
@@ -130,6 +131,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
+                                                replyListener.onReply();
                                                 ReplyForStaffActivity.this.finish();
                                             }
                                         });
@@ -176,7 +178,10 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         buttonDeleteLastRecording = (ImageButton)findViewById(R.id.remove_rec_btn);
         selected_img = (ImageView)findViewById(R.id.selected_img);
         studemtImg = (ImageView)findViewById(R.id.questionImg);
-        Picasso.with(this).load(questionForStaff.getStudentImg()).into(studemtImg);
+        if(questionForStaff.getStudentImg().length()>4){
+            studemtImg.setVisibility(View.VISIBLE);
+            Picasso.with(this).load(questionForStaff.getStudentImg()).into(studemtImg);
+        }
         buttonPlayLastRecordAudio.setEnabled(false);
 
         random = new Random();
@@ -395,4 +400,8 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         }
     }
 
+    public interface onReply{
+        void onReply();
+    }
 }
+

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.fragments.GeneralNews;
 import com.mrerror.tm.fragments.GeneralWords;
 import com.mrerror.tm.fragments.ModelAnswerFragment;
@@ -28,6 +29,8 @@ import com.mrerror.tm.fragments.UnitFragment;
 import com.mrerror.tm.models.ModelAnswer;
 import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
+
+import org.json.JSONException;
 
 import static com.mrerror.tm.ReadPDFactivity.checkid;
 
@@ -119,6 +122,19 @@ public  void loadModelAnswerFragment(){
 //
 
            //Notifigation Handel
+           new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+               @Override
+               public void onCompleted(String result) throws JSONException {
+
+               }
+
+               @Override
+               public void onError(String error) {
+
+               }
+           }).
+                   patchData(this,"http://educationplatform.pythonanywhere.com/api/users/" + sp.getString("username", "")+"/profile",
+                           new String[]{"token"},new String[]{sp.getString("token","")});
 
            String group=sp.getString("group","normal");
            if(group.equals("normal")){
@@ -183,6 +199,9 @@ public  void loadModelAnswerFragment(){
         if (id == R.id.nav_inbox) {
             startActivity(new Intent(this,Inbox.class));
         } else if (id == R.id.nav_settings) {
+
+        } else if (id == R.id.nav_about) {
+            startActivity(new Intent(this,AboutActivity.class));
 
         } else if (id == R.id.nav_logout) {
             editor.putBoolean("logged",false);
