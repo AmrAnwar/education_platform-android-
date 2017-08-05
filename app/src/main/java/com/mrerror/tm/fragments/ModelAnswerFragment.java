@@ -56,13 +56,13 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     CheckBox cExam;
     CheckBox cSheet;
     CheckBox cOther;
-    CheckBox cWait;
+
     String nextURl = "";
     String url = "http://educationplatform.pythonanywhere.com/api/answers/";
     String urlExamOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=b";
     String urlSheetOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=a";
     String urlOtherOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=c";
-    String urlWait="http://educationplatform.pythonanywhere.com/api/answers/?type=wait";
+
     String urlNextFilter = "";
 
     int countAll = 0;
@@ -218,15 +218,13 @@ public boolean isOnline() {
         cExam = (CheckBox) rootView.findViewById(R.id.exams);
         cSheet = (CheckBox) rootView.findViewById(R.id.sheet);
         cOther = (CheckBox) rootView.findViewById(R.id.other);
-        cWait = (CheckBox) rootView.findViewById(R.id.wait);
+
         cExam.setOnClickListener(check);
         cSheet.setOnClickListener(check);
         cOther.setOnClickListener(check);
-        cWait.setOnClickListener(check);
+
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if(isStuff()){
-            cWait.setVisibility(View.VISIBLE);
-        }else {cWait.setVisibility(View.GONE);}
+
         loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
@@ -265,16 +263,7 @@ public boolean isOnline() {
 
         return rootView;
     }
-private  Boolean isStuff(){
 
-    String group=sp.getString("group","normal");
-
-    if(group.equals("normal"))
-    {return false;}
-    else {
-        System.out.println(group);
-        return true;}
-}
 
     View.OnClickListener check = new View.OnClickListener() {
         @Override
@@ -309,9 +298,6 @@ private  Boolean isStuff(){
                 }
                 upDateUi(others);
 
-            }else if(cWait.isChecked()){
-           getData(urlWait);
-                scrolFalg=0;
             } else {
                 upDateUi(arryWithOutNetAll);
             }
@@ -373,9 +359,7 @@ private  Boolean isStuff(){
         getData(url);
             swipeRefreshLayout.setRefreshing(false);
     }
-     if(cWait.isChecked()){
-            getData(urlWait);
-        }
+
 
     }
 

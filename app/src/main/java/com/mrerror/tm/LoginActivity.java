@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
     @InjectView(R.id.input_password) EditText _passwordText;
     @InjectView(R.id.btn_login)
     Button _loginButton;
-    @InjectView(R.id.link_signup)
+   @InjectView(R.id.about)
     TextView _signupLink;
     String userOrEmail = "email";
     private ProgressDialog progressDialog;
@@ -64,8 +64,7 @@ public class LoginActivity extends AppCompatActivity implements NetworkConnectio
             @Override
             public void onClick(View v) {
                 // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivity(new Intent(LoginActivity.this,AboutActivity.class));
             }
         });
     }

@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
@@ -73,8 +72,8 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
 
         TextView title;
         TextView note;
-        TextView download;
-        ImageView readOrDownLoad;
+        TextView type;
+
         View mView;
 
         ModelAnswerViewHolder(View view){
@@ -82,15 +81,14 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
             mView=view;
             title= (TextView) view.findViewById(R.id.title);
             note=(TextView) view.findViewById(R.id.note);
-            download=(TextView) view.findViewById(R.id.downlaodbutton);
-            readOrDownLoad=(ImageView)view.findViewById(R.id.readOrDwonload);
+            type =(TextView) view.findViewById(R.id.downlaodbutton);
+
             mView.setOnClickListener(this);
 
 
         }
         public  void bind(ModelAnswer modelAnswer){
-            download.setText(modelAnswer.getType());
-            readOrDownLoad.setImageResource(R.drawable.ic_import_contacts_black_48px);
+            type.setText(modelAnswer.getType());
             title.setText(modelAnswer.getTitle());
             note.setText(modelAnswer.getNote());
 

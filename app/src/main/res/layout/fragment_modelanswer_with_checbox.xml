@@ -50,13 +50,7 @@
             android:layout_weight="1"
             android:text="OTHER"
             android:textColor="#ffff"/>
-        <CheckBox
-            android:id="@+id/wait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="WAIT"
-            android:textColor="#ffff"/>
+
 
     </LinearLayout>
 

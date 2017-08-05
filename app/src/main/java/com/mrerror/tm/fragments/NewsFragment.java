@@ -237,7 +237,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                 // this will be useful so that you can show a tipical 0-100%           progress bar
                 int lenghtOfFile = conection.getContentLength();
 
-                // download the file
+                // type the file
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
                 // Output stream
