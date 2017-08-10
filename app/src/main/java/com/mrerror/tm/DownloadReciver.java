@@ -2,11 +2,14 @@ package com.mrerror.tm;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
@@ -55,12 +58,31 @@ public class DownloadReciver extends BroadcastReceiver {
                 if (DownloadManager.STATUS_SUCCESSFUL==c.getInt(coulmIndex)){
                     String uriString= c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
-                    String filelocation=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                    String filelocation="";
+                    //=c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                    String[] projection = {MediaStore.MediaColumns.DATA};
+
+                    ContentResolver cr = context.getContentResolver();
+                    Cursor metaCursor = cr.query(Uri.parse(uriString), projection, null, null, null);
+                    if (metaCursor != null) {
+                        try {
+                            if (metaCursor.moveToFirst()) {
+                                filelocation = metaCursor.getString(0);
+                            }
+                        } finally {
+                            metaCursor.close();
+                        }
+                    }
+
+
+
+
                     System.out.println(filelocation);
-                    String extision= getMimeType(filelocation);
+                    String extision= getMimeType(uriString);
                     mModelAnswer.setFilePath(uriString);
                     mModelAnswer.setFileLocal(filelocation);
                     mModelAnswer.setFileExtention(extision);
+
 
                     saveToDataBase(uriString,mModelAnswer);
 

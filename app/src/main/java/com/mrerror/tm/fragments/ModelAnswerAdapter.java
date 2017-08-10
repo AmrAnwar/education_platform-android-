@@ -73,7 +73,6 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         TextView title;
         TextView note;
         TextView type;
-
         View mView;
 
         ModelAnswerViewHolder(View view){

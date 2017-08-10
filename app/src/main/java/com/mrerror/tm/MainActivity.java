@@ -1,13 +1,15 @@
 package com.mrerror.tm;
-
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -42,6 +44,11 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         SharedPreferences.Editor editor;
         ProgressBar mProgressBar;
         TextView blankText;
+       private static final int REQUEST_EXTERNAL_STORAGE = 12;
+       private static String[] PERMISSIONS_STORAGE = {
+               Manifest.permission.READ_EXTERNAL_STORAGE,
+               Manifest.permission.WRITE_EXTERNAL_STORAGE
+       };
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -216,16 +223,30 @@ public  void loadModelAnswerFragment(){
     @Override
     public void onItemClickLestiner(ModelAnswer item) {
 
-        if(!checkid.keySet().contains(item.getId())) {
-            Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
-            i.putExtra("obj", item);
-            startActivity(i);
-        }else {
-            Toast.makeText(this, "please..wait ", Toast.LENGTH_SHORT).show();
+
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            Toast.makeText(this, "YOU MUST ALLOW AND PRESS AGAIN", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        } else {
+
+
+            if (!checkid.keySet().contains(item.getId())) {
+                Intent i = new Intent(MainActivity.this, ReadPDFactivity.class);
+                i.putExtra("obj", item);
+                startActivity(i);
+            } else {
+                Toast.makeText(this, "please..wait ", Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
-
-
 
 
 }
