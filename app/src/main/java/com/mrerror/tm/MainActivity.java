@@ -198,8 +198,6 @@ public  void loadModelAnswerFragment(){
 
         if (id == R.id.nav_inbox) {
             startActivity(new Intent(this,Inbox.class));
-        } else if (id == R.id.nav_settings) {
-
         } else if (id == R.id.nav_about) {
             startActivity(new Intent(this,AboutActivity.class));
 

@@ -167,6 +167,9 @@ public class dialogFragment extends Fragment {
         answer1ET.setEnabled(true);
         answer2ET.setEnabled(true);
         answer3ET.setEnabled(true);
+        answer1ET.setText("");
+        answer2ET.setText("");
+        answer3ET.setText("");
         trueAnswer = true;
         submit.setVisibility(View.GONE);
         next.setVisibility(View.VISIBLE);

@@ -140,6 +140,8 @@ public class mistakeFragment extends Fragment {
     public void next(View view) {
         answer1ET.setEnabled(true);
         answer2ET.setEnabled(true);
+        answer1ET.setText("");
+        answer2ET.setText("");
         answer2True.setVisibility(View.GONE);
         answer2False.setVisibility(View.GONE);
         trueAnswer = true;

@@ -106,9 +106,9 @@ public class choicesFragment extends Fragment {
         choice1TV.setText(choiceQuestion.getChoice1());
         choice2TV.setText(choiceQuestion.getChoice2());
         choice3TV.setText(choiceQuestion.getChoice3());
-        choice1TV.setTextColor(getContext().getColor(R.color.black));
-        choice2TV.setTextColor(getContext().getColor(R.color.black));
-        choice3TV.setTextColor(getContext().getColor(R.color.black));
+        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
         choice1True.setVisibility(View.GONE);
         choice2True.setVisibility(View.GONE);
         choice3True.setVisibility(View.GONE);
@@ -121,9 +121,9 @@ public class choicesFragment extends Fragment {
         choice1TV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choice1TV.setTextColor(getContext().getColor(R.color.colorPrimary));
-                choice2TV.setTextColor(getContext().getColor(R.color.black));
-                choice3TV.setTextColor(getContext().getColor(R.color.black));
+                choice1TV.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+                choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                 selectedAnswer = choice1TV.getText().toString();
                 selectedTextView = choice1TV;
             }
@@ -131,9 +131,9 @@ public class choicesFragment extends Fragment {
         choice3TV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choice3TV.setTextColor(getContext().getColor(R.color.colorPrimary));
-                choice2TV.setTextColor(getContext().getColor(R.color.black));
-                choice1TV.setTextColor(getContext().getColor(R.color.black));
+                choice3TV.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+                choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
                 selectedAnswer = choice3TV.getText().toString();
                 selectedTextView = choice3TV;
             }
@@ -141,9 +141,9 @@ public class choicesFragment extends Fragment {
         choice2TV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choice2TV.setTextColor(getContext().getColor(R.color.colorPrimary));
-                choice1TV.setTextColor(getContext().getColor(R.color.black));
-                choice3TV.setTextColor(getContext().getColor(R.color.black));
+                choice2TV.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+                choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                 selectedAnswer = choice2TV.getText().toString();
                 selectedTextView = choice2TV;
             }
@@ -154,27 +154,27 @@ public class choicesFragment extends Fragment {
                 if(selectedAnswer.equals(mTest.getTestChoicesList().get(choicesCounter).getAnswer())){
                     switch (selectedTextView.getId()){
                         case R.id.choice_1:
-                            choice1TV.setTextColor(getContext().getColor(R.color.true_text));
-                            choice2TV.setTextColor(getContext().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getColor(R.color.black));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice1True.setVisibility(View.VISIBLE);
                             choice1False.setVisibility(View.GONE);
                             choice2False.setVisibility(View.GONE);
                             choice3False.setVisibility(View.GONE);
                             break;
                         case R.id.choice_2:
-                            choice2TV.setTextColor(getContext().getColor(R.color.true_text));
-                            choice1TV.setTextColor(getContext().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getColor(R.color.black));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice2True.setVisibility(View.VISIBLE);
                             choice2False.setVisibility(View.GONE);
                             choice1False.setVisibility(View.GONE);
                             choice3False.setVisibility(View.GONE);
                             break;
                         case R.id.choice_3:
-                            choice3TV.setTextColor(getContext().getColor(R.color.true_text));
-                            choice2TV.setTextColor(getContext().getColor(R.color.black));
-                            choice1TV.setTextColor(getContext().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice3True.setVisibility(View.VISIBLE);
                             choice3False.setVisibility(View.GONE);
                             choice1False.setVisibility(View.GONE);
@@ -190,25 +190,25 @@ public class choicesFragment extends Fragment {
                 }else{
                     switch (selectedTextView.getId()){
                         case R.id.choice_1:
-                            choice1TV.setTextColor(getContext().getColor(R.color.false_text));
-                            choice2TV.setTextColor(getContext().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getColor(R.color.black));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice1False.setVisibility(View.VISIBLE);
                             choice2False.setVisibility(View.GONE);
                             choice3False.setVisibility(View.GONE);
                             break;
                         case R.id.choice_2:
-                            choice2TV.setTextColor(getContext().getColor(R.color.false_text));
-                            choice1TV.setTextColor(getContext().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getColor(R.color.black));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice2False.setVisibility(View.VISIBLE);
                             choice1False.setVisibility(View.GONE);
                             choice3False.setVisibility(View.GONE);
                             break;
                         case R.id.choice_3:
-                            choice3TV.setTextColor(getContext().getColor(R.color.false_text));
-                            choice1TV.setTextColor(getContext().getColor(R.color.black));
-                            choice2TV.setTextColor(getContext().getColor(R.color.black));
+                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
                             choice3False.setVisibility(View.VISIBLE);
                             choice2False.setVisibility(View.GONE);
                             choice1False.setVisibility(View.GONE);
@@ -225,6 +225,7 @@ public class choicesFragment extends Fragment {
     public void next(View view) {
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
+
         if((choicesCounter+1)<testChoicesArrayList.size()) {
             ++choicesCounter;
             setChoicesData();
