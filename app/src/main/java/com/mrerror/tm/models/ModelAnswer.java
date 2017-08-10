@@ -111,4 +111,12 @@ public class ModelAnswer implements Serializable{
         { color=R.color.exam;}
         return color;
     }
+
+    public String getFileName(){
+      if(!fileUrl.equals("null"))  return fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+        else {
+        return getFilePath().substring(getFilePath().lastIndexOf('/')+1);
+
+      }
+    }
 }

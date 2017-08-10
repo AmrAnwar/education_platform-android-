@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +23,6 @@ import com.mrerror.tm.fragments.ModelAnswerFragment;
 import com.mrerror.tm.models.ModelAnswer;
 
 import java.io.File;
-import java.net.URI;
 import java.util.HashMap;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -41,7 +41,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     LinearLayout mGoToPageLayout;
     ModelAnswer mModelAnswer;
     DownloadManager downloadManager;
-  static long reference;
+    static long reference;
     ModelAnswerDbHelper dbHelper;
     Toast toast;
 
@@ -81,34 +81,30 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         pdfView = (PDFView) findViewById(R.id.pdfView);
 
         Intent m=getIntent();
-         mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
+        mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
         show(mModelAnswer);
-
-
-
-
-
         dbHelper.close();
     }
 
 
     private  void show(ModelAnswer item){
         if(mModelAnswer.getDwonload()) {
+            String filepath = Environment.getExternalStorageDirectory().getPath();
 
-            File file = new File(URI.create(mModelAnswer.getFileLocal()).getPath());
+            File file = new File(filepath+"/TM_DownLoad/"+mModelAnswer.getFileName());
 
-            if (!file.exists()) {
-
+            if (!file.isFile()) {
                 deleteFromDataBase(mModelAnswer.getFilePath());
             } else {
-                if (mModelAnswer.getFileExtention().equals("pdf")) {
+                if (mModelAnswer.getFileExtention().equals("pdf"))
+                {
                     imageView.setVisibility(View.GONE);
                     mGoToPageLayout.setVisibility(View.VISIBLE);
                     pdfView.setVisibility(View.VISIBLE);
-                    pdfView.fromUri(Uri.parse(mModelAnswer.getFilePath()))
+
+                    Uri mUri=Uri.parse(mModelAnswer.getFilePath());
+                    pdfView.fromUri(mUri)
                             .onPageChange(this)
-                            .enableAntialiasing(true)
-                            .spacing(2)
                             .load();
                 } else {
                     pdfView.setVisibility(View.GONE);
@@ -164,9 +160,17 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
 
     public  void downLoad(Uri uri ){
 
+        File direct = new File(Environment.getExternalStorageDirectory()
+                + "/TM_DownLoad");
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+
         downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request= new DownloadManager.Request(uri);
+
         request.setVisibleInDownloadsUi(true);
+        request.setDestinationInExternalPublicDir("/TM_DownLoad",mModelAnswer.getFileName());
 if(reference!=0){
 
 for(int m:checkid.keySet()){
