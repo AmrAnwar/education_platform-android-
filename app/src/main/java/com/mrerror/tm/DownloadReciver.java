@@ -44,12 +44,15 @@ public class DownloadReciver extends BroadcastReceiver {
     }
     @Override
     public void onReceive(Context context, Intent intent) {
+    if(reference!=0){
+
         dbHelper= new ModelAnswerDbHelper(context);
         mContext=context;
         String action=intent.getAction();
         if(DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
         {
             DownloadManager.Query req_query= new DownloadManager.Query();
+
             req_query.setFilterById(reference);
             Cursor c= downloadManager.query(req_query);
 
@@ -105,6 +108,7 @@ public class DownloadReciver extends BroadcastReceiver {
             checkid.remove(mModelAnswer.getId());
         }
         dbHelper.close(); }
+    }
 
     public  void saveToDataBase(String uri,ModelAnswer modelAnswer){
 
