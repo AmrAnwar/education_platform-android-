@@ -1,5 +1,6 @@
 package com.mrerror.tm;
 
+
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     ModelAnswerDbHelper dbHelper;
     Toast toast;
 
+
     public static HashMap<Integer,Long> checkid=new HashMap<>();
 
     @Override
@@ -82,14 +84,20 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
 
         Intent m=getIntent();
         mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
+
         show(mModelAnswer);
+
         dbHelper.close();
     }
 
 
     private  void show(ModelAnswer item){
+
         if(mModelAnswer.getDwonload()) {
+
+
             String filepath = Environment.getExternalStorageDirectory().getPath();
+            System.out.println(filepath);
 
             File file = new File(filepath+"/TM_DownLoad/"+mModelAnswer.getFileName());
 
@@ -118,9 +126,11 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         }
         else {
 
+
            if(!checkid.keySet().contains(mModelAnswer.getId())) {
                ModelAnswerFragment.shouldResume=false;
                Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
+
                downLoad(checkUri);
                Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
                finish();
@@ -158,10 +168,17 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         toast.show();
     }
 
+
+
+
+
+
     public  void downLoad(Uri uri ){
 
-        File direct = new File(Environment.getExternalStorageDirectory()
-                + "/TM_DownLoad");
+
+
+        File direct = new File(Environment.getExternalStorageDirectory(),
+                 "/TM_DownLoad");
         if (!direct.exists()) {
             direct.mkdirs();
         }
@@ -185,6 +202,8 @@ for(int m:checkid.keySet()){
         DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
         checkid.put(mModelAnswer.getId(),reference);
     }
+
+
 
 
 }
