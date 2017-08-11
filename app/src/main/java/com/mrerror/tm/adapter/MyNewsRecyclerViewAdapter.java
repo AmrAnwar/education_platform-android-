@@ -38,6 +38,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+//        holder.mImgView.getLayoutParams().height = 650;
+//        holder.mImgView.getLayoutParams().width = 830;
         holder.mItem = mValues.get(position);
         if(holder.mItem.getFile_url().length()<=0 || holder.mItem.getFile_url() == null ||
                 holder.mItem.getFile_url().equals("null")){

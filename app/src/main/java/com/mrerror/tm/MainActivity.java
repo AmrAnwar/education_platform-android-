@@ -211,7 +211,7 @@ public  void loadModelAnswerFragment(){
         } else if (id == R.id.nav_logout) {
             editor.putBoolean("logged",false);
             editor.commit();
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this,LoginActivity2.class));
             this.finish();
         }
 

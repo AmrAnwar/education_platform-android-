@@ -1,5 +1,6 @@
 package com.mrerror.tm;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -75,6 +76,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     PickResult mSelected;
     private MediaPlayer mediaPlayer2;
     private QuestionForStaff questionForStaff;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,10 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                 if (reply.getText().toString().length() <= 1) {
                     Toast.makeText(ReplyForStaffActivity.this, "Very short reply!", Toast.LENGTH_SHORT).show();
                 } else {
+
+                    progressDialog = new ProgressDialog(ReplyForStaffActivity.this);
+                    progressDialog.setMessage("Sending ...");
+                    progressDialog.show();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -121,6 +127,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                                 response = httpclient.execute(httput);
                                 String responseBody = EntityUtils.toString(response.getEntity());
                                 Log.e("Respone",responseBody);
+                                progressDialog.dismiss();
                                 ReplyForStaffActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

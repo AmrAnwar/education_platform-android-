@@ -232,13 +232,14 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
             int count;
             try {
                 URL url = new URL(f_url[0]);
+                Log.e("url",url.toString());
                 URLConnection conection = url.openConnection();
                 conection.connect();
                 // this will be useful so that you can show a tipical 0-100%           progress bar
                 int lenghtOfFile = conection.getContentLength();
 
                 // type the file
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                InputStream input = new BufferedInputStream(conection.getInputStream());
 
                 // Output stream
                 String[] splitlist = url.toString().split("/");

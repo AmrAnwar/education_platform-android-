@@ -1,5 +1,6 @@
 package com.mrerror.tm;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -68,6 +69,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
     RelativeLayout imgLayout;
     ImageView selected_img ;
     PickResult mSelected;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,9 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                     }
                 }
                 if(canBeSent) {
+                    progressDialog = new ProgressDialog(AskActivity.this);
+                    progressDialog.setMessage("Sending ...");
+                    progressDialog.show();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -119,6 +124,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                                 response = httpclient.execute(httpost);
                                 String responseBody = EntityUtils.toString(response.getEntity());
                                 Log.e("Respone",responseBody);
+                                progressDialog.dismiss();
                                 AskActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

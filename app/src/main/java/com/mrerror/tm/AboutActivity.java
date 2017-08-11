@@ -36,4 +36,5 @@ public class AboutActivity extends AppCompatActivity {
         i.setData(Uri.parse(OurUrl));
         startActivity(i);
     }
+
 }

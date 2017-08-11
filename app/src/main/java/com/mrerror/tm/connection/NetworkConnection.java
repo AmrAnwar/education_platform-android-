@@ -116,6 +116,7 @@ public class NetworkConnection {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                OnCompleteFetchingData.onError(error.toString());
                 if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                     Toast.makeText(context,
                             "No Connection",
