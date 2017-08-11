@@ -238,24 +238,22 @@ public boolean isOnline() {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                int x = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 
-                if (x % 3 == 0 && x >= 3 && x > scrolFalg && arryWithOutNetAll.size() < countAll && !nextURl.equals("null")) {
-                    if ((cExam.isChecked() || cSheet.isChecked() || cOther.isChecked()) &&
-                            (!urlNextFilter.equals("null") && !urlNextFilter.equals(""))) {
-                        loadMoreData.loadMorData(urlNextFilter);
-                        scrolFalg = x;
-                    } else {
-                        loadMoreData.loadMorData(nextURl);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+        { super.onScrollStateChanged(recyclerView, newState);
+            int x = linearLayoutManager.findLastVisibleItemPosition();
 
-                        scrolFalg = x;
-                    }
+            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                {
+                    loadMoreData.loadMorData(nextURl);
+
+                    scrolFalg = x;
                 }
             }
-        });
+
+
+        }  });
 
 
         getData(url);

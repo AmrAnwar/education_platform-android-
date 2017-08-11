@@ -9,8 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.mrerror.tm.adapter.InboxForStaffRecyclerViewAdapter;
 import com.mrerror.tm.adapter.InboxRecyclerViewAdapter;
@@ -69,21 +67,22 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         });
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                int x = linearLayoutManager.findLastVisibleItemPosition();
 
-                if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
-                    {
-                        loadMoreData.loadMorData(nextURl);
-                        Toast.makeText(Inbox.this, "loading", Toast.LENGTH_SHORT).show();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+        { super.onScrollStateChanged(recyclerView, newState);
+            int x = linearLayoutManager.findLastVisibleItemPosition();
 
-                        scrolFalg = x;
-                    }
+            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                {
+                    loadMoreData.loadMorData(nextURl);
+
+                    scrolFalg = x;
                 }
             }
-        });
+
+
+        }  });
         getData(sp.getString("group","normal"));
     }
 
