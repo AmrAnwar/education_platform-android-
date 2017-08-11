@@ -90,7 +90,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
             public void loadMorData(String url) {
 
                 getData(url);
-                Toast.makeText(getContext(), "loading", Toast.LENGTH_SHORT).show();
+
             }
         };
         mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
@@ -101,6 +101,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
                 {   blankText.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.GONE);
                     unitsArrayList = new ArrayList<>();
+                    scrolFalg=0;
                     getData(mLink);
                 }
                 else {
@@ -127,7 +128,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
                     if (x % 4== 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null")&&!nextURl.isEmpty()) {
                         {
                             loadMoreData.loadMorData(nextURl);
-                            Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
+                            
 
                             scrolFalg = x;
                         }
