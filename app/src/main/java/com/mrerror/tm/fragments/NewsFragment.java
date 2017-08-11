@@ -2,19 +2,19 @@ package com.mrerror.tm.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +32,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class NewsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData,
@@ -112,6 +106,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                 if(isOnline())
                 {   blankText.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.GONE);
+                    scrolFalg=0;
                     newsArrayList=new ArrayList<>();
                     getData(url);
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -139,7 +134,6 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                     if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
                         {
                             loadMoreData.loadMorData(nextURl);
-                            Toast.makeText(getContext(), nextURl, Toast.LENGTH_SHORT).show();
 
                             scrolFalg = x;
                         }
@@ -208,103 +202,118 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
 
     @Override
     public void onListFragmentInteraction(News item) {
-        new DownloadFileFromURL().execute(item.getFile_url());
+        downLoad(Uri.parse(item.getFile_url()));
     }
 
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+    DownloadManager downloadManager;
+    long reference;
 
-        /**
-         * Before starting background thread
-         * Show Progress Bar Dialog
-         */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            verifyStoragePermissions(getActivity());
-            showDialog();
-        }
+    public  void downLoad(Uri uri ){
 
-        /**
-         * Downloading file in background thread
-         */
-        @Override
-        protected String doInBackground(String... f_url) {
-            int count;
-            try {
-                URL url = new URL(f_url[0]);
-                Log.e("url",url.toString());
-                URLConnection conection = url.openConnection();
-                conection.connect();
-                // this will be useful so that you can show a tipical 0-100%           progress bar
-                int lenghtOfFile = conection.getContentLength();
 
-                // type the file
-                InputStream input = new BufferedInputStream(conection.getInputStream());
+        downloadManager=  (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request= new DownloadManager.Request(uri);
 
-                // Output stream
-                String[] splitlist = url.toString().split("/");
-                OutputStream output = new FileOutputStream("/sdcard/" + splitlist[splitlist.length - 1]);
+        request.setVisibleInDownloadsUi(true);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-
-                    // writing data to file
-                    output.write(data, 0, count);
-                }
-
-                // flushing output
-                output.flush();
-
-                // closing streams
-                output.close();
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
-            }
-
-            return null;
-        }
-
-        /**
-         * Updating progress bar
-         */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            progressdialog.setProgress(Integer.parseInt(progress[0]));
-        }
-
-        /**
-         * After completing background task
-         * Dismiss the progress dialog
-         **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-            dismissDialog();
-
-        }
+        reference= downloadManager.enqueue(request);
 
     }
 
-    private void dismissDialog() {
-        progressdialog.dismiss();
-    }
-
-    private void showDialog() {
-        progressdialog = new ProgressDialog(getContext());
-        progressdialog.setMessage("Downloading ...) ");
-        progressdialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressdialog.setIndeterminate(true);
-        progressdialog.show();
-    }
+//    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+//
+//        /**
+//         * Before starting background thread
+//         * Show Progress Bar Dialog
+//         */
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            verifyStoragePermissions(getActivity());
+//            showDialog();
+//        }
+//
+//        /**
+//         * Downloading file in background thread
+//         */
+//        @Override
+//        protected String doInBackground(String... f_url) {
+//            int count;
+//            try {
+//                URL url = new URL(f_url[0]);
+//                URLConnection conection = url.openConnection();
+//                conection.connect();
+//                // this will be useful so that you can show a tipical 0-100%           progress bar
+//                int lenghtOfFile = conection.getContentLength();
+//
+//                // type the file
+//                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+//
+//                // Output stream
+//                String[] splitlist = url.toString().split("/");
+//                OutputStream output = new FileOutputStream("/sdcard/" + splitlist[splitlist.length - 1]);
+//
+//                byte data[] = new byte[1024];
+//
+//                long total = 0;
+//
+//                while ((count = input.read(data)) != -1) {
+//                    total += count;
+//                    // publishing the progress....
+//                    // After this onProgressUpdate will be called
+//                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+//
+//                    // writing data to file
+//                    output.write(data, 0, count);
+//                }
+//
+//                // flushing output
+//                output.flush();
+//
+//                // closing streams
+//                output.close();
+//                input.close();
+//
+//            } catch (Exception e) {
+//                Log.e("Error: ", e.getMessage());
+//            }
+//
+//            return null;
+//        }
+//
+//        /**
+//         * Updating progress bar
+//         */
+//        protected void onProgressUpdate(String... progress) {
+//            // setting progress percentage
+//            progressdialog.setProgress(Integer.parseInt(progress[0]));
+//        }
+//
+//        /**
+//         * After completing background task
+//         * Dismiss the progress dialog
+//         **/
+//        @Override
+//        protected void onPostExecute(String file_url) {
+//            // dismiss the dialog after the file was downloaded
+//            dismissDialog();
+//
+//        }
+//
+//    }
+//
+//    private void dismissDialog() {
+//        progressdialog.dismiss();
+//    }
+//
+//    private void showDialog() {
+//        progressdialog = new ProgressDialog(getContext());
+//        progressdialog.setMessage("Downloading ...) ");
+//        progressdialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progressdialog.setIndeterminate(true);
+//        progressdialog.show();
+//    }
 
 
     // permissions
