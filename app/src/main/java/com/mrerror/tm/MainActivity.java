@@ -1,4 +1,5 @@
 package com.mrerror.tm;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,11 +59,17 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_news:
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
                     return true;
                 case R.id.navigation_words:
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.content,UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
@@ -71,6 +78,9 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 //                    mTextMessage.setText(R.string.title_inbox);
 //                    return true;
                 case R.id.model_answer:
+                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
                    loadModelAnswerFragment();

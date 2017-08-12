@@ -64,6 +64,16 @@ public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp.getBoolean("logged",false)){
+            Intent mIntent=new Intent(this,MainActivity.class);
+            Bundle bundle=getIntent().getExtras();
+            if(bundle!=null&&bundle.containsKey("where")){
+                mIntent.putExtra("where",bundle);}
+            startActivity(mIntent);
+
+            this.finish();
+        }
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
