@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -77,7 +78,7 @@ public class MyMessageService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_school_black_24px)
+                .setSmallIcon(R.drawable.ic_school_black_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
 //                .setStyle(new NotificationCompat.BigTextStyle()
@@ -88,6 +89,9 @@ public class MyMessageService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

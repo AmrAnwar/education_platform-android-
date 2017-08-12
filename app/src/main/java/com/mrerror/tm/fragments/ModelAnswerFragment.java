@@ -244,16 +244,15 @@ public boolean isOnline() {
         { super.onScrollStateChanged(recyclerView, newState);
             int x = linearLayoutManager.findLastVisibleItemPosition();
 
-            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+            if (((x % 4 == 0 && x >= 4 && x > scrolFalg)||arryWithOutNetAll.size()<countAll) && !nextURl.equals("null") && !nextURl.isEmpty()) {
                 {
                     loadMoreData.loadMorData(nextURl);
 
                     scrolFalg = x;
                 }
             }
-
-
-        }  });
+        }
+        });
 
 
         getData(url);
