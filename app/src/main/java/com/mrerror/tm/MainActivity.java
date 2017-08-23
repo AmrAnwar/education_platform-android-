@@ -45,6 +45,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         SharedPreferences.Editor editor;
         ProgressBar mProgressBar;
         TextView blankText;
+       BottomNavigationView navigation;
        private static final int REQUEST_EXTERNAL_STORAGE = 12;
        private static String[] PERMISSIONS_STORAGE = {
                Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -91,11 +92,10 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 
     };
 public  void loadModelAnswerFragment(){
-    getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
+    getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment())
+            .addToBackStack(null).commit();
 
 }
-
-
 
 
 
@@ -129,9 +129,14 @@ public  void loadModelAnswerFragment(){
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if(savedInstanceState ==null){
         getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        }
+           navigation  = (BottomNavigationView) findViewById(R.id.navigation);
+           navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
 
 
 //SQ

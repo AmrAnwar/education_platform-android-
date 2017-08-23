@@ -33,10 +33,13 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     LoadMoreData loadMoreData;
     SwipeRefreshLayout mSwipeRefreshLayout;
     int scrolFalg=0;
+    int countAll=0;
     public static ReplyForStaffActivity.onReply replyListener;
     String urlForStuff="http://educationplatform.pythonanywhere.com/api/asks/";
     InboxForStaffRecyclerViewAdapter adapter;
     ArrayList<QuestionForStaff> questionsForStuff;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,11 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                questionsForStuff=null;
+                adapter=null;
+                scrolFalg=0;
+                urlForStuff="http://educationplatform.pythonanywhere.com/api/asks/";
+                nextURl="null";
                     getData(sp.getString("group","normal"));
                     mSwipeRefreshLayout.setRefreshing(false);
 
@@ -73,7 +81,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         { super.onScrollStateChanged(recyclerView, newState);
             int x = linearLayoutManager.findLastVisibleItemPosition();
 
-            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+            if (((x % 4 == 0 && x >= 4 && x > scrolFalg)||questionsForStuff.size()<countAll) && !nextURl.equals("null") && !nextURl.isEmpty()) {
                 {
                     loadMoreData.loadMorData(nextURl);
 
@@ -83,16 +91,20 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
 
 
         }  });
+
+
+
         getData(sp.getString("group","normal"));
     }
 
     private void getData(String group) {
-        questionsForStuff = new ArrayList<>();
+
         if(group.equals("normal")) {
             url = "http://educationplatform.pythonanywhere.com/api/asks/" + sp.getString("username", "");
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
+
                     JSONArray jsonArray = new JSONArray(result);
                     ArrayList<Question> questions = new ArrayList<>();
                     for(int i = 0 ; i < jsonArray.length();i++){
@@ -114,13 +126,19 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
             }).getDataAsJsonArray(this);
 
         }else{
+            nextURl="null";
             url = urlForStuff;
 
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
+                    if(questionsForStuff==null){
+                        questionsForStuff=new ArrayList<>();
+                    }
                     JSONObject jsonObject = new JSONObject(result);
                     nextURl= jsonObject.getString("next");
+                    Log.d("hell",url);
+                    countAll=jsonObject.getInt("count");
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
 
                     for(int i = 0 ; i < jsonArray.length();i++){
@@ -131,8 +149,16 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                         ,questionObj.getString("image_sender"),questionObj.getString("file_sender"));
                         questionsForStuff.add(question);
                     }
-                        adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
+
+                    if(adapter==null){
+                        adapter =new InboxForStaffRecyclerViewAdapter(questionsForStuff);
                         recyclerView.setAdapter(adapter);
+                    }
+
+
+                    adapter.onChange(questionsForStuff);
+                    adapter.notifyDataSetChanged();
+
                 }
 
                 @Override

@@ -50,6 +50,10 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
         return mValues.size();
     }
 
+    public void onChange(ArrayList<QuestionForStaff> newData){
+        mValues=newData;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final View mView;
         final TextView mQuest;

@@ -73,7 +73,7 @@ public class MyMessageService extends FirebaseMessagingService {
         if(data.keySet().contains("message_title")){
             message_title =data.get("message_title");
 
-        }else {message_title="TM";}
+        }else {message_title="Mr.TAWFIK";}
 
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
