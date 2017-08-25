@@ -48,12 +48,13 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     String nextURl = "";
     String url;
 
-       ProgressBar mProgressBar;
+    ProgressBar mProgressBar;
     TextView blankText;
-    String noInterNet="No_InterNet";
-      String no_list="List_is_empty";
+    String noInterNet = "No_InterNet";
+    String no_list = "List_is_empty";
 
     SwipeRefreshLayout mSwipeRefreshLayout;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -90,28 +91,30 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                              Bundle savedInstanceState) {
         loadMoreData = new LoadMoreData() {
             @Override
-            public void loadMorData(String urlNext) {getData(urlNext);}};
-        url = "http://educationplatform.pythonanywhere.com/api/news/?type="+mType;
+            public void loadMorData(String urlNext) {
+                getData(urlNext);
+            }
+        };
+        url = "http://educationplatform.pythonanywhere.com/api/news/?type=" + mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-         mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
 
-         blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isOnline())
-                {   blankText.setVisibility(View.GONE);
+                if (isOnline()) {
+                    blankText.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.GONE);
-                    scrolFalg=0;
-                    newsArrayList=new ArrayList<>();
+                    scrolFalg = 0;
+                    newsArrayList = new ArrayList<>();
                     getData(url);
                     mSwipeRefreshLayout.setRefreshing(false);
-                }
-                else {
+                } else {
                     Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
@@ -119,34 +122,36 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
         });
         // Set the adapter
 
-            newsArrayList = new ArrayList<>();
-            Context context = view.getContext();
+        newsArrayList = new ArrayList<>();
+        Context context = view.getContext();
 
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-          final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
-                recyclerView.setLayoutManager(linearLayoutManager);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-        { super.onScrollStateChanged(recyclerView, newState);
-            int x = linearLayoutManager.findLastVisibleItemPosition();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int x = linearLayoutManager.findLastVisibleItemPosition();
 
-            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
-                {
-                    loadMoreData.loadMorData(nextURl);
+                if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                    {
+                        loadMoreData.loadMorData(nextURl);
 
-                    scrolFalg = x;
+                        scrolFalg = x;
+                    }
                 }
+
+
             }
+        });
 
 
-        }  });
-
-
-            adapter = new MyNewsRecyclerViewAdapter(newsArrayList, this);
-            getData(url);
-            recyclerView.setAdapter(adapter);
+        adapter = new MyNewsRecyclerViewAdapter(newsArrayList, this);
+        getData(url);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -178,7 +183,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
         JSONObject newsObj = new JSONObject(result);
 
         mSwipeRefreshLayout.setRefreshing(false);
-        nextURl=newsObj.getString("next");
+        nextURl = newsObj.getString("next");
 
         JSONArray resultArray = newsObj.getJSONArray("results");
         for (int i = 0; i < resultArray.length(); i++) {
@@ -212,16 +217,16 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
     DownloadManager downloadManager;
     long reference;
 
-    public  void downLoad(Uri uri ){
+    public void downLoad(Uri uri) {
 
 
-        downloadManager=  (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request= new DownloadManager.Request(uri);
+        downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setVisibleInDownloadsUi(true);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-        reference= downloadManager.enqueue(request);
+        reference = downloadManager.enqueue(request);
 
     }
 

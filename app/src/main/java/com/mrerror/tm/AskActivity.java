@@ -47,10 +47,10 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.mrerror.tm.R.id.img_layout;
 
-public class AskActivity extends AppCompatActivity implements  IPickResult {
+public class AskActivity extends AppCompatActivity implements IPickResult {
 
     private EditText question;
-    SharedPreferences sp ;
+    SharedPreferences sp;
     int user_id;
     // Recorder
     boolean start_state = false;
@@ -58,16 +58,16 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
     boolean selectToAttachRecording = false;
     LinearLayout recordLayout;
     ImageButton buttonStart, buttonPlayLastRecordAudio,
-            buttonDeleteLastRecording ;
+            buttonDeleteLastRecording;
     String AudioSavePathInDevice = null;
-    MediaRecorder mediaRecorder ;
-    Random random ;
+    MediaRecorder mediaRecorder;
+    Random random;
     String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
     public static final int RequestPermissionCode = 1;
-    MediaPlayer mediaPlayer ;
+    MediaPlayer mediaPlayer;
     /// image
     RelativeLayout imgLayout;
-    ImageView selected_img ;
+    ImageView selected_img;
     PickResult mSelected;
     ProgressDialog progressDialog;
 
@@ -79,23 +79,23 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
         toolbar.setTitle("Have a question?");
         setSupportActionBar(toolbar);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        user_id = sp.getInt("id",0);
+        user_id = sp.getInt("id", 0);
         Button ask = (Button) findViewById(R.id.send);
         question = (EditText) findViewById(R.id.question);
         ask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean canBeSent = false;
-                if (question.getText().toString().length() > 7 ) {
+                if (question.getText().toString().length() > 7) {
                     canBeSent = true;
-                }else{
-                    if(AudioSavePathInDevice!=null||mSelected!=null){
+                } else {
+                    if (AudioSavePathInDevice != null || mSelected != null) {
                         canBeSent = true;
-                    }else{
+                    } else {
                         Toast.makeText(AskActivity.this, "check your question! text must be more than 7 characters or include one media atleast", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if(canBeSent) {
+                if (canBeSent) {
                     progressDialog = new ProgressDialog(AskActivity.this);
                     progressDialog.setMessage("Sending ...");
                     progressDialog.show();
@@ -112,9 +112,9 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                            if(AudioSavePathInDevice!=null)
+                            if (AudioSavePathInDevice != null)
                                 entity.addPart("file_sender", new FileBody(new File(AudioSavePathInDevice)));
-                            if(mSelected!=null)
+                            if (mSelected != null)
                                 entity.addPart("image_sender", new FileBody(new File(mSelected.getPath())));
 //                    entity.addPart("myAudioFile", new FileBody(audioFile));
 
@@ -123,7 +123,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                             try {
                                 response = httpclient.execute(httpost);
                                 String responseBody = EntityUtils.toString(response.getEntity());
-                                Log.e("Respone",responseBody);
+                                Log.e("Respone", responseBody);
                                 progressDialog.dismiss();
                                 AskActivity.this.runOnUiThread(new Runnable() {
                                     @Override
@@ -163,7 +163,6 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
 //                            new String[]{String.valueOf(user_id), question.getText().toString()});
 
 
-
                 }
             }
         });
@@ -174,8 +173,8 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
         imgLayout = (RelativeLayout) findViewById(img_layout);
         buttonStart = (ImageButton) findViewById(R.id.start_rec_btn);
         buttonPlayLastRecordAudio = (ImageButton) findViewById(R.id.play_rec_btn);
-        buttonDeleteLastRecording = (ImageButton)findViewById(R.id.remove_rec_btn);
-        selected_img = (ImageView)findViewById(R.id.selected_img);
+        buttonDeleteLastRecording = (ImageButton) findViewById(R.id.remove_rec_btn);
+        selected_img = (ImageView) findViewById(R.id.selected_img);
 
         buttonPlayLastRecordAudio.setEnabled(false);
 
@@ -212,7 +211,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                         requestPermission();
                     }
 
-                }else{
+                } else {
                     mediaRecorder.stop();
                     buttonStart.setImageResource(R.drawable.ic_record);
                     start_state = false;
@@ -230,7 +229,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
             @Override
             public void onClick(View view) throws IllegalArgumentException,
                     SecurityException, IllegalStateException {
-                if(!play_state) {
+                if (!play_state) {
                     buttonStart.setEnabled(false);
                     buttonDeleteLastRecording.setEnabled(false);
                     buttonPlayLastRecordAudio.setImageResource(R.drawable.ic_stop);
@@ -246,14 +245,14 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                     mediaPlayer.start();
                     Toast.makeText(AskActivity.this, "Recording Playing",
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     buttonStart.setEnabled(true);
                     buttonDeleteLastRecording.setEnabled(true);
                     buttonPlayLastRecordAudio.setImageResource(R.drawable.ic_play);
                     play_state = false;
                     buttonPlayLastRecordAudio.setEnabled(true);
 
-                    if(mediaPlayer != null){
+                    if (mediaPlayer != null) {
                         mediaPlayer.stop();
                         mediaPlayer.release();
                         MediaRecorderReady();
@@ -268,7 +267,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                 Toast.makeText(AskActivity.this, "clicked", Toast.LENGTH_SHORT).show();
                 File file = new File(AudioSavePathInDevice);
                 boolean deleted = file.delete();
-                if(deleted){
+                if (deleted) {
                     Toast.makeText(AskActivity.this, "the file is deleted", Toast.LENGTH_SHORT).show();
                     AudioSavePathInDevice = null;
                 }
@@ -277,22 +276,22 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
     }
 
     //Recorder
-    public void MediaRecorderReady(){
-        mediaRecorder=new MediaRecorder();
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
-    public String CreateRandomAudioFileName(int string){
-        StringBuilder stringBuilder = new StringBuilder( string );
-        int i = 0 ;
-        while(i < string ) {
+    public String CreateRandomAudioFileName(int string) {
+        StringBuilder stringBuilder = new StringBuilder(string);
+        int i = 0;
+        while (i < string) {
             stringBuilder.append(RandomAudioFileName.
                     charAt(random.nextInt(RandomAudioFileName.length())));
 
-            i++ ;
+            i++;
         }
         return stringBuilder.toString();
     }
@@ -307,7 +306,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
-                if (grantResults.length> 0) {
+                if (grantResults.length > 0) {
                     boolean StoragePermission = grantResults[0] ==
                             PackageManager.PERMISSION_GRANTED;
                     boolean RecordPermission = grantResults[1] ==
@@ -317,7 +316,7 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
                         Toast.makeText(AskActivity.this, "Permission Granted",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(AskActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
+                        Toast.makeText(AskActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -334,10 +333,10 @@ public class AskActivity extends AppCompatActivity implements  IPickResult {
     }
 
     public void useRecord(View view) {
-        if(!selectToAttachRecording) {
+        if (!selectToAttachRecording) {
             recordLayout.setVisibility(View.VISIBLE);
             selectToAttachRecording = true;
-        }else{
+        } else {
             recordLayout.setVisibility(View.GONE);
             selectToAttachRecording = false;
         }

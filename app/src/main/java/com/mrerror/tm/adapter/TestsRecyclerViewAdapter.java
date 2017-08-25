@@ -15,13 +15,14 @@ import com.mrerror.tm.models.Test;
 
 import java.util.ArrayList;
 
-public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecyclerViewAdapter.ViewHolder>  {
+public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<String> mValues;
-    private  ArrayList<Test> mTests;
-    private Context mContext ;
+    private ArrayList<String> mValues;
+    private ArrayList<Test> mTests;
+    private Context mContext;
     private UnitFragment.OnListFragmentInteractionListener mListener;
-    public TestsRecyclerViewAdapter(ArrayList<String> items,ArrayList<Test> tests) {
+
+    public TestsRecyclerViewAdapter(ArrayList<String> items, ArrayList<Test> tests) {
         this.mTests = tests;
         mValues = items;
     }
@@ -63,7 +64,7 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
         @Override
         public void onClick(View v) {
             Test test = mTests.get(getAdapterPosition());
-            mContext.startActivity(new Intent(mContext, ExamActivity.class).putExtra("test",test));
+            mContext.startActivity(new Intent(mContext, ExamActivity.class).putExtra("test", test));
         }
     }
 }

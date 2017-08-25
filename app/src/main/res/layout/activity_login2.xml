@@ -37,7 +37,8 @@
                 android:gravity="center"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_logo"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

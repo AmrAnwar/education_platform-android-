@@ -42,7 +42,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks<Cursor>,NetworkConnection.OnCompleteFetchingData {
+public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks<Cursor>, NetworkConnection.OnCompleteFetchingData {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -65,11 +65,12 @@ public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sp.getBoolean("logged",false)){
-            Intent mIntent=new Intent(this,MainActivity.class);
-            Bundle bundle=getIntent().getExtras();
-            if(bundle!=null&&bundle.containsKey("where")){
-                mIntent.putExtra("where",bundle);}
+        if (sp.getBoolean("logged", false)) {
+            Intent mIntent = new Intent(this, MainActivity.class);
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null && bundle.containsKey("where")) {
+                mIntent.putExtra("where", bundle);
+            }
             startActivity(mIntent);
 
             this.finish();
@@ -187,8 +188,8 @@ public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks
             // perform the user login attempt.
             showProgress(true);
             String url = "http://educationplatform.pythonanywhere.com/api/users/login/";
-            new NetworkConnection(LoginActivity2.this).postData(this,url,new String[]{"username","password"},
-                    new String[]{email,password});
+            new NetworkConnection(LoginActivity2.this).postData(this, url, new String[]{"username", "password"},
+                    new String[]{email, password});
         }
     }
 
@@ -293,14 +294,14 @@ public class LoginActivity2 extends AppCompatActivity implements LoaderCallbacks
         JSONObject obj = new JSONObject(result);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putInt("id",obj.getInt("id"));
-        editor.putString("username",obj.getString("username"));
-        editor.putString("group",obj.getString("group"));
-        editor.putBoolean("logged",true);
+        editor.putInt("id", obj.getInt("id"));
+        editor.putString("username", obj.getString("username"));
+        editor.putString("group", obj.getString("group"));
+        editor.putBoolean("logged", true);
         editor.commit();
 
         finish();
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 

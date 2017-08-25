@@ -13,11 +13,12 @@ import com.mrerror.tm.models.Part;
 
 import java.util.ArrayList;
 
-public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecyclerViewAdapter.ViewHolder>  {
+public class PartsRecyclerViewAdapter extends RecyclerView.Adapter<PartsRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<Part>  mValues;
-    private Context mContext ;
+    private ArrayList<Part> mValues;
+    private Context mContext;
     private PartsFragment.OnListFragmentInteractionListener mListener;
+
     public PartsRecyclerViewAdapter(ArrayList<Part> items, PartsFragment.OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;

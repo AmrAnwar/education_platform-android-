@@ -75,9 +75,9 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     ArrayList<ModelAnswer> examAndOther;
     ArrayList<ModelAnswer> sheetAndOther;
     ProgressBar progressBar;
-    String noInterNed="No InterNet";
-    String no_list="List_is_empty";
-     TextView blankText;
+    String noInterNed = "No InterNet";
+    String no_list = "List_is_empty";
+    TextView blankText;
     SharedPreferences sp;
 
     @Override
@@ -109,13 +109,14 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
         public void onItemClickLestiner(ModelAnswer item);
     }
-//here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
-public boolean isOnline() {
-    ConnectivityManager cm =
-            (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-    return netInfo != null && netInfo.isConnectedOrConnecting();
-}
+
+    //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     public void initializeDb() {
         itemInDataBase = new HashMap<>();
@@ -154,28 +155,26 @@ public boolean isOnline() {
             refrence.setNote(note);
             String type = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_TYPE));
             refrence.setType(type);
-            String location=cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION));
+            String location = cursor.getString(cursor.getColumnIndex(Contract.TableForModelAnswer.COLUMN_FILE_LOCATION));
             refrence.setFileLocal(location);
             refrence.setFileUrl("null");
 
-            if (refrence.getType().equals("Exam"))
-            { exams.add(refrence);
+            if (refrence.getType().equals("Exam")) {
+                exams.add(refrence);
                 examAndOther.add(refrence);
                 examAndsheets.add(refrence);
-            }
-            else if (refrence.getType().equals("Sheet"))
-            {sheets.add(refrence);
+            } else if (refrence.getType().equals("Sheet")) {
+                sheets.add(refrence);
                 examAndsheets.add(refrence);
                 sheetAndOther.add(refrence);
-            }
-            else if (refrence.getType().equals("others"))
-            {  others.add(refrence);
+            } else if (refrence.getType().equals("others")) {
+                others.add(refrence);
                 examAndOther.add(refrence);
                 sheetAndOther.add(refrence);
             }
 
-                arryWithOutNetAll.add(refrence);
-                itemInDataBase.put(id, refrence);
+            arryWithOutNetAll.add(refrence);
+            itemInDataBase.put(id, refrence);
         }
         cursor.close();
 
@@ -191,29 +190,30 @@ public boolean isOnline() {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_modelanswer_with_checbox, container, false);
 
-         swipeRefreshLayout= (SwipeRefreshLayout) rootView.findViewById(R.id.refresher);
-        blankText= (TextView) rootView.findViewById(R.id.blanktextview);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresher);
+        blankText = (TextView) rootView.findViewById(R.id.blanktextview);
 
-        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-              if(isOnline())
-              {   blankText.setVisibility(View.GONE);
-                  progressBar.setVisibility(View.GONE);
+                if (isOnline()) {
+                    blankText.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
-                  reFresh();
-               }
-              else {
-                  if(arryWithOutNetAll.isEmpty()){blankText.setVisibility(View.VISIBLE);
-                  blankText.setText(noInterNed);}
-                  Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
-                  swipeRefreshLayout.setRefreshing(false);
-              }
+                    reFresh();
+                } else {
+                    if (arryWithOutNetAll.isEmpty()) {
+                        blankText.setVisibility(View.VISIBLE);
+                        blankText.setText(noInterNed);
+                    }
+                    Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
-        progressBar= (ProgressBar) rootView.findViewById(R.id.progressbar);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressbar);
 
         cExam = (CheckBox) rootView.findViewById(R.id.exams);
         cSheet = (CheckBox) rootView.findViewById(R.id.sheet);
@@ -239,19 +239,20 @@ public boolean isOnline() {
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-        { super.onScrollStateChanged(recyclerView, newState);
-            int x = linearLayoutManager.findLastVisibleItemPosition();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int x = linearLayoutManager.findLastVisibleItemPosition();
 
-            if (((x % 4 == 0 && x >= 4 && x > scrolFalg)||arryWithOutNetAll.size()<countAll) && !nextURl.equals("null") && !nextURl.isEmpty()) {
-                {
-                    loadMoreData.loadMorData(nextURl);
+                if (((x % 4 == 0 && x >= 4 && x > scrolFalg) || arryWithOutNetAll.size() < countAll) && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                    {
+                        loadMoreData.loadMorData(nextURl);
 
-                    scrolFalg = x;
+                        scrolFalg = x;
+                    }
                 }
             }
-        }
         });
 
 
@@ -280,7 +281,8 @@ public boolean isOnline() {
             } else if (cExam.isChecked()) {
                 if (arryWithOutNetAll.size() < countAll) {
                     getData(urlExamOnly);
-                    scrolFalg = 0;}
+                    scrolFalg = 0;
+                }
                 upDateUi(exams);
             } else if (cSheet.isChecked()) {
                 if (arryWithOutNetAll.size() < countAll) {
@@ -302,7 +304,7 @@ public boolean isOnline() {
     };
 
 
-    private void upDateUi(ArrayList<ModelAnswer> items){
+    private void upDateUi(ArrayList<ModelAnswer> items) {
         mAdabter.addNewData(items);
         mAdabter.notifyDataSetChanged();
         recyclerView.invalidate();
@@ -310,17 +312,19 @@ public boolean isOnline() {
     }
 
     private void getData(String url) {
-        if(isOnline())
-        {
+        if (isOnline()) {
             progressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
-        NetworkConnection.url = url;
-        new NetworkConnection(this).getDataAsJsonObject(getContext());
-        }else {progressBar.setVisibility(View.GONE);
+            NetworkConnection.url = url;
+            new NetworkConnection(this).getDataAsJsonObject(getContext());
+        } else {
+            progressBar.setVisibility(View.GONE);
             blankText.setVisibility(View.INVISIBLE);
-            if(arryWithOutNetAll.isEmpty()){
+            if (arryWithOutNetAll.isEmpty()) {
                 blankText.setVisibility(View.VISIBLE);
-                blankText.setText(noInterNed);}}
+                blankText.setText(noInterNed);
+            }
+        }
     }
 
     @Override
@@ -333,29 +337,28 @@ public boolean isOnline() {
 
     }
 
-    private void reFresh(){
+    private void reFresh() {
 
-        exams=null;
-        sheets=null;
-        others=null;
+        exams = null;
+        sheets = null;
+        others = null;
         scrolFalg = 0;
         examAndsheets = null;
         examAndOther = null;
         sheetAndOther = null;
-        nextURl="";
-        urlNextFilter="";
+        nextURl = "";
+        urlNextFilter = "";
         initializeDb();
         if (cExam.isChecked() && !cOther.isChecked() && !cSheet.isChecked()) {
             getData(urlExamOnly);
-            }else if(cSheet.isChecked() && !cOther.isChecked() && !cExam.isChecked()){
+        } else if (cSheet.isChecked() && !cOther.isChecked() && !cExam.isChecked()) {
             getData(urlSheetOnly);
-        }else if(cOther.isChecked() && !cSheet.isChecked() && !cExam.isChecked()){
+        } else if (cOther.isChecked() && !cSheet.isChecked() && !cExam.isChecked()) {
             getData(urlOtherOnly);
-        }
-        else {
-        getData(url);
+        } else {
+            getData(url);
             swipeRefreshLayout.setRefreshing(false);
-    }
+        }
 
 
     }
@@ -390,79 +393,78 @@ public boolean isOnline() {
             if (itemInDataBase.keySet().contains(id) && itemInDataBase.get(id).getDwonload()) {
 
                 continue;
-            }
-            else if (itemInDataBase.keySet().contains(id)) {continue;}
-            else {
+            } else if (itemInDataBase.keySet().contains(id)) {
+                continue;
+            } else {
                 refrence.setId(id);
                 refrence.setTitle(obj.getString("title"));
                 refrence.setFileUrl(obj.getString("file"));
                 refrence.setNote(obj.getString("note"));
                 refrence.setType(obj.getString("type"));
 
-                if (refrence.getType().equals("Exam"))
-                { exams.add(0,refrence);
-                    examAndOther.add(0,refrence);
-                    examAndsheets.add(0,refrence);
-                }
-               else if (refrence.getType().equals("Sheet"))
-                {sheets.add(0,refrence);
-                    examAndsheets.add(0,refrence);
-                    sheetAndOther.add(0,refrence);
-                }
-              else if (refrence.getType().equals("others"))
-                {  others.add(0,refrence);
-                    examAndOther.add(0,refrence);
-                    sheetAndOther.add(0,refrence);
+                if (refrence.getType().equals("Exam")) {
+                    exams.add(0, refrence);
+                    examAndOther.add(0, refrence);
+                    examAndsheets.add(0, refrence);
+                } else if (refrence.getType().equals("Sheet")) {
+                    sheets.add(0, refrence);
+                    examAndsheets.add(0, refrence);
+                    sheetAndOther.add(0, refrence);
+                } else if (refrence.getType().equals("others")) {
+                    others.add(0, refrence);
+                    examAndOther.add(0, refrence);
+                    sheetAndOther.add(0, refrence);
                 }
 
-                arryWithOutNetAll.add(0,refrence);
+                arryWithOutNetAll.add(0, refrence);
                 itemInDataBase.put(id, refrence);
             }
         }
 
         if (cExam.isChecked() && cSheet.isChecked()) {
-            if(examAndsheets.size()<4&&arryWithOutNetAll.size()<countAll){
-                if(!nextURl.equals("null")&&!nextURl.equals(""))
-                loadMoreData.loadMorData(nextURl);}
-          else {
+            if (examAndsheets.size() < 4 && arryWithOutNetAll.size() < countAll) {
+                if (!nextURl.equals("null") && !nextURl.equals(""))
+                    loadMoreData.loadMorData(nextURl);
+            } else {
 
                 upDateUi(examAndsheets);
             }
         } else if (cExam.isChecked() && cOther.isChecked()) {
 
-            if(examAndOther.size()<4&&arryWithOutNetAll.size()<countAll)
-            {
-                if(!nextURl.equals("null")&&!nextURl.equals(""))
+            if (examAndOther.size() < 4 && arryWithOutNetAll.size() < countAll) {
+                if (!nextURl.equals("null") && !nextURl.equals(""))
                     loadMoreData.loadMorData(nextURl);
-            }else
-            {upDateUi(examAndOther);}
+            } else {
+                upDateUi(examAndOther);
+            }
 
         } else if (cSheet.isChecked() && cOther.isChecked()) {
 
-            if(sheetAndOther.size()<4&&arryWithOutNetAll.size()<countAll) {
-                if(!nextURl.equals("null")&&!nextURl.equals(""))
-                    loadMoreData.loadMorData(nextURl);}
-            else {
+            if (sheetAndOther.size() < 4 && arryWithOutNetAll.size() < countAll) {
+                if (!nextURl.equals("null") && !nextURl.equals(""))
+                    loadMoreData.loadMorData(nextURl);
+            } else {
                 upDateUi(sheetAndOther);
             }
         } else if (cExam.isChecked() && !cOther.isChecked() && !cSheet.isChecked()) {
 
-upDateUi(exams);
+            upDateUi(exams);
         } else if (cSheet.isChecked() && !cOther.isChecked() && !cExam.isChecked()) {
-          upDateUi(sheets);
+            upDateUi(sheets);
         } else if (cOther.isChecked() && !cSheet.isChecked() && !cExam.isChecked()) {
             upDateUi(others);
 
         } else {
-          upDateUi(arryWithOutNetAll);
+            upDateUi(arryWithOutNetAll);
         }
-progressBar.setVisibility(View.GONE);
-        if(arryWithOutNetAll.isEmpty()){
+        progressBar.setVisibility(View.GONE);
+        if (arryWithOutNetAll.isEmpty()) {
             blankText.setVisibility(View.VISIBLE);
             blankText.setText(no_list);
         }
 
     }
+
     @Override
     public void onError(String error) {
         progressBar.setVisibility(View.GONE);

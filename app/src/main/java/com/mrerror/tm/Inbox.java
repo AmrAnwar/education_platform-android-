@@ -29,24 +29,25 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
 
     SharedPreferences sp;
     private RecyclerView recyclerView;
-    String nextURl="";
+    String nextURl = "";
     LoadMoreData loadMoreData;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    int scrolFalg=0;
+    int scrolFalg = 0;
     public static ReplyForStaffActivity.onReply replyListener;
-    String urlForStuff="http://educationplatform.pythonanywhere.com/api/asks/";
+    String urlForStuff = "http://educationplatform.pythonanywhere.com/api/asks/";
     InboxForStaffRecyclerViewAdapter adapter;
     ArrayList<QuestionForStaff> questionsForStuff;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
         scrolFalg = 0;
-        loadMoreData=new LoadMoreData() {
+        loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
-               urlForStuff=nextURl;
-                getData(sp.getString("group",""));
+                urlForStuff = nextURl;
+                getData(sp.getString("group", ""));
             }
         };
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,48 +55,50 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshnewsunit);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         replyListener = this;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    getData(sp.getString("group","normal"));
-                    mSwipeRefreshLayout.setRefreshing(false);
+                getData(sp.getString("group", "normal"));
+                mSwipeRefreshLayout.setRefreshing(false);
 
             }
         });
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-        { super.onScrollStateChanged(recyclerView, newState);
-            int x = linearLayoutManager.findLastVisibleItemPosition();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int x = linearLayoutManager.findLastVisibleItemPosition();
 
-            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
-                {
-                    loadMoreData.loadMorData(nextURl);
+                if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                    {
+                        loadMoreData.loadMorData(nextURl);
 
-                    scrolFalg = x;
+                        scrolFalg = x;
+                    }
                 }
+
+
             }
-
-
-        }  });
-        getData(sp.getString("group","normal"));
+        });
+        getData(sp.getString("group", "normal"));
     }
 
     private void getData(String group) {
         questionsForStuff = new ArrayList<>();
-        if(group.equals("normal")) {
+        if (group.equals("normal")) {
             url = "http://educationplatform.pythonanywhere.com/api/asks/" + sp.getString("username", "");
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
                     JSONArray jsonArray = new JSONArray(result);
                     ArrayList<Question> questions = new ArrayList<>();
-                    for(int i = 0 ; i < jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject questionObj = jsonArray.getJSONObject(i);
                         Question question;
                         question = new Question(questionObj.getString("question"), questionObj.getString("replay")
@@ -113,26 +116,26 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 }
             }).getDataAsJsonArray(this);
 
-        }else{
+        } else {
             url = urlForStuff;
 
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
                     JSONObject jsonObject = new JSONObject(result);
-                    nextURl= jsonObject.getString("next");
+                    nextURl = jsonObject.getString("next");
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-                    for(int i = 0 ; i < jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject questionObj = jsonArray.getJSONObject(i);
                         QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
-                                null,questionObj.getString("edit_url"),questionObj.getString("delete_url")
-                                ,questionObj.getJSONObject("user").getString("username")
-                        ,questionObj.getString("image_sender"),questionObj.getString("file_sender"));
+                                null, questionObj.getString("edit_url"), questionObj.getString("delete_url")
+                                , questionObj.getJSONObject("user").getString("username")
+                                , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
                         questionsForStuff.add(question);
                     }
-                        adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
-                        recyclerView.setAdapter(adapter);
+                    adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
+                    recyclerView.setAdapter(adapter);
                 }
 
                 @Override
@@ -141,7 +144,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 }
             }).getDataAsJsonObject(this);
         }
-        Log.e("urlll",url);
+        Log.e("urlll", url);
     }
 
     @Override
@@ -163,6 +166,6 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
 
     @Override
     public void onReply() {
-        getData(sp.getString("group","normal"));
+        getData(sp.getString("group", "normal"));
     }
 }

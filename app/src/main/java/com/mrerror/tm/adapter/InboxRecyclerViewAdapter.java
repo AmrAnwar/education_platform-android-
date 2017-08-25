@@ -17,11 +17,12 @@ import com.mrerror.tm.models.Question;
 
 import java.util.ArrayList;
 
-public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecyclerViewAdapter.ViewHolder>  {
+public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<Question> mValues;
-    private Context mContext ;
+    private ArrayList<Question> mValues;
+    private Context mContext;
     private UnitFragment.OnListFragmentInteractionListener mListener;
+
     public InboxRecyclerViewAdapter(ArrayList<Question> items) {
         mValues = items;
     }
@@ -37,12 +38,13 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         String quest = mValues.get(position).getQuestion();
-        if(quest.length()>2)
+        if (quest.length() > 2)
             holder.mQuest.setText(mValues.get(position).getQuestion());
         else
             holder.mQuest.setText("you got an answer!");
     }
-    public void newData(ArrayList<Question> items){
+
+    public void newData(ArrayList<Question> items) {
         this.mValues = items;
         this.notifyDataSetChanged();
 
@@ -74,7 +76,7 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
             if (sp.getString("group", "normal").equals("normal")) {
                 mContext.startActivity(new Intent(mContext, ReplyActivity.class).putExtra("question", mValues.get(getAdapterPosition())));
-            }else{
+            } else {
 
             }
         }

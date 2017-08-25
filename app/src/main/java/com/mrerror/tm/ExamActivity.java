@@ -12,8 +12,8 @@ import com.mrerror.tm.fragments.testpartFragment;
 import com.mrerror.tm.models.Test;
 
 public class ExamActivity extends AppCompatActivity implements testpartFragment.OnListFragmentInteractionListener
-,dialogFragment.OnDialogFinishedListener,choicesFragment.OnDialogFinishedListener,completeFragment.OnDialogFinishedListener
-        ,mistakeFragment.OnDialogFinishedListener{
+        , dialogFragment.OnDialogFinishedListener, choicesFragment.OnDialogFinishedListener, completeFragment.OnDialogFinishedListener
+        , mistakeFragment.OnDialogFinishedListener {
     Test test;
 
     @Override
@@ -23,20 +23,18 @@ public class ExamActivity extends AppCompatActivity implements testpartFragment.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         test = getIntent().getParcelableExtra("test");
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,testpartFragment.newInstance(test)).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, testpartFragment.newInstance(test)).commit();
 
     }
-
 
 
     private void goToComplete() {
     }
 
 
-
     @Override
     public void onListFragmentInteraction(Test test, String questionType) {
-        switch (questionType){
+        switch (questionType) {
 
             case "Choices":
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, choicesFragment.newInstance(test)).addToBackStack(null).commit();
@@ -45,7 +43,7 @@ public class ExamActivity extends AppCompatActivity implements testpartFragment.
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, completeFragment.newInstance(test)).addToBackStack(null).commit();
                 break;
             case "Dialog":
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,dialogFragment.newInstance(test)).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, dialogFragment.newInstance(test)).addToBackStack(null).commit();
                 break;
 
             case "Correct the mistake":
@@ -59,7 +57,7 @@ public class ExamActivity extends AppCompatActivity implements testpartFragment.
 
     @Override
     public void onDialogFinished() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,testpartFragment.newInstance(test)).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, testpartFragment.newInstance(test)).commit();
     }
 
 }

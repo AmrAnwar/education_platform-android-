@@ -11,7 +11,7 @@ public class Word implements Parcelable {
     private String word;
     private String translation;
 
-    public Word(String word,String translation){
+    public Word(String word, String translation) {
         this.word = word;
         this.translation = translation;
     }

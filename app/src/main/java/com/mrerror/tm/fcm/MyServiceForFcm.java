@@ -13,10 +13,10 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class MyServiceForFcm extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
-        String refreshToken= FirebaseInstanceId.getInstance().getToken();
+        String refreshToken = FirebaseInstanceId.getInstance().getToken();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("token",refreshToken);
+        editor.putString("token", refreshToken);
         editor.commit();
 
     }

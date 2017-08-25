@@ -28,14 +28,13 @@ public class mistakeFragment extends Fragment {
     private Test mTest;
 
 
-
-    Button submit,next;
+    Button submit, next;
     //for choices
     TextView questionTV;
-    EditText answer1ET,answer2ET;
-    int questionsCounter =0;
+    EditText answer1ET, answer2ET;
+    int questionsCounter = 0;
     TestMistake mistakeQuestion;
-    ImageView answerTrue,answerFalse,answer2True,answer2False;
+    ImageView answerTrue, answerFalse, answer2True, answer2False;
     boolean trueAnswer = true;
     private ArrayList<TestMistake> testMistakeArrayList;
 
@@ -72,10 +71,10 @@ public class mistakeFragment extends Fragment {
         answer1ET = (EditText) v.findViewById(R.id.answer);
         answer2ET = (EditText) v.findViewById(R.id.answer2);
         questionTV = (TextView) v.findViewById(R.id.question);
-        answerFalse = (ImageView)v.findViewById(R.id.answer_false);
-        answer2False = (ImageView)v.findViewById(R.id.answer2_false);
-        answerTrue = (ImageView)v.findViewById(R.id.answer_true);
-        answer2True = (ImageView)v.findViewById(R.id.answer2_true);
+        answerFalse = (ImageView) v.findViewById(R.id.answer_false);
+        answer2False = (ImageView) v.findViewById(R.id.answer2_false);
+        answerTrue = (ImageView) v.findViewById(R.id.answer_true);
+        answer2True = (ImageView) v.findViewById(R.id.answer2_true);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +97,7 @@ public class mistakeFragment extends Fragment {
         mistakeQuestion = testMistakeArrayList.get(questionsCounter);
         questionTV.setText(mistakeQuestion.getSentence());
     }
+
     public void submit(View view) {
         String wrong = answer1ET.getText().toString();
         String correct = answer2ET.getText().toString();
@@ -105,16 +105,16 @@ public class mistakeFragment extends Fragment {
         correct = correct.toLowerCase();
         wrong = wrong.trim();
         correct = correct.trim();
-        if(correct.length()<1 && wrong.length()<1){
+        if (correct.length() < 1 && wrong.length() < 1) {
 
             Snackbar.make(view, "Type your answer!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
-        }else {
+        } else {
             trueAnswer = true;
             if (wrong.equals((mistakeQuestion.getWrong().toLowerCase()).trim())) {
                 answerTrue.setVisibility(View.VISIBLE);
                 answerFalse.setVisibility(View.GONE);
-            }else{
+            } else {
                 answerTrue.setVisibility(View.GONE);
                 answerFalse.setVisibility(View.VISIBLE);
                 trueAnswer = false;
@@ -122,14 +122,14 @@ public class mistakeFragment extends Fragment {
             if (correct.equals((mistakeQuestion.getCorrect().toLowerCase()).trim())) {
                 answer2True.setVisibility(View.VISIBLE);
                 answer2False.setVisibility(View.GONE);
-            }else{
+            } else {
                 answer2True.setVisibility(View.GONE);
                 answer2False.setVisibility(View.VISIBLE);
                 trueAnswer = false;
             }
 
         }
-        if(trueAnswer) {
+        if (trueAnswer) {
             answer1ET.setEnabled(false);
             answer2ET.setEnabled(false);
             submit.setVisibility(View.GONE);
@@ -150,14 +150,15 @@ public class mistakeFragment extends Fragment {
 
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
-        if((questionsCounter+1)<testMistakeArrayList.size()) {
+        if ((questionsCounter + 1) < testMistakeArrayList.size()) {
             ++questionsCounter;
             setCompleteData();
-        }else{
+        } else {
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
             mListener.onDialogFinished();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -174,6 +175,7 @@ public class mistakeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnDialogFinishedListener {
         // TODO: Update argument type and name
         void onDialogFinished();

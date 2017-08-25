@@ -60,6 +60,7 @@ public class GeneralWords extends Fragment {
         tabLayout.setupWithViewPager(mViewPager);
         return v;
     }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -70,7 +71,7 @@ public class GeneralWords extends Fragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch (position){
+            switch (position) {
                 case 0:
                     return WordsFragment.newInstance(mPart.getWordsUrl());
                 case 1:

@@ -61,17 +61,17 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     boolean selectToAttachRecording = false;
     LinearLayout recordLayout;
     ImageButton buttonStart, buttonPlayLastRecordAudio,
-            buttonDeleteLastRecording,playBtn ;
+            buttonDeleteLastRecording, playBtn;
     String AudioSavePathInDevice = null;
-    MediaRecorder mediaRecorder ;
-    Random random ;
+    MediaRecorder mediaRecorder;
+    Random random;
     String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
     public static final int RequestPermissionCode = 1;
-    MediaPlayer mediaPlayer ;
+    MediaPlayer mediaPlayer;
     /// image
     RelativeLayout imgLayout;
-    ImageView selected_img ;
-    ImageView studemtImg ;
+    ImageView selected_img;
+    ImageView studemtImg;
 
     PickResult mSelected;
     private MediaPlayer mediaPlayer2;
@@ -85,12 +85,12 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-         questionForStaff = getIntent().getParcelableExtra("question");
+        questionForStaff = getIntent().getParcelableExtra("question");
         Button replyBtn = (Button) findViewById(R.id.send);
         TextView question = (TextView) findViewById(R.id.question);
         TextView username = (TextView) findViewById(R.id.username);
         question.setText(questionForStaff.getQuestion());
-        username.setText("By : "+questionForStaff.getUsername());
+        username.setText("By : " + questionForStaff.getUsername());
         reply = (EditText) findViewById(R.id.reply);
         replyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,9 +115,9 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                            if(AudioSavePathInDevice!=null)
+                            if (AudioSavePathInDevice != null)
                                 entity.addPart("file_staff", new FileBody(new File(AudioSavePathInDevice)));
-                            if(mSelected!=null)
+                            if (mSelected != null)
                                 entity.addPart("image_staff", new FileBody(new File(mSelected.getPath())));
 //                    entity.addPart("myAudioFile", new FileBody(audioFile));
 
@@ -126,7 +126,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                             try {
                                 response = httpclient.execute(httput);
                                 String responseBody = EntityUtils.toString(response.getEntity());
-                                Log.e("Respone",responseBody);
+                                Log.e("Respone", responseBody);
                                 progressDialog.dismiss();
                                 ReplyForStaffActivity.this.runOnUiThread(new Runnable() {
                                     @Override
@@ -161,31 +161,18 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         // play record from student
         playBtn = (ImageButton) findViewById(R.id.play_btn);
 
-        if(questionForStaff.getStudentRec().length()>5){
+        if (questionForStaff.getStudentRec().length() > 5) {
             playBtn.setVisibility(View.VISIBLE);
-            mediaPlayer2 = new MediaPlayer();
-            try {
-                mediaPlayer2.setDataSource(questionForStaff.getStudentRec());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    playBtn.setImageResource(R.drawable.ic_play);
-                    playing = false;
-                }
-            });
         }
         // Recorder
         recordLayout = (LinearLayout) findViewById(R.id.record_layout);
         imgLayout = (RelativeLayout) findViewById(R.id.img_layout);
         buttonStart = (ImageButton) findViewById(R.id.start_rec_btn);
         buttonPlayLastRecordAudio = (ImageButton) findViewById(R.id.play_rec_btn);
-        buttonDeleteLastRecording = (ImageButton)findViewById(R.id.remove_rec_btn);
-        selected_img = (ImageView)findViewById(R.id.selected_img);
-        studemtImg = (ImageView)findViewById(R.id.questionImg);
-        if(questionForStaff.getStudentImg().length()>4){
+        buttonDeleteLastRecording = (ImageButton) findViewById(R.id.remove_rec_btn);
+        selected_img = (ImageView) findViewById(R.id.selected_img);
+        studemtImg = (ImageView) findViewById(R.id.questionImg);
+        if (questionForStaff.getStudentImg().length() > 4) {
             studemtImg.setVisibility(View.VISIBLE);
             Picasso.with(this).load(questionForStaff.getStudentImg()).into(studemtImg);
         }
@@ -224,7 +211,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                         requestPermission();
                     }
 
-                }else{
+                } else {
                     mediaRecorder.stop();
                     buttonStart.setImageResource(R.drawable.ic_record);
                     start_state = false;
@@ -242,7 +229,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
             @Override
             public void onClick(View view) throws IllegalArgumentException,
                     SecurityException, IllegalStateException {
-                if(!play_state) {
+                if (!play_state) {
                     buttonStart.setEnabled(false);
                     buttonDeleteLastRecording.setEnabled(false);
                     buttonPlayLastRecordAudio.setImageResource(R.drawable.ic_stop);
@@ -258,14 +245,14 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                     mediaPlayer.start();
                     Toast.makeText(ReplyForStaffActivity.this, "Recording Playing",
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     buttonStart.setEnabled(true);
                     buttonDeleteLastRecording.setEnabled(true);
                     buttonPlayLastRecordAudio.setImageResource(R.drawable.ic_play);
                     play_state = false;
                     buttonPlayLastRecordAudio.setEnabled(true);
 
-                    if(mediaPlayer != null){
+                    if (mediaPlayer != null) {
                         mediaPlayer.stop();
                         mediaPlayer.release();
                         MediaRecorderReady();
@@ -280,7 +267,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                 Toast.makeText(ReplyForStaffActivity.this, "clicked", Toast.LENGTH_SHORT).show();
                 File file = new File(AudioSavePathInDevice);
                 boolean deleted = file.delete();
-                if(deleted){
+                if (deleted) {
                     Toast.makeText(ReplyForStaffActivity.this, "the file is deleted", Toast.LENGTH_SHORT).show();
                     AudioSavePathInDevice = null;
                 }
@@ -290,22 +277,22 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     }
 
     //Recorder
-    public void MediaRecorderReady(){
-        mediaRecorder=new MediaRecorder();
+    public void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
 
-    public String CreateRandomAudioFileName(int string){
-        StringBuilder stringBuilder = new StringBuilder( string );
-        int i = 0 ;
-        while(i < string ) {
+    public String CreateRandomAudioFileName(int string) {
+        StringBuilder stringBuilder = new StringBuilder(string);
+        int i = 0;
+        while (i < string) {
             stringBuilder.append(RandomAudioFileName.
                     charAt(random.nextInt(RandomAudioFileName.length())));
 
-            i++ ;
+            i++;
         }
         return stringBuilder.toString();
     }
@@ -320,7 +307,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
-                if (grantResults.length> 0) {
+                if (grantResults.length > 0) {
                     boolean StoragePermission = grantResults[0] ==
                             PackageManager.PERMISSION_GRANTED;
                     boolean RecordPermission = grantResults[1] ==
@@ -330,7 +317,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                         Toast.makeText(ReplyForStaffActivity.this, "Permission Granted",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(ReplyForStaffActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
+                        Toast.makeText(ReplyForStaffActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -347,10 +334,10 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     }
 
     public void useRecord(View view) {
-        if(!selectToAttachRecording) {
+        if (!selectToAttachRecording) {
             recordLayout.setVisibility(View.VISIBLE);
             selectToAttachRecording = true;
-        }else{
+        } else {
             recordLayout.setVisibility(View.GONE);
             selectToAttachRecording = false;
         }
@@ -389,25 +376,48 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         mSelected = null;
         selected_img.setImageResource(R.drawable.ic_close);
     }
+
     boolean playing = false;
-    public void playRec(View view) {
-            if(!playing){
-                try {
-                    mediaPlayer2.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+    public void playRec(View view)  {
+        if (!playing) {
+            mediaPlayer2 = new MediaPlayer();
+            Log.e("link",questionForStaff.getStudentRec());
+            try {
+                mediaPlayer2.setDataSource(questionForStaff.getStudentRec());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    playBtn.setImageResource(R.drawable.ic_play);
+                    playing = false;
                 }
-                mediaPlayer2.start();
-                playBtn.setImageResource(R.drawable.ic_stop);
+            });
+            try {
+                mediaPlayer2.prepare();
+
+            mediaPlayer2.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+
+                    mediaPlayer2.start();
+                }
+            });
+            playBtn.setImageResource(R.drawable.ic_stop);
             playing = true;
-            }else {
-                playBtn.setImageResource(R.drawable.ic_play);
-                mediaPlayer2.stop();
-                playing = false;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            playBtn.setImageResource(R.drawable.ic_play);
+            mediaPlayer2.stop();
+            playing = false;
         }
     }
 
-    public interface onReply{
+    public interface onReply {
         void onReply();
     }
 }

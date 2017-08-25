@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by ahmed on 30/07/17.
  */
 
-public class TestChoices implements Parcelable{
+public class TestChoices implements Parcelable {
     private String question;
     private String choice1;
     private String choice2;

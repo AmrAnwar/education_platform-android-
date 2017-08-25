@@ -40,8 +40,8 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     private ArrayList<String> mTestsTitlesList = null;
     private TestsRecyclerViewAdapter adapter;
     ProgressBar mProgressBar;
-    String noInterNet="No_InterNet";
-    String no_list="List_is_empty";
+    String noInterNet = "No_InterNet";
+    String no_list = "List_is_empty";
     TextView blankText;
 
     /**
@@ -74,17 +74,17 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_testpart_list, container, false);
-        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
-        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             mTestsList = new ArrayList<>();
             mTestsTitlesList = new ArrayList<>();
 
-            adapter =new TestsRecyclerViewAdapter(mTestsTitlesList,mTestsList);
+            adapter = new TestsRecyclerViewAdapter(mTestsTitlesList, mTestsList);
             getData();
             recyclerView.setAdapter(adapter);
         }
@@ -92,20 +92,20 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     }
 
     private void getData() {
-        if(isOnline()) {
+        if (isOnline()) {
             mProgressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
 
             url = mTestUrl;
             new NetworkConnection(this).getDataAsJsonObject(getContext());
-        }
-        else {
+        } else {
             mProgressBar.setVisibility(View.GONE);
             blankText.setText(noInterNet);
             blankText.setVisibility(View.VISIBLE);
 
         }
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -116,55 +116,55 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject testsObj = new JSONObject(result);
-        if(mTestsList.size()>0)
+        if (mTestsList.size() > 0)
             mTestsList = new ArrayList<>();
-        if(mTestsTitlesList.size()>0)
+        if (mTestsTitlesList.size() > 0)
             mTestsTitlesList = new ArrayList<>();
         JSONArray testsJsonArray = testsObj.getJSONArray("tests");
-        for(int i = 0 ; i < testsJsonArray.length();i++){
+        for (int i = 0; i < testsJsonArray.length(); i++) {
             JSONObject testObj = testsJsonArray.getJSONObject(i);
             String testTitle = testObj.getString("title");
             mTestsTitlesList.add(testTitle);
             JSONArray choicesArrObj = testObj.getJSONArray("choices");
             ArrayList<TestChoices> testChoicesArrayList = null;
-            for(int j = 0 ; j<choicesArrObj.length();j++){
-                if(testChoicesArrayList == null)
+            for (int j = 0; j < choicesArrObj.length(); j++) {
+                if (testChoicesArrayList == null)
                     testChoicesArrayList = new ArrayList<>();
                 JSONObject choiceObj = choicesArrObj.getJSONObject(j);
-                TestChoices choice = new TestChoices(choiceObj.getString("question"),choiceObj.getString("choice_one"),choiceObj.getString("choice_two"),
-                        choiceObj.getString("choice_three"),choiceObj.getString("answer"));
+                TestChoices choice = new TestChoices(choiceObj.getString("question"), choiceObj.getString("choice_one"), choiceObj.getString("choice_two"),
+                        choiceObj.getString("choice_three"), choiceObj.getString("answer"));
                 testChoicesArrayList.add(choice);
             }
             JSONArray completeArrObj = testObj.getJSONArray("complete");
             ArrayList<TestComplete> testCompleteArrayList = null;
-            for(int j = 0 ; j<completeArrObj.length();j++){
-                if(testCompleteArrayList == null)
+            for (int j = 0; j < completeArrObj.length(); j++) {
+                if (testCompleteArrayList == null)
                     testCompleteArrayList = new ArrayList<>();
                 JSONObject completeObj = completeArrObj.getJSONObject(j);
-                TestComplete complete = new TestComplete(completeObj.getString("description"),completeObj.getString("answer"));
+                TestComplete complete = new TestComplete(completeObj.getString("description"), completeObj.getString("answer"));
                 testCompleteArrayList.add(complete);
             }
             JSONArray dialogArrObj = testObj.getJSONArray("dialog");
             ArrayList<TestDialog> testDialogArrayList = null;
-            for(int j = 0 ; j<dialogArrObj.length();j++){
-                if(testDialogArrayList == null)
+            for (int j = 0; j < dialogArrObj.length(); j++) {
+                if (testDialogArrayList == null)
                     testDialogArrayList = new ArrayList<>();
                 JSONObject dialogObj = dialogArrObj.getJSONObject(j);
-                TestDialog dialog = new TestDialog(dialogObj.getString("description"),dialogObj.getString("first_speaker")
-                        ,dialogObj.getString("second_speaker"),dialogObj.getString("location"));
+                TestDialog dialog = new TestDialog(dialogObj.getString("description"), dialogObj.getString("first_speaker")
+                        , dialogObj.getString("second_speaker"), dialogObj.getString("location"));
                 testDialogArrayList.add(dialog);
             }
             JSONArray mistakeArrObj = testObj.getJSONArray("mistake");
             ArrayList<TestMistake> testMistakeArrayList = null;
-            for(int j = 0 ; j<mistakeArrObj.length();j++){
-                if(testMistakeArrayList == null)
+            for (int j = 0; j < mistakeArrObj.length(); j++) {
+                if (testMistakeArrayList == null)
                     testMistakeArrayList = new ArrayList<>();
                 JSONObject mistakeObj = mistakeArrObj.getJSONObject(j);
-                TestMistake mistake = new TestMistake(mistakeObj.getString("description"),mistakeObj.getString("replace"),
+                TestMistake mistake = new TestMistake(mistakeObj.getString("description"), mistakeObj.getString("replace"),
                         mistakeObj.getString("answer"));
                 testMistakeArrayList.add(mistake);
             }
-            Test test = new Test(testTitle,testChoicesArrayList,testCompleteArrayList,testDialogArrayList,testMistakeArrayList);
+            Test test = new Test(testTitle, testChoicesArrayList, testCompleteArrayList, testDialogArrayList, testMistakeArrayList);
             mTestsList.add(test);
         }
         adapter.notifyDataSetChanged();
@@ -172,8 +172,8 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
         blankText.setVisibility(View.GONE);
 
 
-
     }
+
     @Override
     public void onError(String error) {
         mProgressBar.setVisibility(View.GONE);

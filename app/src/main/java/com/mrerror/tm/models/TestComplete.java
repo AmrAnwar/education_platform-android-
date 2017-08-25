@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by ahmed on 30/07/17.
  */
 
-public class TestComplete implements Parcelable{
+public class TestComplete implements Parcelable {
     private String sentence;
     private String answer;
 

@@ -40,40 +40,45 @@ public class MyMessageService extends FirebaseMessagingService {
 
         }
     }
+
     private void sendNotification(Map<String, String> data) {
 
-          Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
 
-      String mWhere=data.get("where");
-        if(mWhere.equals("question")){
-             intent = new Intent(this, Inbox.class);
+        String mWhere = data.get("where");
+        if (mWhere.equals("question")) {
+            intent = new Intent(this, Inbox.class);
 
-        }else if(mWhere.equals("news")){
-             intent = new Intent(this, MainActivity.class);
-            intent.putExtra("where",data.get("where"));
+        } else if (mWhere.equals("news")) {
+            intent = new Intent(this, MainActivity.class);
+            intent.putExtra("where", data.get("where"));
 
 
-        }else if(mWhere.equals("answers")) {
-             intent = new Intent(this, MainActivity.class);
+        } else if (mWhere.equals("answers")) {
+            intent = new Intent(this, MainActivity.class);
 
             intent.putExtra("where", data.get("where"));
         }
 
-        PendingIntent pendingIntent= PendingIntent.getActivity(this, 0 , intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
 
-        String message="";
-        String message_title="";
+        String message = "";
+        String message_title = "";
 
-        if(data.keySet().contains("message_body")){
-            message=data.get("message_body");
-        }else {message="New notification";}
+        if (data.keySet().contains("message_body")) {
+            message = data.get("message_body");
+        } else {
+            message = "New notification";
+        }
 
-        if(data.keySet().contains("message_title")){
-            message_title =data.get("message_title");
+        if (data.keySet().contains("message_title")) {
+            message_title = data.get("message_title");
 
-        }else {message_title="TM";}
+        } else {
+            message_title = "TM";
+        }
 
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

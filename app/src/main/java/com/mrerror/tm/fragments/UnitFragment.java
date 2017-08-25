@@ -41,14 +41,13 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     private OnListFragmentInteractionListener mListener;
     private ProgressDialog progressdialog;
     LoadMoreData loadMoreData;
-    String nextURl="";
-    int scrolFalg=0;
-    String noInterNet="No_InterNet";
-    String no_list="List_is_empty";
+    String nextURl = "";
+    int scrolFalg = 0;
+    String noInterNet = "No_InterNet";
+    String no_list = "List_is_empty";
     TextView blankText;
     ProgressBar mProgressBar;
     SwipeRefreshLayout mSwipeRefreshLayout;
-
 
 
     /**
@@ -74,7 +73,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
         if (getArguments() != null) {
             mLink = getArguments().getString(ARG_TYPE);
-            scrolFalg=0;
+            scrolFalg = 0;
             unitsArrayList = new ArrayList<>();
         }
     }
@@ -83,9 +82,9 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
-        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
-        loadMoreData=new LoadMoreData() {
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
+        loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
 
@@ -93,18 +92,17 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
 
             }
         };
-        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isOnline())
-                {   blankText.setVisibility(View.GONE);
+                if (isOnline()) {
+                    blankText.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.GONE);
                     unitsArrayList = new ArrayList<>();
-                    scrolFalg=0;
+                    scrolFalg = 0;
                     getData(mLink);
-                }
-                else {
+                } else {
 
                     Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -113,51 +111,53 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
         });
         // Set the adapter
 
-            unitsArrayList = new ArrayList<>();
-            Context context = view.getContext();
-         final    LinearLayoutManager linearLayoutManager=new LinearLayoutManager(context);
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-                recyclerView.setLayoutManager(linearLayoutManager);
+        unitsArrayList = new ArrayList<>();
+        Context context = view.getContext();
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int x = linearLayoutManager.findLastVisibleItemPosition();
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        { @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-        { super.onScrollStateChanged(recyclerView, newState);
-            int x = linearLayoutManager.findLastVisibleItemPosition();
+                if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
+                    {
+                        loadMoreData.loadMorData(nextURl);
 
-            if (x % 4 == 0 && x >= 4 && x > scrolFalg && !nextURl.equals("null") && !nextURl.isEmpty()) {
-                {
-                    loadMoreData.loadMorData(nextURl);
-
-                    scrolFalg = x;
+                        scrolFalg = x;
+                    }
                 }
+
+
             }
+        });
 
-
-        }  });
-
-            adapter =new UnitsRecyclerViewAdapter(unitsArrayList,mListener);
-            getData(mLink);
-            recyclerView.setAdapter(adapter);
+        adapter = new UnitsRecyclerViewAdapter(unitsArrayList, mListener);
+        getData(mLink);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
 
     private void getData(String link) {
-        if(isOnline()) {
+        if (isOnline()) {
             mProgressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
 
             url = link;
             new NetworkConnection(this).getDataAsJsonObject(getContext());
-        }else {
+        } else {
             mProgressBar.setVisibility(View.GONE);
             blankText.setText(noInterNet);
             blankText.setVisibility(View.VISIBLE);
 
         }
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -169,31 +169,31 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     public void onCompleted(String result) throws JSONException {
 
         JSONObject unitsObj = new JSONObject(result);
-        nextURl=unitsObj.getString("next");
+        nextURl = unitsObj.getString("next");
         mSwipeRefreshLayout.setRefreshing(false);
 
         JSONArray resultArray = unitsObj.getJSONArray("results");
-        for(int i = 0 ; i < resultArray.length();i++) {
+        for (int i = 0; i < resultArray.length(); i++) {
             JSONObject obj = resultArray.getJSONObject(i);
             ArrayList<Part> partsList = new ArrayList<>();
             JSONArray partsArrayJson = obj.getJSONArray("parts");
-            for(int j = 0 ; j < partsArrayJson.length();j++) {
+            for (int j = 0; j < partsArrayJson.length(); j++) {
                 JSONObject partObj = partsArrayJson.getJSONObject(j);
                 String partTitle = partObj.getString("title");
                 String wordsLink = partObj.getString("urlwords");
                 String testLink = partObj.getString("urltests");
-                Part part = new Part(partTitle,wordsLink,testLink);
+                Part part = new Part(partTitle, wordsLink, testLink);
                 partsList.add(part);
             }
 
-            Unit unit = new Unit(obj.getString("title"),partsList);
+            Unit unit = new Unit(obj.getString("title"), partsList);
 
             unitsArrayList.add(unit);
         }
         adapter.newData(unitsArrayList);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-        if(unitsArrayList.isEmpty()){
+        if (unitsArrayList.isEmpty()) {
             blankText.setText(no_list);
             blankText.setVisibility(View.VISIBLE);
 
@@ -224,6 +224,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
         super.onDetach();
         mListener = null;
     }
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Unit item);

@@ -37,8 +37,8 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     private String mWordsUrl = null;
     private ArrayList<Word> mWordsList = null;
     private WordsRecyclerViewAdapter adapter;
-    String noInterNet="No_InterNet";
-    String no_list="List_is_empty";
+    String noInterNet = "No_InterNet";
+    String no_list = "List_is_empty";
     TextView blankText;
     ProgressBar mProgressBar;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -59,6 +59,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,21 +73,20 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
-        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
-        mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshnewsunit);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isOnline())
-                {   blankText.setVisibility(View.GONE);
+                if (isOnline()) {
+                    blankText.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.GONE);
                     mWordsList = new ArrayList<>();
 
                     getData();
                     mSwipeRefreshLayout.setRefreshing(false);
-                }
-                else {
+                } else {
 
                     Toast.makeText(getContext(), "No InterNet", Toast.LENGTH_SHORT).show();
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -95,27 +95,27 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         });
         // Set the adapter
 
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mWordsList = new ArrayList<>();
-            adapter =new WordsRecyclerViewAdapter(mWordsList);
-            FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
-            fab.setVisibility(View.GONE);
-            getData();
-            recyclerView.setAdapter(adapter);
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mWordsList = new ArrayList<>();
+        adapter = new WordsRecyclerViewAdapter(mWordsList);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+        getData();
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
 
     private void getData() {
-        if(isOnline()) {
+        if (isOnline()) {
             mProgressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
 
             url = mWordsUrl;
             new NetworkConnection(this).getDataAsJsonObject(getContext());
-        }else {
+        } else {
             mProgressBar.setVisibility(View.GONE);
             blankText.setText(noInterNet);
             blankText.setVisibility(View.VISIBLE);
@@ -123,28 +123,30 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         }
 
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
     @Override
     public void onCompleted(String result) throws JSONException {
         JSONObject unitsObj = new JSONObject(result);
         mSwipeRefreshLayout.setRefreshing(false);
-        if(mWordsList.size()>0)
+        if (mWordsList.size() > 0)
             mWordsList = new ArrayList<>();
         JSONArray wordsJsonArray = unitsObj.getJSONArray("words");
-        for(int i = 0 ; i < wordsJsonArray.length();i++){
+        for (int i = 0; i < wordsJsonArray.length(); i++) {
             JSONObject wordObj = wordsJsonArray.getJSONObject(i);
-            Word word = new Word(wordObj.getString("name"),wordObj.getString("translation"));
+            Word word = new Word(wordObj.getString("name"), wordObj.getString("translation"));
             mWordsList.add(word);
         }
         adapter.notifyDataSetChanged();
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-        if(mWordsList.isEmpty()){
+        if (mWordsList.isEmpty()) {
             blankText.setText(no_list);
             blankText.setVisibility(View.VISIBLE);
 
@@ -162,7 +164,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
     @Override
     public void onDetach() {
         super.onDetach();
-        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
     }
 }

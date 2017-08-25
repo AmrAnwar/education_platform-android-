@@ -23,11 +23,12 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<InboxForStaffRecyclerViewAdapter.ViewHolder>  {
+public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<InboxForStaffRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<QuestionForStaff> mValues;
-    private Context mContext ;
+    private ArrayList<QuestionForStaff> mValues;
+    private Context mContext;
     private UnitFragment.OnListFragmentInteractionListener mListener;
+
     public InboxForStaffRecyclerViewAdapter(ArrayList<QuestionForStaff> items) {
         mValues = items;
     }
@@ -72,7 +73,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
 
         @Override
         public void onClick(View v) {
-            if(v.equals(mDelete)){
+            if (v.equals(mDelete)) {
                 final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
                 alertBuilder.setTitle("Delete Question");
                 alertBuilder.setMessage("Are you sure you want to delete this question?\n" +
@@ -91,7 +92,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        ((Inbox)mContext).finish();
+                                        ((Inbox) mContext).finish();
                                     }
                                 });
                                 dialog.show();
@@ -101,7 +102,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
                             public void onError(String error) {
                                 Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
                             }
-                        }).deleteData(mContext,mValues.get(getAdapterPosition()).getLinkToDelete());
+                        }).deleteData(mContext, mValues.get(getAdapterPosition()).getLinkToDelete());
                     }
                 });
                 alertBuilder.setNegativeButton("Cancel!", new DialogInterface.OnClickListener() {
@@ -111,7 +112,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
                     }
                 });
                 alertBuilder.show();
-            }else {
+            } else {
                 mContext.startActivity(new Intent(mContext, ReplyForStaffActivity.class)
                         .putExtra("question", mValues.get(getAdapterPosition())));
             }

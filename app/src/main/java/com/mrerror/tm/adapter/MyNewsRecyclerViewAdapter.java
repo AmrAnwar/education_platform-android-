@@ -18,12 +18,13 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
-public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>  {
+public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<News> mValues;
-    private Context mContext ;
+    private ArrayList<News> mValues;
+    private Context mContext;
     private OnListFragmentInteractionListener mListener;
-    public MyNewsRecyclerViewAdapter(ArrayList<News> items,OnListFragmentInteractionListener listener) {
+
+    public MyNewsRecyclerViewAdapter(ArrayList<News> items, OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
     }
@@ -41,14 +42,14 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 //        holder.mImgView.getLayoutParams().height = 650;
 //        holder.mImgView.getLayoutParams().width = 830;
         holder.mItem = mValues.get(position);
-        if(holder.mItem.getFile_url().length()<=0 || holder.mItem.getFile_url() == null ||
-                holder.mItem.getFile_url().equals("null")){
+        if (holder.mItem.getFile_url().length() <= 0 || holder.mItem.getFile_url() == null ||
+                holder.mItem.getFile_url().equals("null")) {
             holder.mFileView.setVisibility(View.GONE);
         }
-        if(holder.mItem.getImg_url().length()<=0 || holder.mItem.getImg_url() == null||
-                holder.mItem.getImg_url().equals("null")){
+        if (holder.mItem.getImg_url().length() <= 0 || holder.mItem.getImg_url() == null ||
+                holder.mItem.getImg_url().equals("null")) {
             holder.mImgView.setVisibility(View.GONE);
-        }else{
+        } else {
             Target toolbarlayoutTarget = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -65,7 +66,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
                 }
             };
             holder.mImgView.setTag(toolbarlayoutTarget);
-            Picasso.with(mContext).load(holder.mItem.getImg_url()).into((Target)holder.mImgView.getTag());
+            Picasso.with(mContext).load(holder.mItem.getImg_url()).into((Target) holder.mImgView.getTag());
 
         }
 
@@ -73,7 +74,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         holder.mContentView.setText(mValues.get(position).getContent());
 
     }
-    public void newData(ArrayList<News> items){
+
+    public void newData(ArrayList<News> items) {
         this.mValues = items;
         this.notifyDataSetChanged();
 
@@ -107,8 +109,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
         @Override
         public void onClick(View v) {
-            if(!(mItem.getFile_url().length()<=0 || mItem.getFile_url() == null ||
-                    mItem.getFile_url().equals("null"))){
+            if (!(mItem.getFile_url().length() <= 0 || mItem.getFile_url() == null ||
+                    mItem.getFile_url().equals("null"))) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
@@ -117,6 +119,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             }
         }
     }
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(News item);

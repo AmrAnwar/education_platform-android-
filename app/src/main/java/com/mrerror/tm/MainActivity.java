@@ -37,19 +37,18 @@ import org.json.JSONException;
 
 import static com.mrerror.tm.ReadPDFactivity.checkid;
 
-public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
-PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick
-   {
+public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener,
+        PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ModelAnswerFragment.OnItemClick {
 
-        SharedPreferences sp;
-        SharedPreferences.Editor editor;
-        ProgressBar mProgressBar;
-        TextView blankText;
-       private static final int REQUEST_EXTERNAL_STORAGE = 12;
-       private static String[] PERMISSIONS_STORAGE = {
-               Manifest.permission.READ_EXTERNAL_STORAGE,
-               Manifest.permission.WRITE_EXTERNAL_STORAGE
-       };
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    ProgressBar mProgressBar;
+    TextView blankText;
+    private static final int REQUEST_EXTERNAL_STORAGE = 12;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -59,57 +58,55 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_news:
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
                         getSupportFragmentManager().popBackStack();
                     }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
                     return true;
                 case R.id.navigation_words:
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
                         getSupportFragmentManager().popBackStack();
                     }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
                     return true;
 //                case R.id.inbox:
 //                    mTextMessage.setText(R.string.title_inbox);
 //                    return true;
                 case R.id.model_answer:
-                    for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
                         getSupportFragmentManager().popBackStack();
                     }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
-                   loadModelAnswerFragment();
+                    loadModelAnswerFragment();
                     return true;
             }
             return false;
         }
 
     };
-public  void loadModelAnswerFragment(){
-    getSupportFragmentManager().beginTransaction().replace(R.id.content,new ModelAnswerFragment()).commit();
 
-}
+    public void loadModelAnswerFragment() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
 
-
-
+    }
 
 
-       @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-         mProgressBar= (ProgressBar) findViewById(R.id.progressbar);
-         blankText=(TextView) findViewById(R.id.no_list_net);
-           mProgressBar.setVisibility(View.GONE);
-           blankText.setVisibility(View.GONE);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        blankText = (TextView) findViewById(R.id.no_list_net);
+        mProgressBar.setVisibility(View.GONE);
+        blankText.setVisibility(View.GONE);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -117,7 +114,7 @@ public  void loadModelAnswerFragment(){
         FAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,AskActivity.class));
+                startActivity(new Intent(MainActivity.this, AskActivity.class));
             }
         });
 
@@ -129,7 +126,7 @@ public  void loadModelAnswerFragment(){
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -138,43 +135,41 @@ public  void loadModelAnswerFragment(){
 
 //
 
-           //Notifigation Handel
-           new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
-               @Override
-               public void onCompleted(String result) throws JSONException {
+        //Notifigation Handel
+        new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+            @Override
+            public void onCompleted(String result) throws JSONException {
 
-               }
+            }
 
-               @Override
-               public void onError(String error) {
+            @Override
+            public void onError(String error) {
 
-               }
-           }).
-                   patchData(this,"http://educationplatform.pythonanywhere.com/api/users/" + sp.getString("username", "")+"/profile",
-                           new String[]{"token"},new String[]{sp.getString("token","")});
+            }
+        }).
+                patchData(this, "http://educationplatform.pythonanywhere.com/api/users/" + sp.getString("username", "") + "/profile",
+                        new String[]{"token"}, new String[]{sp.getString("token", "")});
 
-           String group=sp.getString("group","normal");
-           if(group.equals("normal")){
-               FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
+        String group = sp.getString("group", "normal");
+        if (group.equals("normal")) {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
 
-           }else {
-               FirebaseMessaging.getInstance().subscribeToTopic("new_question");
+        } else {
+            FirebaseMessaging.getInstance().subscribeToTopic("new_question");
 
-           }
+        }
 
         FirebaseMessaging.getInstance().subscribeToTopic("news");
-           FirebaseMessaging.getInstance().subscribeToTopic("answers");
-        Bundle extras=getIntent().getExtras();
-        if(extras !=null ){
-            if(extras.getString("where").equals("answers")){
+        FirebaseMessaging.getInstance().subscribeToTopic("answers");
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.getString("where").equals("answers")) {
                 loadModelAnswerFragment();
-            }else if(extras.getString("where").equals("news")){
-                getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
+            } else if (extras.getString("where").equals("news")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
             }
         }
     }
-
-
 
 
     // For unit list
@@ -183,7 +178,7 @@ public  void loadModelAnswerFragment(){
     public void onListFragmentInteraction(Unit item) {
         getSupportFragmentManager().
                 beginTransaction()
-                .replace(R.id.content,PartsFragment.newInstance(item.getParts()))
+                .replace(R.id.content, PartsFragment.newInstance(item.getParts()))
                 .addToBackStack(null).commit();
     }
 
@@ -214,14 +209,14 @@ public  void loadModelAnswerFragment(){
         int id = item.getItemId();
 
         if (id == R.id.nav_inbox) {
-            startActivity(new Intent(this,Inbox.class));
+            startActivity(new Intent(this, Inbox.class));
         } else if (id == R.id.nav_about) {
-            startActivity(new Intent(this,AboutActivity.class));
+            startActivity(new Intent(this, AboutActivity.class));
 
         } else if (id == R.id.nav_logout) {
-            editor.putBoolean("logged",false);
+            editor.putBoolean("logged", false);
             editor.commit();
-            startActivity(new Intent(this,LoginActivity2.class));
+            startActivity(new Intent(this, LoginActivity2.class));
             this.finish();
         }
 

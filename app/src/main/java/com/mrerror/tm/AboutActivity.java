@@ -30,7 +30,7 @@ public class AboutActivity extends AppCompatActivity {
         });
     }
 
-    private void openTeamLink(){
+    private void openTeamLink() {
         String OurUrl = "http://amranwar00.pythonanywhere.com/posts/phontam-team-for-software-solution/";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(OurUrl));

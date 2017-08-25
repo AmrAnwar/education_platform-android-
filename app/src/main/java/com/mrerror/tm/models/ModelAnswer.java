@@ -8,18 +8,18 @@ import java.io.Serializable;
  * Created by kareem on 7/24/2017.
  */
 
-public class ModelAnswer implements Serializable{
-    private   String title;
-    private  String note;
+public class ModelAnswer implements Serializable {
+    private String title;
+    private String note;
     private String type;
     private String fileUrl;
-    private  int color;
+    private int color;
     private int id;
     private String filePath;
     private Boolean dwonload;
     String fileExtention;
     String fileLocal;
-  private   boolean downloadingNow;
+    private boolean downloadingNow;
 
 
     public void setDownloadingNow(boolean downloadingNow) {
@@ -63,10 +63,12 @@ public class ModelAnswer implements Serializable{
     }
 
     public Boolean getDwonload() {
-        if(getFilePath()==null){
+        if (getFilePath() == null) {
 
-            dwonload=false;
-        }else {dwonload= true;}
+            dwonload = false;
+        } else {
+            dwonload = true;
+        }
 
         return dwonload;
     }
@@ -105,18 +107,19 @@ public class ModelAnswer implements Serializable{
 
     public int getColor() {
 
-        if(getType().equals("Sheet")){
-            color= R.color.sheet;
-        }else if(getType().equals("Exam"))
-        { color=R.color.exam;}
+        if (getType().equals("Sheet")) {
+            color = R.color.sheet;
+        } else if (getType().equals("Exam")) {
+            color = R.color.exam;
+        }
         return color;
     }
 
-    public String getFileName(){
-      if(!fileUrl.equals("null"))  return fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+    public String getFileName() {
+        if (!fileUrl.equals("null")) return fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
         else {
-        return getFilePath().substring(getFilePath().lastIndexOf('/')+1);
+            return getFilePath().substring(getFilePath().lastIndexOf('/') + 1);
 
-      }
+        }
     }
 }

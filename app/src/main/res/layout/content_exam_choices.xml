@@ -18,8 +18,8 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:textStyle="bold"
         android:textColor="@color/primary_darker"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
+
     <TextView
         android:layout_below="@+id/question"
         android:id="@+id/answers_label"
@@ -28,100 +28,103 @@
         android:text="Choices"
         android:textStyle="bold"
         android:textColor="@color/colorPrimary"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        />
+        android:layout_margin="@dimen/activity_vertical_margin" />
+
     <LinearLayout
         android:layout_below="@+id/answers_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:layoutDirection="rtl">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_false"
-            android:id="@+id/choice_1_false"
-            android:visibility="gone"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_true"
-            android:id="@+id/choice_1_true"
-            android:visibility="gone"
-            />
-        <TextView
-            android:id="@+id/choice_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Police man"
-            android:textColor="@color/black"
-            android:padding="@dimen/appbar_padding_top"
-            />
-        </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:layoutDirection="rtl">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_false"
-            android:id="@+id/choice_2_false"
-            android:visibility="gone"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_true"
-            android:id="@+id/choice_2_true"
-            android:visibility="gone"
-            />
-        <TextView
-            android:id="@+id/choice_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Police man"
-            android:textColor="@color/black"
-            android:padding="@dimen/appbar_padding_top"
-            />
-        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_margin="@dimen/activity_vertical_margin"
             android:layoutDirection="rtl">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_false"
+                android:id="@+id/choice_1_false"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_true"
+                android:id="@+id/choice_1_true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/choice_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Police man"
+                android:textColor="@color/black"
+                android:padding="@dimen/appbar_padding_top" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layoutDirection="rtl">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_false"
+                android:id="@+id/choice_2_false"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_true"
+                android:id="@+id/choice_2_true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/choice_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Police man"
+                android:textColor="@color/black"
+                android:padding="@dimen/appbar_padding_top" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layoutDirection="rtl">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_false"
                 android:id="@+id/choice_3_false"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_true"
                 android:id="@+id/choice_3_true"
-                android:visibility="gone"
-                />
-        <TextView
-            android:id="@+id/choice_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Police man"
-            android:textColor="@color/black"
-            android:padding="@dimen/appbar_padding_top"
-            />
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/choice_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Police man"
+                android:textColor="@color/black"
+                android:padding="@dimen/appbar_padding_top" />
         </LinearLayout>
     </LinearLayout>
 
@@ -133,8 +136,8 @@
         android:layout_alignParentBottom="true"
         android:text="Submit"
         android:textColor="#fff"
-        android:textSize="22sp"
-        />
+        android:textSize="22sp" />
+
     <Button
         android:id="@+id/next_btn"
         android:layout_width="match_parent"
@@ -144,7 +147,6 @@
         android:text="Next"
         android:visibility="gone"
         android:textColor="#fff"
-        android:textSize="22sp"
-        />
+        android:textSize="22sp" />
 
 </RelativeLayout>

@@ -9,14 +9,15 @@ import java.util.ArrayList;
  * Created by ahmed on 24/07/17.
  */
 
-public class Unit implements Parcelable{
+public class Unit implements Parcelable {
     private String title;
-    private ArrayList<Part> parts ;
+    private ArrayList<Part> parts;
 
-    public Unit(String title ,ArrayList<Part> parts ){
+    public Unit(String title, ArrayList<Part> parts) {
         this.title = title;
         this.parts = parts;
     }
+
     protected Unit(Parcel in) {
         title = in.readString();
         this.parts = in.readArrayList(null);
@@ -49,7 +50,7 @@ public class Unit implements Parcelable{
         return title;
     }
 
-    public  ArrayList<Part> getParts() {
+    public ArrayList<Part> getParts() {
         return parts;
     }
 }

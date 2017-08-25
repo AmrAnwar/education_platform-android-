@@ -7,9 +7,9 @@ import android.os.Parcelable;
  * Created by ahmed on 30/07/17.
  */
 
-public class TestMistake implements Parcelable{
+public class TestMistake implements Parcelable {
     private String sentence;
-    private String wrong ;
+    private String wrong;
     private String correct;
 
     public TestMistake(String sentence, String wrong, String correct) {

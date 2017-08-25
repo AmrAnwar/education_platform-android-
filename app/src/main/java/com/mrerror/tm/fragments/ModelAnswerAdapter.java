@@ -22,32 +22,31 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
     OnModelAnswerClick mModelAnswerClick;
 
 
-
-    public interface OnModelAnswerClick{
+    public interface OnModelAnswerClick {
 
         public void onModelAnserClicked(ModelAnswer modelAnswer);
     }
 
 
+    public ModelAnswerAdapter(ArrayList<ModelAnswer> answers, OnModelAnswerClick modelAnswerClick) {
+        mModelAnswers = answers;
+        mModelAnswerClick = modelAnswerClick;
 
-   public ModelAnswerAdapter(ArrayList<ModelAnswer> answers,OnModelAnswerClick modelAnswerClick ){
-       mModelAnswers=answers;
-       mModelAnswerClick=modelAnswerClick;
 
+    }
 
-   }
+    public void addNewData(ArrayList<ModelAnswer> answers) {
 
-   public  void addNewData(ArrayList<ModelAnswer> answers){
+        mModelAnswers = answers;
+        //  this.notifyDataSetChanged();
+    }
 
-       mModelAnswers=answers;
-     //  this.notifyDataSetChanged();
-   }
     @Override
     public ModelAnswerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater= LayoutInflater.from(parent.getContext());
-        View view= inflater.inflate(R.layout.fragment_modelanswer,parent,false);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.fragment_modelanswer, parent, false);
 
-        ModelAnswerViewHolder viewHolder=new ModelAnswerViewHolder(view);
+        ModelAnswerViewHolder viewHolder = new ModelAnswerViewHolder(view);
 
         return viewHolder;
     }
@@ -56,11 +55,10 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
     @Override
     public void onBindViewHolder(ModelAnswerViewHolder holder, int position) {
 
-          final ModelAnswer modelAnswer = mModelAnswers.get(position);
-          holder.bind(modelAnswer);
+        final ModelAnswer modelAnswer = mModelAnswers.get(position);
+        holder.bind(modelAnswer);
 
     }
-
 
 
     @Override
@@ -68,34 +66,36 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         return mModelAnswers.size();
     }
 
-    public  class  ModelAnswerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ModelAnswerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView title;
         TextView note;
         TextView type;
         View mView;
 
-        ModelAnswerViewHolder(View view){
+        ModelAnswerViewHolder(View view) {
             super(view);
-            mView=view;
-            title= (TextView) view.findViewById(R.id.title);
-            note=(TextView) view.findViewById(R.id.note);
-            type =(TextView) view.findViewById(R.id.downlaodbutton);
+            mView = view;
+            title = (TextView) view.findViewById(R.id.title);
+            note = (TextView) view.findViewById(R.id.note);
+            type = (TextView) view.findViewById(R.id.downlaodbutton);
 
             mView.setOnClickListener(this);
 
 
         }
-        public  void bind(ModelAnswer modelAnswer){
+
+        public void bind(ModelAnswer modelAnswer) {
             type.setText(modelAnswer.getType());
             title.setText(modelAnswer.getTitle());
             note.setText(modelAnswer.getNote());
 
         }
+
         @Override
         public void onClick(View v) {
 
-            ModelAnswer item=mModelAnswers.get(getPosition());
+            ModelAnswer item = mModelAnswers.get(getPosition());
             mModelAnswerClick.onModelAnserClicked(item);
 
         }

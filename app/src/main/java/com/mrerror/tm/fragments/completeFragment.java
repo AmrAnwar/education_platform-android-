@@ -29,14 +29,13 @@ public class completeFragment extends Fragment {
     private Test mTest;
 
 
-
-    Button submit,next;
+    Button submit, next;
     //for choices
     TextView questionTV;
     EditText answerET;
-    int questionsCounter =0;
+    int questionsCounter = 0;
     TestComplete completeQuestion;
-    ImageView answerTrue,answerFalse;
+    ImageView answerTrue, answerFalse;
     private ArrayList<TestComplete> testCompleteArrayList;
 
     //
@@ -72,8 +71,8 @@ public class completeFragment extends Fragment {
         submit = (Button) v.findViewById(R.id.submit_btn);
         answerET = (EditText) v.findViewById(R.id.answer);
         questionTV = (TextView) v.findViewById(R.id.question);
-        answerFalse = (ImageView)v.findViewById(R.id.answer_false);
-        answerTrue = (ImageView)v.findViewById(R.id.answer_true);
+        answerFalse = (ImageView) v.findViewById(R.id.answer_false);
+        answerTrue = (ImageView) v.findViewById(R.id.answer_true);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,22 +95,23 @@ public class completeFragment extends Fragment {
         completeQuestion = testCompleteArrayList.get(questionsCounter);
         questionTV.setText(completeQuestion.getSentence());
     }
+
     public void submit(View view) {
         String userAnswer = answerET.getText().toString();
         userAnswer = userAnswer.toLowerCase();
         userAnswer = userAnswer.trim();
-        if(userAnswer.length()<1){
+        if (userAnswer.length() < 1) {
 
             Snackbar.make(view, "Type your answer!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
-        }else {
+        } else {
             if (userAnswer.equals((completeQuestion.getAnswer().toLowerCase()).trim())) {
                 answerTrue.setVisibility(View.VISIBLE);
                 answerFalse.setVisibility(View.GONE);
                 answerET.setEnabled(false);
                 submit.setVisibility(View.GONE);
                 next.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 answerTrue.setVisibility(View.GONE);
                 answerFalse.setVisibility(View.VISIBLE);
             }
@@ -125,13 +125,14 @@ public class completeFragment extends Fragment {
         answerFalse.setVisibility(View.GONE);
         answerET.setEnabled(true);
         answerET.setText("");
-        if((questionsCounter+1)<testCompleteArrayList.size()) {
+        if ((questionsCounter + 1) < testCompleteArrayList.size()) {
             ++questionsCounter;
             setCompleteData();
-        }else{
+        } else {
             mListener.onDialogFinished();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -148,6 +149,7 @@ public class completeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnDialogFinishedListener {
         // TODO: Update argument type and name
         void onDialogFinished();

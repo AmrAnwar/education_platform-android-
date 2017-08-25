@@ -29,14 +29,13 @@ public class dialogFragment extends Fragment {
     private Test mTest;
 
 
-
-    Button submit,next;
+    Button submit, next;
     //for choices
     TextView questionTV;
-    EditText answer1ET,answer2ET,answer3ET;
-    int questionsCounter =0;
+    EditText answer1ET, answer2ET, answer3ET;
+    int questionsCounter = 0;
     TestDialog dialogQuestion;
-    ImageView answerTrue,answerFalse,answer2True,answer2False,answer3True,answer3False;
+    ImageView answerTrue, answerFalse, answer2True, answer2False, answer3True, answer3False;
     boolean trueAnswer = true;
     private ArrayList<TestDialog> testDialogsArrayList;
 
@@ -67,7 +66,7 @@ public class dialogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.e(" fragment","dialog");
+        Log.e(" fragment", "dialog");
         View v = inflater.inflate(R.layout.content_exam_dialog, container, false);
         next = (Button) v.findViewById(R.id.next_btn);
         submit = (Button) v.findViewById(R.id.submit_btn);
@@ -75,12 +74,12 @@ public class dialogFragment extends Fragment {
         answer2ET = (EditText) v.findViewById(R.id.answer2);
         answer3ET = (EditText) v.findViewById(R.id.answer3);
         questionTV = (TextView) v.findViewById(R.id.question);
-        answerFalse = (ImageView)v.findViewById(R.id.answer_false);
-        answer2False = (ImageView)v.findViewById(R.id.answer2_false);
-        answer3False = (ImageView)v.findViewById(R.id.answer3_false);
-        answerTrue = (ImageView)v.findViewById(R.id.answer_true);
-        answer2True = (ImageView)v.findViewById(R.id.answer2_true);
-        answer3True = (ImageView)v.findViewById(R.id.answer3_true);
+        answerFalse = (ImageView) v.findViewById(R.id.answer_false);
+        answer2False = (ImageView) v.findViewById(R.id.answer2_false);
+        answer3False = (ImageView) v.findViewById(R.id.answer3_false);
+        answerTrue = (ImageView) v.findViewById(R.id.answer_true);
+        answer2True = (ImageView) v.findViewById(R.id.answer2_true);
+        answer3True = (ImageView) v.findViewById(R.id.answer3_true);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +102,7 @@ public class dialogFragment extends Fragment {
         dialogQuestion = testDialogsArrayList.get(questionsCounter);
         questionTV.setText(dialogQuestion.getDialog());
     }
+
     public void submit(View view) {
         String speakerA = answer1ET.getText().toString();
         String speakerB = answer2ET.getText().toString();
@@ -113,16 +113,16 @@ public class dialogFragment extends Fragment {
         speakerA = speakerA.trim();
         speakerB = speakerB.trim();
         location = location.trim();
-        if(speakerA.length()<1 && speakerB.length()<1&& location.length()<1){
+        if (speakerA.length() < 1 && speakerB.length() < 1 && location.length() < 1) {
 
             Snackbar.make(view, "Type your answer!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
-        }else {
+        } else {
             trueAnswer = true;
             if (speakerA.equals((dialogQuestion.getfSpeaker().toLowerCase()).trim())) {
                 answerTrue.setVisibility(View.VISIBLE);
                 answerFalse.setVisibility(View.GONE);
-            }else{
+            } else {
                 answerTrue.setVisibility(View.GONE);
                 answerFalse.setVisibility(View.VISIBLE);
                 trueAnswer = false;
@@ -130,7 +130,7 @@ public class dialogFragment extends Fragment {
             if (speakerB.equals((dialogQuestion.getsSpeaker().toLowerCase()).trim())) {
                 answer2True.setVisibility(View.VISIBLE);
                 answer2False.setVisibility(View.GONE);
-            }else{
+            } else {
                 answer2True.setVisibility(View.GONE);
                 answer2False.setVisibility(View.VISIBLE);
                 trueAnswer = false;
@@ -139,14 +139,14 @@ public class dialogFragment extends Fragment {
             if (location.equals((dialogQuestion.getLocation().toLowerCase()).trim())) {
                 answer3True.setVisibility(View.VISIBLE);
                 answer3False.setVisibility(View.GONE);
-            }else{
+            } else {
                 answer3True.setVisibility(View.GONE);
                 answer3False.setVisibility(View.VISIBLE);
                 trueAnswer = false;
             }
 
         }
-        if(trueAnswer) {
+        if (trueAnswer) {
             answer1ET.setEnabled(false);
             answer2ET.setEnabled(false);
             answer3ET.setEnabled(false);
@@ -173,14 +173,15 @@ public class dialogFragment extends Fragment {
         trueAnswer = true;
         submit.setVisibility(View.GONE);
         next.setVisibility(View.VISIBLE);
-        if((questionsCounter+1)<testDialogsArrayList.size()) {
+        if ((questionsCounter + 1) < testDialogsArrayList.size()) {
             ++questionsCounter;
             setCompleteData();
-        }else{
+        } else {
             getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
             mListener.onDialogFinished();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -197,6 +198,7 @@ public class dialogFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnDialogFinishedListener {
         // TODO: Update argument type and name
         void onDialogFinished();

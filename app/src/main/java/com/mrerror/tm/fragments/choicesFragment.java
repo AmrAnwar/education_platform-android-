@@ -28,13 +28,11 @@ public class choicesFragment extends Fragment {
     private Test mTest;
 
 
-
-
-    Button submit,next;
+    Button submit, next;
     //for choices
-    TextView questionTV,choice1TV,choice2TV,choice3TV;
-    ImageView choice1True,choice1False,choice2True,choice2False,choice3True,choice3False;
-    int choicesCounter =0;
+    TextView questionTV, choice1TV, choice2TV, choice3TV;
+    ImageView choice1True, choice1False, choice2True, choice2False, choice3True, choice3False;
+    int choicesCounter = 0;
     TestChoices choiceQuestion;
     String selectedAnswer = null;
     TextView selectedTextView;
@@ -47,7 +45,7 @@ public class choicesFragment extends Fragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static choicesFragment newInstance( Test test) {
+    public static choicesFragment newInstance(Test test) {
         choicesFragment fragment = new choicesFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TEST, test);
@@ -83,25 +81,25 @@ public class choicesFragment extends Fragment {
                 next(v);
             }
         });
-            testChoicesArrayList = mTest.getTestChoicesList();
-            questionTV = (TextView)v.findViewById(R.id.question);
-            choice1TV = (TextView)v.findViewById(R.id.choice_1);
-            choice2TV = (TextView)v.findViewById(R.id.choice_2);
-            choice3TV = (TextView)v.findViewById(R.id.choice_3);
-            choice1True = (ImageView) v.findViewById(R.id.choice_1_true);
-            choice1False = (ImageView) v.findViewById(R.id.choice_1_false);
-            choice2True = (ImageView) v.findViewById(R.id.choice_2_true);
-            choice2False = (ImageView) v.findViewById(R.id.choice_2_false);
-            choice3True = (ImageView) v.findViewById(R.id.choice_3_true);
-            choice3False = (ImageView) v.findViewById(R.id.choice_3_false);
-            setChoicesData();
+        testChoicesArrayList = mTest.getTestChoicesList();
+        questionTV = (TextView) v.findViewById(R.id.question);
+        choice1TV = (TextView) v.findViewById(R.id.choice_1);
+        choice2TV = (TextView) v.findViewById(R.id.choice_2);
+        choice3TV = (TextView) v.findViewById(R.id.choice_3);
+        choice1True = (ImageView) v.findViewById(R.id.choice_1_true);
+        choice1False = (ImageView) v.findViewById(R.id.choice_1_false);
+        choice2True = (ImageView) v.findViewById(R.id.choice_2_true);
+        choice2False = (ImageView) v.findViewById(R.id.choice_2_false);
+        choice3True = (ImageView) v.findViewById(R.id.choice_3_true);
+        choice3False = (ImageView) v.findViewById(R.id.choice_3_false);
+        setChoicesData();
 
         return v;
     }
 
 
     private void setChoicesData() {
-        choiceQuestion =testChoicesArrayList.get(choicesCounter);
+        choiceQuestion = testChoicesArrayList.get(choicesCounter);
         questionTV.setText(choiceQuestion.getQuestion());
         choice1TV.setText(choiceQuestion.getChoice1());
         choice2TV.setText(choiceQuestion.getChoice2());
@@ -149,90 +147,92 @@ public class choicesFragment extends Fragment {
             }
         });
     }
+
     public void submit(View view) {
-            if(selectedAnswer!=null){
-                if(selectedAnswer.equals(mTest.getTestChoicesList().get(choicesCounter).getAnswer())){
-                    switch (selectedTextView.getId()){
-                        case R.id.choice_1:
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice1True.setVisibility(View.VISIBLE);
-                            choice1False.setVisibility(View.GONE);
-                            choice2False.setVisibility(View.GONE);
-                            choice3False.setVisibility(View.GONE);
-                            break;
-                        case R.id.choice_2:
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice2True.setVisibility(View.VISIBLE);
-                            choice2False.setVisibility(View.GONE);
-                            choice1False.setVisibility(View.GONE);
-                            choice3False.setVisibility(View.GONE);
-                            break;
-                        case R.id.choice_3:
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3True.setVisibility(View.VISIBLE);
-                            choice3False.setVisibility(View.GONE);
-                            choice1False.setVisibility(View.GONE);
-                            choice2False.setVisibility(View.GONE);
-                            break;
+        if (selectedAnswer != null) {
+            if (selectedAnswer.equals(mTest.getTestChoicesList().get(choicesCounter).getAnswer())) {
+                switch (selectedTextView.getId()) {
+                    case R.id.choice_1:
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice1True.setVisibility(View.VISIBLE);
+                        choice1False.setVisibility(View.GONE);
+                        choice2False.setVisibility(View.GONE);
+                        choice3False.setVisibility(View.GONE);
+                        break;
+                    case R.id.choice_2:
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice2True.setVisibility(View.VISIBLE);
+                        choice2False.setVisibility(View.GONE);
+                        choice1False.setVisibility(View.GONE);
+                        choice3False.setVisibility(View.GONE);
+                        break;
+                    case R.id.choice_3:
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3True.setVisibility(View.VISIBLE);
+                        choice3False.setVisibility(View.GONE);
+                        choice1False.setVisibility(View.GONE);
+                        choice2False.setVisibility(View.GONE);
+                        break;
 
-                    }
-                    choice1TV.setEnabled(false);
-                    choice2TV.setEnabled(false);
-                    choice3TV.setEnabled(false);
-                    submit.setVisibility(View.GONE);
-                    next.setVisibility(View.VISIBLE);
-                }else{
-                    switch (selectedTextView.getId()){
-                        case R.id.choice_1:
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice1False.setVisibility(View.VISIBLE);
-                            choice2False.setVisibility(View.GONE);
-                            choice3False.setVisibility(View.GONE);
-                            break;
-                        case R.id.choice_2:
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice2False.setVisibility(View.VISIBLE);
-                            choice1False.setVisibility(View.GONE);
-                            choice3False.setVisibility(View.GONE);
-                            break;
-                        case R.id.choice_3:
-                            choice3TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
-                            choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
-                            choice3False.setVisibility(View.VISIBLE);
-                            choice2False.setVisibility(View.GONE);
-                            choice1False.setVisibility(View.GONE);
-                            break;
-
-                    }
                 }
-            }else{
-                Snackbar.make(view, "Make your choice!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                choice1TV.setEnabled(false);
+                choice2TV.setEnabled(false);
+                choice3TV.setEnabled(false);
+                submit.setVisibility(View.GONE);
+                next.setVisibility(View.VISIBLE);
+            } else {
+                switch (selectedTextView.getId()) {
+                    case R.id.choice_1:
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice1False.setVisibility(View.VISIBLE);
+                        choice2False.setVisibility(View.GONE);
+                        choice3False.setVisibility(View.GONE);
+                        break;
+                    case R.id.choice_2:
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice2False.setVisibility(View.VISIBLE);
+                        choice1False.setVisibility(View.GONE);
+                        choice3False.setVisibility(View.GONE);
+                        break;
+                    case R.id.choice_3:
+                        choice3TV.setTextColor(getContext().getResources().getColor(R.color.false_text));
+                        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+                        choice3False.setVisibility(View.VISIBLE);
+                        choice2False.setVisibility(View.GONE);
+                        choice1False.setVisibility(View.GONE);
+                        break;
+
+                }
             }
+        } else {
+            Snackbar.make(view, "Make your choice!", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
     public void next(View view) {
         submit.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
 
-        if((choicesCounter+1)<testChoicesArrayList.size()) {
+        if ((choicesCounter + 1) < testChoicesArrayList.size()) {
             ++choicesCounter;
             setChoicesData();
-        }else{
+        } else {
             mListener.onDialogFinished();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -249,6 +249,7 @@ public class choicesFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnDialogFinishedListener {
         // TODO: Update argument type and name
         void onDialogFinished();

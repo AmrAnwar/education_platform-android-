@@ -60,13 +60,13 @@ public class GeneralNews extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_general_news, container, false);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
-        mProgressBar= (ProgressBar) ((MainActivity)getActivity()).findViewById(R.id.progressbar);
+        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
 
-        blankText=(TextView) ((MainActivity)getActivity()).findViewById(R.id.no_list_net);
+        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
 
-        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) v.findViewById(R.id.container);
@@ -76,7 +76,6 @@ public class GeneralNews extends Fragment {
         tabLayout.setupWithViewPager(mViewPager);
         return v;
     }
-
 
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -89,7 +88,7 @@ public class GeneralNews extends Fragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch (position){
+            switch (position) {
                 case 1:
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);

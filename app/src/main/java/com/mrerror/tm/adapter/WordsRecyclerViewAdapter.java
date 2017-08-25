@@ -3,6 +3,7 @@ package com.mrerror.tm.adapter;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +16,14 @@ import com.mrerror.tm.models.Word;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.mrerror.tm.R.id.listen;
 import static com.mrerror.tm.R.id.word;
 
-public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.ViewHolder>  {
+public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<Word> mValues;
+    private ArrayList<Word> mValues;
     public static TextToSpeech ttobj;
-    private Context mContext ;
+    private Context mContext;
+
     public WordsRecyclerViewAdapter(ArrayList<Word> items) {
         mValues = items;
     }
@@ -46,27 +47,43 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mWordView.setText(mValues.get(position).getWord());
+        holder.mTranslation.setText("Click to see the translation");
+
 
     }
+
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mWordView;
         final ImageView mListenView;
         final TextView mTranslation;
         Word mItem;
+
         ViewHolder(View view) {
             super(view);
             mView = view;
             mWordView = (TextView) view.findViewById(word);
             mTranslation = (TextView) view.findViewById(R.id.translation);
-            mListenView = (ImageView) view.findViewById(listen);
-            itemView.setOnClickListener(this);
-            mListenView.setOnClickListener(this);
+            mListenView = (ImageView) view.findViewById(R.id.listen);
+            mListenView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ttobj.speak(mItem.getWord(), TextToSpeech.QUEUE_FLUSH, null);
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("idddd", getAdapterPosition() + "");
+                    v.setTag("clicked");
+                    ((TextView) v.findViewById(R.id.translation)).setText(mItem.getTranslation());
+                }
+            });
         }
 
         @Override
@@ -74,14 +91,5 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
             return super.toString() + " '" + mWordView.getText() + "'";
         }
 
-        @Override
-        public void onClick(View v) {
-            if(v.equals(mListenView)){
-                ttobj.speak(mItem.getWord(), TextToSpeech.QUEUE_FLUSH, null);
-
-            }else{
-                mTranslation.setText(mItem.getTranslation());
-            }
-        }
     }
 }

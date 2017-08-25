@@ -13,11 +13,12 @@ import com.mrerror.tm.models.Unit;
 
 import java.util.ArrayList;
 
-public class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecyclerViewAdapter.ViewHolder>  {
+public class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecyclerViewAdapter.ViewHolder> {
 
-    private  ArrayList<Unit> mValues;
-    private Context mContext ;
+    private ArrayList<Unit> mValues;
+    private Context mContext;
     private UnitFragment.OnListFragmentInteractionListener mListener;
+
     public UnitsRecyclerViewAdapter(ArrayList<Unit> items, UnitFragment.OnListFragmentInteractionListener listener) {
         this.mListener = listener;
         mValues = items;
@@ -47,7 +48,8 @@ public class UnitsRecyclerViewAdapter extends RecyclerView.Adapter<UnitsRecycler
             }
         });
     }
-    public void newData(ArrayList<Unit> items){
+
+    public void newData(ArrayList<Unit> items) {
         this.mValues = items;
         this.notifyDataSetChanged();
 

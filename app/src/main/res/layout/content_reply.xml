@@ -8,19 +8,20 @@
     tools:context="com.mrerror.tm.ReplyActivity"
     tools:showIn="@layout/activity_reply"
     android:orientation="vertical">
-        <TextView
-            android:id="@+id/question"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            tools:text="what is the difference between human and animal?"
-            android:fontFamily="sans-serif-smallcaps"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/primary_darker"
-            />
+
+    <TextView
+        android:id="@+id/question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        tools:text="what is the difference between human and animal?"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/primary_darker" />
+
     <TextView
         android:id="@+id/answer"
         android:layout_marginBottom="32dp"
@@ -31,8 +32,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border"
         android:padding="16dp"
-        android:gravity="top|left"
-        />
+        android:gravity="top|left" />
+
     <ImageView
         android:layout_margin="16dp"
         android:layout_width="match_parent"
@@ -41,8 +42,8 @@
         android:minHeight="200dp"
         android:scaleType="centerCrop"
         android:id="@+id/replyImg"
-        android:layout_gravity="center"
-        />
+        android:layout_gravity="center" />
+
     <ImageButton
         android:padding="5dp"
         android:layout_width="wrap_content"
@@ -54,6 +55,5 @@
         android:layout_marginRight="10dp"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:onClick="playRec"
-        />
+        android:onClick="playRec" />
 </LinearLayout>

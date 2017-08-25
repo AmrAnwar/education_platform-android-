@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class NetworkConnection {
 
-    public  static String url = "";
+    public static String url = "";
     private OnCompleteFetchingData OnCompleteFetchingData;
 
     public NetworkConnection(OnCompleteFetchingData onComplete) {
@@ -99,11 +99,12 @@ public class NetworkConnection {
 
     public interface OnCompleteFetchingData {
         void onCompleted(String result) throws JSONException;
-        void onError(String error) ;
+
+        void onError(String error);
     }
 
     public void postData(final Context context, String webServiceUrl, final String[] queryname, final String[] queryVal) {
-        Log.e("url",webServiceUrl);
+        Log.e("url", webServiceUrl);
         StringRequest sr = new StringRequest(Request.Method.POST, webServiceUrl.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -153,8 +154,9 @@ public class NetworkConnection {
         sr.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(sr);
     }
+
     public void patchData(final Context context, String webServiceUrl, final String[] queryname, final String[] queryVal) {
-        Log.e("url",webServiceUrl);
+        Log.e("url", webServiceUrl);
 
         StringRequest sr = new StringRequest(Request.Method.PATCH, webServiceUrl.toString(), new Response.Listener<String>() {
             @Override
@@ -205,8 +207,9 @@ public class NetworkConnection {
 
         MySingleton.getInstance(context).addToRequestQueue(sr);
     }
+
     public void deleteData(final Context context, String webServiceUrl) {
-        Log.e("url",webServiceUrl);
+        Log.e("url", webServiceUrl);
         StringRequest sr = new StringRequest(Request.Method.DELETE, webServiceUrl.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -241,7 +244,7 @@ public class NetworkConnection {
                             Toast.LENGTH_LONG).show();
                 }
             }
-        }) ;
+        });
         sr.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MySingleton.getInstance(context).addToRequestQueue(sr);
     }

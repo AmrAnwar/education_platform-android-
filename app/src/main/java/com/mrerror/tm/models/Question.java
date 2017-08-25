@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by ahmed on 25/07/17.
  */
 
-public class Question implements Parcelable{
+public class Question implements Parcelable {
     private String question;
     private String answer;
     private String linkForImg;
@@ -16,7 +16,7 @@ public class Question implements Parcelable{
     public Question(String question, String answer, String img, String rec) {
         this.question = question;
         this.answer = answer;
-        this.linkForImg= img;
+        this.linkForImg = img;
         this.linkForRec = rec;
     }
 

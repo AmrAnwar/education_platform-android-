@@ -57,14 +57,15 @@ public class PartsFragment extends Fragment {
 
         // Set the adapter
 
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter =new PartsRecyclerViewAdapter(mPart,mListener);
-            recyclerView.setAdapter(adapter);
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        adapter = new PartsRecyclerViewAdapter(mPart, mListener);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,6 +82,7 @@ public class PartsFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Part item);

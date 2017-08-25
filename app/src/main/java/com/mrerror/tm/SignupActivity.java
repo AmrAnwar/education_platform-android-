@@ -21,13 +21,15 @@ import org.json.JSONObject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SignupActivity extends AppCompatActivity  {
+public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     @InjectView(R.id.input_name)
     EditText _nameText;
-    @InjectView(R.id.input_email) EditText _emailText;
-    @InjectView(R.id.input_password) EditText _passwordText;
+    @InjectView(R.id.input_email)
+    EditText _emailText;
+    @InjectView(R.id.input_password)
+    EditText _passwordText;
     @InjectView(R.id.btn_signup)
     Button _signupButton;
     @InjectView(R.id.link_login)
@@ -90,32 +92,32 @@ public class SignupActivity extends AppCompatActivity  {
                         JSONObject obj = new JSONObject(result);
                         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putInt("id",obj.getInt("id"));
-                        editor.putString("username",obj.getString("username"));
-                        editor.putString("group",obj.getString("group"));
-                        editor.putBoolean("logged",true);
+                        editor.putInt("id", obj.getInt("id"));
+                        editor.putString("username", obj.getString("username"));
+                        editor.putString("group", obj.getString("group"));
+                        editor.putBoolean("logged", true);
                         editor.commit();
-                        startActivity(new Intent(SignupActivity.this,MainActivity.class));
+                        startActivity(new Intent(SignupActivity.this, MainActivity.class));
                     }
 
                     @Override
                     public void onError(String error) {
 
                     }
-                }).postData(SignupActivity.this,url,new String[]{"email","password"},
-                        new String[]{email,password});
+                }).postData(SignupActivity.this, url, new String[]{"email", "password"},
+                        new String[]{email, password});
             }
 
             @Override
             public void onError(String error) {
 
             }
-        }).postData(this,url,new String[]{"username","email","email2","password"}
-                ,new String[]{name,email,email,password});
-        
+        }).postData(this, url, new String[]{"username", "email", "email2", "password"}
+                , new String[]{name, email, email, password});
+
     }
 
-        
+
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);

@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class ReplyActivity extends AppCompatActivity {
 
-    ImageView stfImg ;
+    ImageView stfImg;
     ImageButton playBtn;
     private Question question1;
     private MediaPlayer mediaPlayer2;
@@ -31,8 +31,8 @@ public class ReplyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        TextView question= (TextView) findViewById(R.id.question);
-        TextView answer= (TextView) findViewById(R.id.answer);
+        TextView question = (TextView) findViewById(R.id.question);
+        TextView answer = (TextView) findViewById(R.id.answer);
         question1 = getIntent().getParcelableExtra("question");
         question.setText(question1.getQuestion());
         answer.setText(question1.getAnswer());
@@ -46,7 +46,7 @@ public class ReplyActivity extends AppCompatActivity {
     private void setUpdPlay() {
 
         playBtn = (ImageButton) findViewById(R.id.play_btn);
-        if(question1.getLinkForRec().length()>5){
+        if (question1.getLinkForRec().length() > 5) {
             playBtn.setVisibility(View.VISIBLE);
             mediaPlayer2 = new MediaPlayer();
             try {
@@ -69,8 +69,9 @@ public class ReplyActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     public void playRec(View view) {
-        if(!playing){
+        if (!playing) {
             try {
                 mediaPlayer2.prepare();
             } catch (IOException e) {
@@ -79,7 +80,7 @@ public class ReplyActivity extends AppCompatActivity {
             mediaPlayer2.start();
             playBtn.setImageResource(R.drawable.ic_stop);
             playing = true;
-        }else {
+        } else {
             playBtn.setImageResource(R.drawable.ic_play);
             mediaPlayer2.stop();
             playing = false;

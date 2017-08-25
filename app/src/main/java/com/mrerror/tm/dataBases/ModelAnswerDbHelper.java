@@ -16,7 +16,7 @@ public class ModelAnswerDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "ModelAnswer.db";
 
     public ModelAnswerDbHelper(Context context) {
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -25,12 +25,12 @@ public class ModelAnswerDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_ENTRIES =
                 "CREATE TABLE " + Contract.TableForModelAnswer.TABLE_NAME + " (" +
                         Contract.TableForModelAnswer._ID + " INTEGER PRIMARY KEY," +
-                        Contract.TableForModelAnswer.COLUMN_FILE_PATH + " TEXT,"+
-                        Contract.TableForModelAnswer.COLUMN_EXTENSION +" TEXT,"+
-                        Contract.TableForModelAnswer.COLUMN_NOTE+" TEXT,"+
-                        Contract.TableForModelAnswer.COLUMN_TITLE+" TEXT,"+
-                        Contract.TableForModelAnswer.COLUMN_TYPE+" TEXT,"+
-                         Contract.TableForModelAnswer.COLUMN_FILE_LOCATION+" TEXT)";
+                        Contract.TableForModelAnswer.COLUMN_FILE_PATH + " TEXT," +
+                        Contract.TableForModelAnswer.COLUMN_EXTENSION + " TEXT," +
+                        Contract.TableForModelAnswer.COLUMN_NOTE + " TEXT," +
+                        Contract.TableForModelAnswer.COLUMN_TITLE + " TEXT," +
+                        Contract.TableForModelAnswer.COLUMN_TYPE + " TEXT," +
+                        Contract.TableForModelAnswer.COLUMN_FILE_LOCATION + " TEXT)";
         db.execSQL(SQL_CREATE_ENTRIES);
 
 

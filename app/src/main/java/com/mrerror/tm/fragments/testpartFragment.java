@@ -64,17 +64,17 @@ public class testpartFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             ArrayList<String> questions = new ArrayList<>();
-            if(mTest.getTestChoicesList()!=null&&mTest.getTestChoicesList().size()>0)
+            if (mTest.getTestChoicesList() != null && mTest.getTestChoicesList().size() > 0)
                 questions.add("Choices");
-            if(mTest.getTestCompleteList()!=null&&mTest.getTestCompleteList().size()>0)
+            if (mTest.getTestCompleteList() != null && mTest.getTestCompleteList().size() > 0)
                 questions.add("Complete");
-            if(mTest.getTestDialogList()!=null&&mTest.getTestDialogList().size()>0)
+            if (mTest.getTestDialogList() != null && mTest.getTestDialogList().size() > 0)
                 questions.add("Dialog");
-            if(mTest.getTestMistakeList()!=null&&mTest.getTestMistakeList().size()>0)
+            if (mTest.getTestMistakeList() != null && mTest.getTestMistakeList().size() > 0)
                 questions.add("Correct the mistake");
-            recyclerView.setAdapter(new MytestpartRecyclerViewAdapter(questions,mTest,mListener));
+            recyclerView.setAdapter(new MytestpartRecyclerViewAdapter(questions, mTest, mListener));
         }
         return view;
     }
@@ -109,6 +109,6 @@ public class testpartFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Test test,String questionType);
+        void onListFragmentInteraction(Test test, String questionType);
     }
 }

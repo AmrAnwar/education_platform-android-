@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by ahmed on 25/07/17.
  */
 
-public class QuestionForStaff implements Parcelable{
+public class QuestionForStaff implements Parcelable {
     private String question;
     private String answer;
     private String linkToEdit;
@@ -16,7 +16,7 @@ public class QuestionForStaff implements Parcelable{
     private String studentImg;
     private String studentRec;
 
-    public QuestionForStaff(String question, String answer, String linkToEdit,String linkToDelete, String username,
+    public QuestionForStaff(String question, String answer, String linkToEdit, String linkToDelete, String username,
                             String stImg, String stRec) {
         this.question = question;
         this.answer = answer;
@@ -46,6 +46,7 @@ public class QuestionForStaff implements Parcelable{
     public String getLinkToEdit() {
         return linkToEdit;
     }
+
     public String getLinkToDelete() {
         return linkToDelete;
     }

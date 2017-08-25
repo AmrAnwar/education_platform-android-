@@ -47,17 +47,17 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     Toast toast;
 
 
-    public static HashMap<Integer,Long> checkid=new HashMap<>();
+    public static HashMap<Integer, Long> checkid = new HashMap<>();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_pdfactivity);
-        dbHelper= new ModelAnswerDbHelper(this);
+        dbHelper = new ModelAnswerDbHelper(this);
 
-        go= (ImageButton) findViewById(R.id.gotopage);
-        eGoToPage=(EditText)findViewById(R.id.edit_for_page_number);
-        mGoToPageLayout= (LinearLayout) findViewById(R.id.goPage);
+        go = (ImageButton) findViewById(R.id.gotopage);
+        eGoToPage = (EditText) findViewById(R.id.edit_for_page_number);
+        mGoToPageLayout = (LinearLayout) findViewById(R.id.goPage);
         eGoToPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +67,7 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(eGoToPage.length()!=0) {
+                if (eGoToPage.length() != 0) {
                     String pageNumberString = eGoToPage.getText().toString();
 
                     int pageNumber = Integer.parseInt(pageNumberString);
@@ -79,11 +79,11 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                 }
             }
         });
-        imageView= (ImageView) findViewById(R.id.ImageViewWithzoom);
+        imageView = (ImageView) findViewById(R.id.ImageViewWithzoom);
         pdfView = (PDFView) findViewById(R.id.pdfView);
 
-        Intent m=getIntent();
-        mModelAnswer= (ModelAnswer) m.getSerializableExtra("obj");
+        Intent m = getIntent();
+        mModelAnswer = (ModelAnswer) m.getSerializableExtra("obj");
 
         show(mModelAnswer);
 
@@ -91,26 +91,25 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     }
 
 
-    private  void show(ModelAnswer item){
+    private void show(ModelAnswer item) {
 
-        if(mModelAnswer.getDwonload()) {
+        if (mModelAnswer.getDwonload()) {
 
 
             String filepath = Environment.getExternalStorageDirectory().getPath();
             System.out.println(filepath);
 
-            File file = new File(filepath+"/TM_DownLoad/"+mModelAnswer.getFileName());
+            File file = new File(filepath + "/TM_DownLoad/" + mModelAnswer.getFileName());
 
             if (!file.isFile()) {
                 deleteFromDataBase(mModelAnswer.getFilePath());
             } else {
-                if (mModelAnswer.getFileExtention().equals("pdf"))
-                {
+                if (mModelAnswer.getFileExtention().equals("pdf")) {
                     imageView.setVisibility(View.GONE);
                     mGoToPageLayout.setVisibility(View.VISIBLE);
                     pdfView.setVisibility(View.VISIBLE);
 
-                    Uri mUri=Uri.parse(mModelAnswer.getFilePath());
+                    Uri mUri = Uri.parse(mModelAnswer.getFilePath());
                     pdfView.fromUri(mUri)
                             .onPageChange(this)
                             .load();
@@ -119,35 +118,35 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
                     mGoToPageLayout.setVisibility(View.GONE);
                     imageView.setVisibility(View.VISIBLE);
                     imageView.setImageURI(Uri.parse(mModelAnswer.getFilePath()));
-                    ph=new PhotoViewAttacher(imageView);
+                    ph = new PhotoViewAttacher(imageView);
                 }
 
             }
-        }
-        else {
+        } else {
 
 
-           if(!checkid.keySet().contains(mModelAnswer.getId())) {
-               ModelAnswerFragment.shouldResume=false;
-               Uri checkUri= Uri.parse(mModelAnswer.getFileUrl());
+            if (!checkid.keySet().contains(mModelAnswer.getId())) {
+                ModelAnswerFragment.shouldResume = false;
+                Uri checkUri = Uri.parse(mModelAnswer.getFileUrl());
 
-               downLoad(checkUri);
-               Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
-               finish();
-           }
+                downLoad(checkUri);
+                Toast.makeText(this, "Wait....", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
-    private void deleteFromDataBase(String filepath){
-      db = dbHelper.getWritableDatabase();
+
+    private void deleteFromDataBase(String filepath) {
+        db = dbHelper.getWritableDatabase();
         makeText(this, "file not exist any more download it again ", Toast.LENGTH_SHORT).show();
         String selection = Contract.TableForModelAnswer.COLUMN_FILE_PATH + " LIKE ?";
-        String[] selectionArgs = { filepath };
+        String[] selectionArgs = {filepath};
         db.delete(Contract.TableForModelAnswer.TABLE_NAME, selection, selectionArgs);
 
         db.close();
         dbHelper.close();
 
-        ModelAnswerFragment.shouldResume=true;
+        ModelAnswerFragment.shouldResume = true;
 
         finish();
     }
@@ -156,54 +155,47 @@ public class ReadPDFactivity extends AppCompatActivity implements OnPageChangeLi
     public void onPageChanged(int page, int pageCount) {
         eGoToPage.setCursorVisible(false);
         eGoToPage.setSelection(eGoToPage.length());
-        currPage= page;
+        currPage = page;
         currPage++;
         eGoToPage.setText(String.valueOf(currPage));
 
-        if(toast !=null){
+        if (toast != null) {
             toast.cancel();
         }
-        toast=  Toast.makeText(this, currPage+"/"+pageCount, Toast.LENGTH_SHORT);
+        toast = Toast.makeText(this, currPage + "/" + pageCount, Toast.LENGTH_SHORT);
 
         toast.show();
     }
 
 
-
-
-
-
-    public  void downLoad(Uri uri ){
-
+    public void downLoad(Uri uri) {
 
 
         File direct = new File(Environment.getExternalStorageDirectory(),
-                 "/TM_DownLoad");
+                "/TM_DownLoad");
         if (!direct.exists()) {
             direct.mkdirs();
         }
 
-        downloadManager= (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request= new DownloadManager.Request(uri);
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setVisibleInDownloadsUi(true);
-        request.setDestinationInExternalPublicDir("/TM_DownLoad",mModelAnswer.getFileName());
-if(reference!=0){
+        request.setDestinationInExternalPublicDir("/TM_DownLoad", mModelAnswer.getFileName());
+        if (reference != 0) {
 
-for(int m:checkid.keySet()){
+            for (int m : checkid.keySet()) {
 
-    if(checkid.get(m)==reference){
-        downloadManager.remove(checkid.get(m));
-        checkid.remove(m);
+                if (checkid.get(m) == reference) {
+                    downloadManager.remove(checkid.get(m));
+                    checkid.remove(m);
+                }
+            }
+        }
+        reference = downloadManager.enqueue(request);
+        DownloadReciver.setReciver(mModelAnswer, reference, downloadManager);
+        checkid.put(mModelAnswer.getId(), reference);
     }
-}
-}
-        reference= downloadManager.enqueue(request);
-        DownloadReciver.setReciver(mModelAnswer,reference,downloadManager);
-        checkid.put(mModelAnswer.getId(),reference);
-    }
-
-
 
 
 }

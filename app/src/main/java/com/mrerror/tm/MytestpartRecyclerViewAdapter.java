@@ -16,11 +16,13 @@ public class MytestpartRecyclerViewAdapter extends RecyclerView.Adapter<Mytestpa
     private final ArrayList<String> mValues;
     private final OnListFragmentInteractionListener mListener;
     private final Test mTest;
+
     public MytestpartRecyclerViewAdapter(ArrayList<String> items, Test test, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
         mTest = test;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -39,7 +41,7 @@ public class MytestpartRecyclerViewAdapter extends RecyclerView.Adapter<Mytestpa
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem,mValues.get(position));
+                    mListener.onListFragmentInteraction(holder.mItem, mValues.get(position));
                 }
             }
         });
