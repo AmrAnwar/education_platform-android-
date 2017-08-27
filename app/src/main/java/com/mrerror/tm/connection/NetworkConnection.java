@@ -128,7 +128,7 @@ public class NetworkConnection {
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof ServerError) {
                     Toast.makeText(context,
-                            "SORRY!, We have a problem try again",
+                            "You cannot do this now!",
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof NetworkError) {
                     Toast.makeText(context,
@@ -180,7 +180,7 @@ public class NetworkConnection {
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof ServerError) {
                     Toast.makeText(context,
-                            "SORRY!, We have a problem try again",
+                            "You cannot do this now!",
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof NetworkError) {
                     Toast.makeText(context,
@@ -232,7 +232,7 @@ public class NetworkConnection {
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof ServerError) {
                     Toast.makeText(context,
-                            "SORRY!, We have a problem try again",
+                            "You cannot do this now!",
                             Toast.LENGTH_LONG).show();
                 } else if (error instanceof NetworkError) {
                     Toast.makeText(context,

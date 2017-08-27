@@ -2,9 +2,9 @@ package com.mrerror.tm.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,16 +48,21 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         }
         if (holder.mItem.getImg_url().length() <= 0 || holder.mItem.getImg_url() == null ||
                 holder.mItem.getImg_url().equals("null")) {
+
             holder.mImgView.setVisibility(View.GONE);
         } else {
+            holder.mImgView.setVisibility(View.VISIBLE);
             Target toolbarlayoutTarget = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    holder.mImgView.setImageDrawable(new BitmapDrawable(mContext.getResources(), bitmap));
+
+                    holder.mImgView.setImageBitmap(bitmap);
+                    Log.e("done loading",holder.mItem.getContent());
                 }
 
                 @Override
                 public void onBitmapFailed(Drawable errorDrawable) {
+                    Log.e("error loading",holder.mItem.getContent());
                 }
 
                 @Override

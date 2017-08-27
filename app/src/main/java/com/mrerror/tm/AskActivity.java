@@ -85,6 +85,14 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
         ask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (start_state) {
+                    mediaRecorder.stop();
+                    buttonStart.setImageResource(R.drawable.ic_record);
+                    start_state = false;
+                    buttonStart.setEnabled(true);
+                    buttonDeleteLastRecording.setEnabled(true);
+                    buttonPlayLastRecordAudio.setEnabled(true);
+                }
                 boolean canBeSent = false;
                 if (question.getText().toString().length() > 7) {
                     canBeSent = true;
@@ -96,6 +104,7 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
                     }
                 }
                 if (canBeSent) {
+
                     progressDialog = new ProgressDialog(AskActivity.this);
                     progressDialog.setMessage("Sending ...");
                     progressDialog.show();
@@ -374,5 +383,16 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
         imgLayout.setVisibility(View.GONE);
         mSelected = null;
         selected_img.setImageResource(R.drawable.ic_close);
+    }
+
+
+    @Override
+    protected void onPause() {
+        try{
+            mediaPlayer.stop();
+        }catch (Exception e){
+
+        }
+        super.onPause();
     }
 }

@@ -3,6 +3,8 @@ package com.mrerror.tm;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +42,13 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Random;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -71,7 +78,9 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     /// image
     RelativeLayout imgLayout;
     ImageView selected_img;
-    ImageView studemtImg;
+    ImageView studentImg;
+    LinearLayout studentImgLayout;
+    ProgressBar loadingImg;
 
     PickResult mSelected;
     private MediaPlayer mediaPlayer2;
@@ -95,10 +104,15 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         replyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (reply.getText().toString().length() <= 1) {
-                    Toast.makeText(ReplyForStaffActivity.this, "Very short reply!", Toast.LENGTH_SHORT).show();
-                } else {
 
+                    if (start_state) {
+                        mediaRecorder.stop();
+                        buttonStart.setImageResource(R.drawable.ic_record);
+                        start_state = false;
+                        buttonStart.setEnabled(true);
+                        buttonDeleteLastRecording.setEnabled(true);
+                        buttonPlayLastRecordAudio.setEnabled(true);
+                    }
                     progressDialog = new ProgressDialog(ReplyForStaffActivity.this);
                     progressDialog.setMessage("Sending ...");
                     progressDialog.show();
@@ -156,7 +170,7 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
 //                            new String[]{"question","replay"},new String[]{questionForStaff.getQuestion(),reply.getText().toString()});
 
                 }
-            }
+
         });
         // play record from student
         playBtn = (ImageButton) findViewById(R.id.play_btn);
@@ -171,10 +185,56 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
         buttonPlayLastRecordAudio = (ImageButton) findViewById(R.id.play_rec_btn);
         buttonDeleteLastRecording = (ImageButton) findViewById(R.id.remove_rec_btn);
         selected_img = (ImageView) findViewById(R.id.selected_img);
-        studemtImg = (ImageView) findViewById(R.id.questionImg);
+        studentImg = (ImageView) findViewById(R.id.questionImg);
+        studentImgLayout = (LinearLayout) findViewById(R.id.st_image_layout);
+        loadingImg = (ProgressBar) findViewById(R.id.loading_img);
+        studentImg.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                try
+                {
+                    Toast.makeText(ReplyForStaffActivity.this, "downloading ...", Toast.LENGTH_SHORT).show();
+                    Log.e("long click","clicked");
+                    Bitmap bmp = null;
+                    URL url = new URL(questionForStaff.getStudentImg());
+                    URLConnection conn = url.openConnection();
+                    bmp = BitmapFactory.decodeStream(conn.getInputStream());
+                    File f = new File(Environment.getExternalStorageDirectory(),System.currentTimeMillis() + ".jpg");
+                    if(f.exists())
+                        f.delete();
+                    f.createNewFile();
+                    Bitmap bitmap = bmp;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                    Toast.makeText(ReplyForStaffActivity.this, "downloaded!", Toast.LENGTH_SHORT).show();
+                    Log.e("long click","downloaded");
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
         if (questionForStaff.getStudentImg().length() > 4) {
-            studemtImg.setVisibility(View.VISIBLE);
-            Picasso.with(this).load(questionForStaff.getStudentImg()).into(studemtImg);
+            studentImgLayout.setVisibility(View.VISIBLE);
+            Picasso.with(this).load(questionForStaff.getStudentImg()).into(studentImg, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                loadingImg.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         }
         buttonPlayLastRecordAudio.setEnabled(false);
 
@@ -419,6 +479,21 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
 
     public interface onReply {
         void onReply();
+    }
+
+    @Override
+    protected void onPause() {
+        try{
+            mediaPlayer2.stop();
+        }catch (Exception e){
+
+        }
+        try{
+            mediaPlayer.stop();
+        }catch (Exception e){
+
+        }
+        super.onPause();
     }
 }
 

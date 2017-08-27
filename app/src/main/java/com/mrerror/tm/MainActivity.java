@@ -37,18 +37,19 @@ import org.json.JSONException;
 
 import static com.mrerror.tm.ReadPDFactivity.checkid;
 
-public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener,
-        PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ModelAnswerFragment.OnItemClick {
+public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
+PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick, NetworkConnection.OnCompleteFetchingData {
 
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
-    ProgressBar mProgressBar;
-    TextView blankText;
-    private static final int REQUEST_EXTERNAL_STORAGE = 12;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+        SharedPreferences sp;
+        SharedPreferences.Editor editor;
+        ProgressBar mProgressBar;
+        TextView blankText;
+       BottomNavigationView navigation;
+       private static final int REQUEST_EXTERNAL_STORAGE = 12;
+       private static String[] PERMISSIONS_STORAGE = {
+               Manifest.permission.READ_EXTERNAL_STORAGE,
+               Manifest.permission.WRITE_EXTERNAL_STORAGE
+       };
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -92,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 
     public void loadModelAnswerFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
-
     }
 
 
@@ -126,9 +126,15 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        if(savedInstanceState ==null){
+        getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
+
+        }
+           navigation  = (BottomNavigationView) findViewById(R.id.navigation);
+           navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
 
 
 //SQ
@@ -214,10 +220,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             startActivity(new Intent(this, AboutActivity.class));
 
         } else if (id == R.id.nav_logout) {
-            editor.putBoolean("logged", false);
-            editor.commit();
-            startActivity(new Intent(this, LoginActivity2.class));
-            this.finish();
+            NetworkConnection.url ="http://educationplatform.pythonanywhere.com/api/users/"+sp.getInt("id",0)+"/logout/" ;
+            new NetworkConnection(this).getDataAsJsonObject(this);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -254,4 +259,19 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
     }
 
 
+    @Override
+    public void onCompleted(String result) throws JSONException {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("news");
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("answers");
+        editor.putBoolean("logged2", false);
+        editor.commit();
+        startActivity(new Intent(this, LoginActivity2.class));
+        this.finish();
+    }
+
+    @Override
+    public void onError(String error) {
+        Toast.makeText(this, "check your connection and try again later!", Toast.LENGTH_SHORT).show();
+    }
 }

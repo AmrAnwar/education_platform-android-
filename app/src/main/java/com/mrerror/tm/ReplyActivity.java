@@ -1,18 +1,30 @@
 package com.mrerror.tm;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mrerror.tm.models.Question;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class ReplyActivity extends AppCompatActivity {
 
@@ -22,7 +34,8 @@ public class ReplyActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer2;
     private boolean playing = false;
     ImageView replyImg;
-
+    LinearLayout ImgLayout;
+    ProgressBar loadingImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +50,59 @@ public class ReplyActivity extends AppCompatActivity {
         question.setText(question1.getQuestion());
         answer.setText(question1.getAnswer());
         replyImg = (ImageView) findViewById(R.id.replyImg);
+        ImgLayout = (LinearLayout) findViewById(R.id.image_layout);
+        loadingImg = (ProgressBar) findViewById(R.id.loading_img);
 
         setUpdPlay();
-        Picasso.with(this).load(question1.getLinkForImg()).into(replyImg);
+        if(question1.getLinkForImg().length()>4){
+            ImgLayout.setVisibility(View.VISIBLE);
+        }
+        Picasso.with(this).load(question1.getLinkForImg()).into(replyImg, new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                loadingImg.setVisibility(View.GONE);
+            }
 
+            @Override
+            public void onError() {
+
+            }
+        });
+
+        replyImg.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                try
+                {
+                    Toast.makeText(ReplyActivity.this, "downloading ...", Toast.LENGTH_SHORT).show();
+                    Log.e("long click","clicked");
+                    Bitmap bmp = null;
+                    URL url = new URL(question1.getLinkForImg());
+                    URLConnection conn = url.openConnection();
+                    bmp = BitmapFactory.decodeStream(conn.getInputStream());
+                    File f = new File(Environment.getExternalStorageDirectory(),System.currentTimeMillis() + ".jpg");
+                    if(f.exists())
+                        f.delete();
+                    f.createNewFile();
+                    Bitmap bitmap = bmp;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                    Toast.makeText(ReplyActivity.this, "downloaded!", Toast.LENGTH_SHORT).show();
+                    Log.e("long click","downloaded");
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
     }
 
     private void setUpdPlay() {
@@ -85,5 +147,19 @@ public class ReplyActivity extends AppCompatActivity {
             mediaPlayer2.stop();
             playing = false;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        try{
+            mediaPlayer2.stop();
+        }catch (Exception e){
+
+        }
+        try{
+        }catch (Exception e){
+
+        }
+        super.onPause();
     }
 }

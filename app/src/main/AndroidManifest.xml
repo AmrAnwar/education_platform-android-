@@ -43,6 +43,7 @@
         <activity
             android:name=".Inbox"
             android:label="@string/title_activity_inbox"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReplyActivity"

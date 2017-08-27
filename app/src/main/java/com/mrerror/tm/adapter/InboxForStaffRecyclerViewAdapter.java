@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mrerror.tm.Inbox;
 import com.mrerror.tm.R;
 import com.mrerror.tm.ReplyForStaffActivity;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -49,6 +48,10 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public void onChange(ArrayList<QuestionForStaff> newData){
+        mValues=newData;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -92,7 +95,8 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        ((Inbox) mContext).finish();
+                                        mValues.remove(getAdapterPosition());
+                                        notifyDataSetChanged();
                                     }
                                 });
                                 dialog.show();

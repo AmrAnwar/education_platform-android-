@@ -33,7 +33,18 @@
         android:background="@drawable/border"
         android:padding="16dp"
         android:gravity="top|left" />
-
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/image_layout"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
     <ImageView
         android:layout_margin="16dp"
         android:layout_width="match_parent"
@@ -43,7 +54,19 @@
         android:scaleType="centerCrop"
         android:id="@+id/replyImg"
         android:layout_gravity="center" />
-
+            <ProgressBar
+                android:id="@+id/loading_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Long click on the image to download!"
+            />
+    </LinearLayout>
     <ImageButton
         android:padding="5dp"
         android:layout_width="wrap_content"

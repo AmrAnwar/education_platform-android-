@@ -91,7 +91,7 @@ public class GeneralWords extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Save";
+                    return "Learn";
                 case 1:
                     return "Test";
             }
