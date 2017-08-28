@@ -23,6 +23,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 import static com.mrerror.tm.connection.NetworkConnection.url;
 
 public class Inbox extends AppCompatActivity implements NetworkConnection.OnCompleteFetchingData, ReplyForStaffActivity.onReply {
@@ -40,6 +42,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     ArrayList<QuestionForStaff> questionsForStuff;
     private boolean refreshing = false;
     private int firstVisibleInListview;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sp.edit();
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshnewsunit);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         replyListener = this;
@@ -74,6 +78,14 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        if(!sp.getString("group","normal").equals("normal")){
+            editor.putInt("badgeCount",0);
+            editor.commit();
+            ShortcutBadger.applyCount(this, sp.getInt("badgeCount",0));
+        }
+
+
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -217,4 +229,5 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         questionsForStuff = null;
         getData(sp.getString("group", "normal"));
     }
+
 }

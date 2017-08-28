@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class NetworkConnection {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
-                        OnCompleteFetchingData.onError(error.toString());
+                        OnCompleteFetchingData.onError(error.networkResponse.data.toString());
 
                     }
                 });
@@ -117,28 +118,34 @@ public class NetworkConnection {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                OnCompleteFetchingData.onError(error.toString());
-                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                    Toast.makeText(context,
-                            "No Connection",
-                            Toast.LENGTH_LONG).show();
-                } else if (error instanceof AuthFailureError) {
-                    Toast.makeText(context,
-                            "Check username & password",
-                            Toast.LENGTH_LONG).show();
-                } else if (error instanceof ServerError) {
-                    Toast.makeText(context,
-                            "You cannot do this now!",
-                            Toast.LENGTH_LONG).show();
-                } else if (error instanceof NetworkError) {
-                    Toast.makeText(context,
-                            "Network Error try again",
-                            Toast.LENGTH_LONG).show();
-                } else if (error instanceof ParseError) {
-                    Toast.makeText(context,
-                            "ooo we have a problem",
-                            Toast.LENGTH_LONG).show();
+                try {
+                    OnCompleteFetchingData.onError(new String(error.networkResponse.data,"UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                        Toast.makeText(context,
+                                "No Connection",
+                                Toast.LENGTH_LONG).show();
+                    } else if (error instanceof AuthFailureError) {
+                        Toast.makeText(context,
+                                "Check username & password",
+                                Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ServerError) {
+                        Toast.makeText(context,
+                                "You cannot do this now!",
+                                Toast.LENGTH_LONG).show();
+                    } else if (error instanceof NetworkError) {
+                        Toast.makeText(context,
+                                "Network Error try again",
+                                Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ParseError) {
+                        Toast.makeText(context,
+                                "ooo we have a problem",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
+
+
             }
         }) {
             @Override

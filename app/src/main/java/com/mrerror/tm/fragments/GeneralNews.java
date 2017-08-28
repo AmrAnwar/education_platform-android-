@@ -1,6 +1,8 @@
 package com.mrerror.tm.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import com.mrerror.tm.MainActivity;
 import com.mrerror.tm.R;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class GeneralNews extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +34,8 @@ public class GeneralNews extends Fragment {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     ProgressBar mProgressBar;
     TextView blankText;
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
 
     public GeneralNews() {
         // Required empty public constructor
@@ -61,11 +67,16 @@ public class GeneralNews extends Fragment {
         View v = inflater.inflate(R.layout.fragment_general_news, container, false);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
-
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        editor = sp.edit();
         blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
-
+        if(sp.getString("group","normal").equals("normal")){
+            editor.putInt("badgeCount",0);
+            editor.commit();
+            ShortcutBadger.applyCount(getContext(), sp.getInt("badgeCount",0));
+        }
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         // Set up the ViewPager with the sections adapter.

@@ -5,10 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -19,16 +21,20 @@ import com.mrerror.tm.R;
 
 import java.util.Map;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 /**
  * Created by kareem on 8/1/2017.
  */
 
 public class MyMessageService extends FirebaseMessagingService {
-
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sp.edit();
         // Check if message contains a data payload.
 
         Map<String, String> data = remoteMessage.getData();
@@ -48,13 +54,23 @@ public class MyMessageService extends FirebaseMessagingService {
         String mWhere = data.get("where");
         if (mWhere.equals("question")) {
             intent = new Intent(this, Inbox.class);
-
+            if(!sp.getString("group","normal").equals("normal")){
+                editor.putInt("questionsCount",sp.getInt("questionsCount",0)+1);
+                editor.commit();
+                ShortcutBadger.applyCount(this, sp.getInt("questionsCount",0));
+            }
         } else if (mWhere.equals("news")) {
             intent = new Intent(this, MainActivity.class);
             intent.putExtra("where", data.get("where"));
-
+            if(sp.getString("group","normal").equals("normal")){
+                editor.putInt("newsCount",sp.getInt("newsCount",0)+1);
+                editor.commit();
+                ShortcutBadger.applyCount(this, sp.getInt("newsCount",0));
+            }
 
         } else if (mWhere.equals("answers")) {
+            editor.putInt("answersCount",sp.getInt("answersCount",0)+1);
+            editor.commit();
             intent = new Intent(this, MainActivity.class);
 
             intent.putExtra("where", data.get("where"));

@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mrerror.tm.connection.NetworkConnection;
@@ -201,7 +202,13 @@ public class LoginActivity2 extends AppCompatActivity implements  NetworkConnect
 
     @Override
     public void onError(String error) {
-        showProgress(false);
+        try {
+            JSONObject response = new JSONObject(error);
+            String res =response.getString("non_field_errors");
+            Toast.makeText(this, res.substring(1,res.length()-1), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        showProgress(false);
         mPasswordView.requestFocus();
     }
 

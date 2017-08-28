@@ -12,10 +12,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -34,22 +36,24 @@ import com.mrerror.tm.models.Part;
 import com.mrerror.tm.models.Unit;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.mrerror.tm.ReadPDFactivity.checkid;
+import static com.mrerror.tm.connection.NetworkConnection.url;
 
-public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener ,
-PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener ,ModelAnswerFragment.OnItemClick, NetworkConnection.OnCompleteFetchingData {
+public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener,
+        PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ModelAnswerFragment.OnItemClick, NetworkConnection.OnCompleteFetchingData {
 
-        SharedPreferences sp;
-        SharedPreferences.Editor editor;
-        ProgressBar mProgressBar;
-        TextView blankText;
-       BottomNavigationView navigation;
-       private static final int REQUEST_EXTERNAL_STORAGE = 12;
-       private static String[] PERMISSIONS_STORAGE = {
-               Manifest.permission.READ_EXTERNAL_STORAGE,
-               Manifest.permission.WRITE_EXTERNAL_STORAGE
-       };
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    ProgressBar mProgressBar;
+    TextView blankText;
+    BottomNavigationView navigation;
+    private static final int REQUEST_EXTERNAL_STORAGE = 12;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -90,6 +94,8 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         }
 
     };
+    private String count;
+    private TextView actionView;
 
     public void loadModelAnswerFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
@@ -126,15 +132,18 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        actionView = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_inbox));
 
-        if(savedInstanceState ==null){
-        getSupportFragmentManager().beginTransaction().replace(R.id.content,new GeneralNews()).commit();
+        getCount(sp.getString("group", "normal"));
+        actionView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        actionView.setGravity(Gravity.CENTER);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
 
         }
-           navigation  = (BottomNavigationView) findViewById(R.id.navigation);
-           navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
 //SQ
@@ -152,8 +161,8 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
             public void onError(String error) {
 
             }
-        }).
-                patchData(this, "http://educationplatform.pythonanywhere.com/api/users/" + sp.getString("username", "") + "/profile",
+        }).patchData(this, "http://educationplatform.pythonanywhere.com/api/users/"
+                        + sp.getString("username", "") + "/profile",
                         new String[]{"token"}, new String[]{sp.getString("token", "")});
 
         String group = sp.getString("group", "normal");
@@ -175,6 +184,40 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
                 getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCount(sp.getString("group", "normal"));
+    }
+
+    private void getCount(String group) {
+
+        if (group.equals("normal")) {
+
+            actionView.setText(String.valueOf(sp.getInt("answersCount", 0) + 1));
+
+        } else {
+            url = "http://educationplatform.pythonanywhere.com/api/asks/";
+
+            new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+                @Override
+                public void onCompleted(String result) throws JSONException {
+
+                    JSONObject jsonObject = new JSONObject(result);
+                    count = String.valueOf(jsonObject.getInt("count"));
+                    actionView.setText(count);
+                }
+
+                @Override
+                public void onError(String error) {
+
+                }
+            }).getDataAsJsonObject(this);
+        }
+
+
     }
 
 
@@ -220,7 +263,7 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
             startActivity(new Intent(this, AboutActivity.class));
 
         } else if (id == R.id.nav_logout) {
-            NetworkConnection.url ="http://educationplatform.pythonanywhere.com/api/users/"+sp.getInt("id",0)+"/logout/" ;
+            url = "http://educationplatform.pythonanywhere.com/api/users/" + sp.getInt("id", 0) + "/logout/";
             new NetworkConnection(this).getDataAsJsonObject(this);
 
         }
@@ -264,6 +307,22 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
         FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
         FirebaseMessaging.getInstance().unsubscribeFromTopic("news");
         FirebaseMessaging.getInstance().unsubscribeFromTopic("answers");
+
+        new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+            @Override
+            public void onCompleted(String result) throws JSONException {
+
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        }).patchData(this, "http://educationplatform.pythonanywhere.com/api/users/"
+                        + sp.getString("username", "") + "/profile",
+                new String[]{"token"}, new String[]{"له"});
+
+
         editor.putBoolean("logged2", false);
         editor.commit();
         startActivity(new Intent(this, LoginActivity2.class));
@@ -272,6 +331,6 @@ PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItem
 
     @Override
     public void onError(String error) {
-        Toast.makeText(this, "check your connection and try again later!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You cannot do this !", Toast.LENGTH_SHORT).show();
     }
 }

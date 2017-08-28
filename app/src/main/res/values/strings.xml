@@ -40,4 +40,5 @@
         completions."
     </string>
     <string name="title_activity_login3">Sign in</string>
+    <string name="Send">Send</string>
 </resources>

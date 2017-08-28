@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
@@ -50,12 +51,15 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
                 holder.mItem.getImg_url().equals("null")) {
 
             holder.mImgView.setVisibility(View.GONE);
+            holder.progress.setVisibility(View.GONE);
         } else {
-            holder.mImgView.setVisibility(View.VISIBLE);
+            holder.progress.setVisibility(View.VISIBLE);
+
             Target toolbarlayoutTarget = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
+                    holder.mImgView.setVisibility(View.VISIBLE);
+                    holder.progress.setVisibility(View.GONE);
                     holder.mImgView.setImageBitmap(bitmap);
                     Log.e("done loading",holder.mItem.getContent());
                 }
@@ -95,6 +99,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         final View mView;
         final TextView mFileView;
         final ImageView mImgView;
+        final ProgressBar progress;
         final TextView mContentView;
         News mItem;
 
@@ -104,6 +109,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             mFileView = (TextView) view.findViewById(R.id.file);
             mImgView = (ImageView) view.findViewById(R.id.img);
             mContentView = (TextView) view.findViewById(R.id.text);
+            progress = (ProgressBar) view.findViewById(R.id.progress);
             itemView.setOnClickListener(this);
         }
 

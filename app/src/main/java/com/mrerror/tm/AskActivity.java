@@ -15,8 +15,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -80,102 +81,7 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
         setSupportActionBar(toolbar);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         user_id = sp.getInt("id", 0);
-        Button ask = (Button) findViewById(R.id.send);
         question = (EditText) findViewById(R.id.question);
-        ask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (start_state) {
-                    mediaRecorder.stop();
-                    buttonStart.setImageResource(R.drawable.ic_record);
-                    start_state = false;
-                    buttonStart.setEnabled(true);
-                    buttonDeleteLastRecording.setEnabled(true);
-                    buttonPlayLastRecordAudio.setEnabled(true);
-                }
-                boolean canBeSent = false;
-                if (question.getText().toString().length() > 7) {
-                    canBeSent = true;
-                } else {
-                    if (AudioSavePathInDevice != null || mSelected != null) {
-                        canBeSent = true;
-                    } else {
-                        Toast.makeText(AskActivity.this, "check your question! text must be more than 7 characters or include one media atleast", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                if (canBeSent) {
-
-                    progressDialog = new ProgressDialog(AskActivity.this);
-                    progressDialog.setMessage("Sending ...");
-                    progressDialog.show();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HttpClient httpclient = new DefaultHttpClient();
-                            HttpPost httpost = new HttpPost("http://educationplatform.pythonanywhere.com/api/asks/create/");
-
-                            MultipartEntity entity = new MultipartEntity();
-                            try {
-                                entity.addPart("user", new StringBody(String.valueOf(user_id)));
-                                entity.addPart("question", new StringBody(question.getText().toString()));
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            if (AudioSavePathInDevice != null)
-                                entity.addPart("file_sender", new FileBody(new File(AudioSavePathInDevice)));
-                            if (mSelected != null)
-                                entity.addPart("image_sender", new FileBody(new File(mSelected.getPath())));
-//                    entity.addPart("myAudioFile", new FileBody(audioFile));
-
-                            httpost.setEntity(entity);
-                            HttpResponse response;
-                            try {
-                                response = httpclient.execute(httpost);
-                                String responseBody = EntityUtils.toString(response.getEntity());
-                                Log.e("Respone", responseBody);
-                                progressDialog.dismiss();
-                                AskActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AlertDialog.Builder dialog = new AlertDialog.Builder(AskActivity.this);
-                                        dialog.setTitle("Ask question!");
-                                        dialog.setMessage("Your question has been delivered!");
-                                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                AskActivity.this.finish();
-                                            }
-                                        });
-                                        dialog.setCancelable(false);
-                                        dialog.setNegativeButton("Another question?", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                question.setText("");
-                                                selected_img = null;
-                                                imgLayout.setVisibility(View.GONE);
-                                                AudioSavePathInDevice = null;
-                                                recordLayout.setVisibility(View.GONE);
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                        dialog.show();
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    String url = "http://educationplatform.pythonanywhere.com/api/asks/create/";
-//                    new NetworkConnection(AskActivity.this).postData(AskActivity.this, url, new String[]{"user", "question"},
-//                            new String[]{String.valueOf(user_id), question.getText().toString()});
-
-
-                }
-            }
-        });
-
 
         // Recorder
         recordLayout = (LinearLayout) findViewById(R.id.record_layout);
@@ -394,5 +300,110 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
 
         }
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.ask,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.send:
+                sendQuestion();
+                break;
+        }
+        return true;
+    }
+
+
+    private void sendQuestion(){
+
+        if (start_state) {
+            mediaRecorder.stop();
+            buttonStart.setImageResource(R.drawable.ic_record);
+            start_state = false;
+            buttonStart.setEnabled(true);
+            buttonDeleteLastRecording.setEnabled(true);
+            buttonPlayLastRecordAudio.setEnabled(true);
+        }
+        boolean canBeSent = false;
+        if (question.getText().toString().length() > 7) {
+            canBeSent = true;
+        } else {
+            if (AudioSavePathInDevice != null || mSelected != null) {
+                canBeSent = true;
+            } else {
+                Toast.makeText(AskActivity.this, "check your question! text must be more than 7 characters or include one media atleast", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (canBeSent) {
+
+            progressDialog = new ProgressDialog(AskActivity.this);
+            progressDialog.setMessage("Sending ...");
+            progressDialog.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httpost = new HttpPost("http://educationplatform.pythonanywhere.com/api/asks/create/");
+
+                    MultipartEntity entity = new MultipartEntity();
+                    try {
+                        entity.addPart("user", new StringBody(String.valueOf(user_id)));
+                        entity.addPart("question", new StringBody(question.getText().toString()));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    if (AudioSavePathInDevice != null)
+                        entity.addPart("file_sender", new FileBody(new File(AudioSavePathInDevice)));
+                    if (mSelected != null)
+                        entity.addPart("image_sender", new FileBody(new File(mSelected.getPath())));
+//                    entity.addPart("myAudioFile", new FileBody(audioFile));
+
+                    httpost.setEntity(entity);
+                    HttpResponse response;
+                    try {
+                        response = httpclient.execute(httpost);
+                        String responseBody = EntityUtils.toString(response.getEntity());
+                        Log.e("Respone", responseBody);
+                        progressDialog.dismiss();
+                        AskActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(AskActivity.this);
+                                dialog.setTitle("Ask question!");
+                                dialog.setMessage("Your question has been delivered!");
+                                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        AskActivity.this.finish();
+                                    }
+                                });
+                                dialog.setCancelable(false);
+                                dialog.setNegativeButton("Another question?", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        question.setText("");
+                                        selected_img = null;
+                                        imgLayout.setVisibility(View.GONE);
+                                        AudioSavePathInDevice = null;
+                                        recordLayout.setVisibility(View.GONE);
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
     }
 }
