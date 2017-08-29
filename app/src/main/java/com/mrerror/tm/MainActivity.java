@@ -4,9 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.fragments.GeneralNews;
@@ -42,7 +45,9 @@ import static com.mrerror.tm.ReadPDFactivity.checkid;
 import static com.mrerror.tm.connection.NetworkConnection.url;
 
 public class MainActivity extends AppCompatActivity implements UnitFragment.OnListFragmentInteractionListener,
-        PartsFragment.OnListFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, ModelAnswerFragment.OnItemClick, NetworkConnection.OnCompleteFetchingData {
+        PartsFragment.OnListFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        ModelAnswerFragment.OnItemClick, NetworkConnection.OnCompleteFetchingData {
 
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -56,46 +61,47 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
     };
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_news:
-                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
-                        getSupportFragmentManager().popBackStack();
-                    }
-                    mProgressBar.setVisibility(View.GONE);
-                    blankText.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
-                    return true;
-                case R.id.navigation_words:
-                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
-                        getSupportFragmentManager().popBackStack();
-                    }
-                    mProgressBar.setVisibility(View.GONE);
-                    blankText.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
-                    return true;
-//                case R.id.inbox:
-//                    mTextMessage.setText(R.string.title_inbox);
+//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+//
+//        @Override
+//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//            switch (item.getItemId()) {
+//                case R.id.navigation_news:
+//                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+//                        getSupportFragmentManager().popBackStack();
+//                    }
+//                    mProgressBar.setVisibility(View.GONE);
+//                    blankText.setVisibility(View.GONE);
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
 //                    return true;
-                case R.id.model_answer:
-                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
-                        getSupportFragmentManager().popBackStack();
-                    }
-                    mProgressBar.setVisibility(View.GONE);
-                    blankText.setVisibility(View.GONE);
-                    loadModelAnswerFragment();
-                    return true;
-            }
-            return false;
-        }
-
-    };
+//                case R.id.navigation_words:
+//                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+//                        getSupportFragmentManager().popBackStack();
+//                    }
+//                    mProgressBar.setVisibility(View.GONE);
+//                    blankText.setVisibility(View.GONE);
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
+//                    return true;
+////                case R.id.inbox:
+////                    mTextMessage.setText(R.string.title_inbox);
+////                    return true;
+//                case R.id.model_answer:
+//                    for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+//                        getSupportFragmentManager().popBackStack();
+//                    }
+//                    mProgressBar.setVisibility(View.GONE);
+//                    blankText.setVisibility(View.GONE);
+//                    loadModelAnswerFragment();
+//                    return true;
+//            }
+//            return false;
+//        }
+//
+//    };
     private String count;
-    private TextView actionView;
+    public static TextView actionView;
+    public static AHBottomNavigation bottomNavigation;
 
     public void loadModelAnswerFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
@@ -142,8 +148,106 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
 
         }
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //about bottom navigation
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.navigation);
+
+// Create items
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.title_news), R.drawable.ic_rss_feed_black_24dp);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.title_words), R.drawable.ic_assignment_black_24dp);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.title_answer), R.drawable.ic_notifications_black_24dp);
+
+// Add items
+        bottomNavigation.addItem(item1);
+        bottomNavigation.addItem(item2);
+        bottomNavigation.addItem(item3);
+
+// Set background color
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#00FEFEFE"));
+
+// Disable the translation inside the CoordinatorLayout
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+
+// Enable the translation of the FloatingActionButton
+        bottomNavigation.manageFloatingActionButtonBehavior(FAB);
+
+// Change colors
+        bottomNavigation.setAccentColor(Color.parseColor("#000000"));
+        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
+// Force to tint the drawable (useful for font with icon for example)
+        bottomNavigation.setForceTint(true);
+
+// Display color under navigation bar (API 21+)
+// Don't forget these lines in your style-v21
+// <item name="android:windowTranslucentNavigation">true</item>
+// <item name="android:fitsSystemWindows">true</item>
+        bottomNavigation.setTranslucentNavigationEnabled(true);
+
+// Manage titles
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+
+// Use colored navigation with circle reveal effect
+        bottomNavigation.setColored(true);
+
+// Set current item programmatically
+        bottomNavigation.setCurrentItem(1);
+
+// Customize notification (title, background, typeface)
+        bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#F63D2B"));
+
+// Add or remove notification for each item"
+
+// Set listeners
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                // Do something cool here...
+                Log.e("selected position "," >> "+position);
+                switch (position){
+                    case 0:
+                        bottomNavigation.setNotification("", 0);
+                        editor.putInt("newsCount",0);
+                        editor.commit();
+                        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content, new GeneralNews()).commit();
+                        break;
+                    case 1:
+                        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                             getSupportFragmentManager().popBackStack();
+                         }
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
+
+                        break;
+                    case 2:
+                        bottomNavigation.setNotification("", 2);
+                        editor.putInt("answersCount",0);
+                        editor.commit();
+                        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                        getSupportFragmentManager().popBackStack();
+                    }
+                    mProgressBar.setVisibility(View.GONE);
+                    blankText.setVisibility(View.GONE);
+                    loadModelAnswerFragment();
+                        break;
+
+                }
+                return true;
+            }
+        });
+        bottomNavigation.setCurrentItem(0);
+        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
+            @Override public void onPositionChange(int y) {
+                // Manage the new y position
+            }
+        });
+//        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
 //SQ
@@ -190,13 +294,22 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
     protected void onResume() {
         super.onResume();
         getCount(sp.getString("group", "normal"));
+            if(sp.getInt("newsCount", 0)!=0)
+                bottomNavigation.setNotification(String.valueOf(sp.getInt("newsCount", 0)), 0);
+            else
+                bottomNavigation.setNotification("", 0);
+            if(sp.getInt("answersCount", 0)!=0)
+                bottomNavigation.setNotification(String.valueOf(sp.getInt("answersCount", 0)), 2);
+            else
+                bottomNavigation.setNotification("", 2);
+
     }
 
     private void getCount(String group) {
 
         if (group.equals("normal")) {
 
-            actionView.setText(String.valueOf(sp.getInt("answersCount", 0) + 1));
+            actionView.setText(String.valueOf(sp.getInt("questionsAnswersCount", 0)));
 
         } else {
             url = "http://educationplatform.pythonanywhere.com/api/asks/";
@@ -258,7 +371,11 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         int id = item.getItemId();
 
         if (id == R.id.nav_inbox) {
-            startActivity(new Intent(this, Inbox.class));
+            if (sp.getString("group", "normal").equals("normal")) {
+
+                actionView.setText("0");
+            }
+                startActivity(new Intent(this, Inbox.class));
         } else if (id == R.id.nav_about) {
             startActivity(new Intent(this, AboutActivity.class));
 
@@ -333,4 +450,6 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
     public void onError(String error) {
         Toast.makeText(this, "You cannot do this !", Toast.LENGTH_SHORT).show();
     }
+
+
 }

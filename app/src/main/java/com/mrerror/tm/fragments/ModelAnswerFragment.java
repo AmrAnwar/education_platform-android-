@@ -35,6 +35,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 /**
  * Created by kareem on 7/24/2017.
  */
@@ -79,7 +81,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     String no_list = "List_is_empty";
     TextView blankText;
     SharedPreferences sp;
-
+    SharedPreferences.Editor editor;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -224,7 +226,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         cOther.setOnClickListener(check);
 
         sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-
+        editor = sp.edit();
         loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
@@ -258,7 +260,11 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
         getData(url);
         recyclerView.setAdapter(mAdabter);
-
+        if(sp.getString("group","normal").equals("normal")){
+            editor.putInt("answersCount",0);
+            editor.commit();
+            ShortcutBadger.applyCount(getContext(), sp.getInt("answersCount",0)+sp.getInt("newsCount",0));
+        }
         return rootView;
     }
 

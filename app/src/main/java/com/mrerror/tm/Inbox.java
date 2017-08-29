@@ -80,9 +80,12 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         });
 
         if(!sp.getString("group","normal").equals("normal")){
-            editor.putInt("badgeCount",0);
+            editor.putInt("questionsCount",0);
             editor.commit();
-            ShortcutBadger.applyCount(this, sp.getInt("badgeCount",0));
+            ShortcutBadger.applyCount(this, sp.getInt("questionsCount",0));
+        }else{
+            editor.putInt("questionsAnswersCount",0);
+            editor.commit();
         }
 
 

@@ -73,9 +73,9 @@ public class GeneralNews extends Fragment {
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
         if(sp.getString("group","normal").equals("normal")){
-            editor.putInt("badgeCount",0);
+            editor.putInt("newsCount",0);
             editor.commit();
-            ShortcutBadger.applyCount(getContext(), sp.getInt("badgeCount",0));
+            ShortcutBadger.applyCount(getContext(), sp.getInt("newsCount",0)+sp.getInt("answersCount",0));
         }
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);

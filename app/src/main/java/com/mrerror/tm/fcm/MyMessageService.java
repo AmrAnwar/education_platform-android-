@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -23,6 +24,9 @@ import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+import static com.mrerror.tm.MainActivity.actionView;
+import static com.mrerror.tm.MainActivity.bottomNavigation;
+
 /**
  * Created by kareem on 8/1/2017.
  */
@@ -30,8 +34,18 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 public class MyMessageService extends FirebaseMessagingService {
     SharedPreferences sp;
     SharedPreferences.Editor editor;
+    Handler handler;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        handler = new Handler();
+    }
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -58,19 +72,54 @@ public class MyMessageService extends FirebaseMessagingService {
                 editor.putInt("questionsCount",sp.getInt("questionsCount",0)+1);
                 editor.commit();
                 ShortcutBadger.applyCount(this, sp.getInt("questionsCount",0));
+            }else{
+                editor.putInt("questionsAnswersCount",sp.getInt("questionsAnswersCount",0)+1);
+                editor.commit();
+                if(actionView!=null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            actionView.setText(String.valueOf(sp.getInt("questionsAnswersCount", 0)));
+                        }
+                    });
+                }
             }
         } else if (mWhere.equals("news")) {
             intent = new Intent(this, MainActivity.class);
             intent.putExtra("where", data.get("where"));
+            editor.putInt("newsCount",sp.getInt("newsCount",0)+1);
+            editor.commit();
             if(sp.getString("group","normal").equals("normal")){
-                editor.putInt("newsCount",sp.getInt("newsCount",0)+1);
-                editor.commit();
+
                 ShortcutBadger.applyCount(this, sp.getInt("newsCount",0));
+            }
+            if(bottomNavigation!=null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bottomNavigation.setNotification(String.valueOf(sp.getInt("newsCount",0)), 0);
+
+                    }
+                });
             }
 
         } else if (mWhere.equals("answers")) {
+
             editor.putInt("answersCount",sp.getInt("answersCount",0)+1);
             editor.commit();
+            if(sp.getString("group","normal").equals("normal")) {
+
+                ShortcutBadger.applyCount(this, sp.getInt("answersCount", 0) + sp.getInt("newsCount", 0));
+            }
+                if(bottomNavigation!=null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomNavigation.setNotification(String.valueOf(sp.getInt("answersCount",0)), 2);
+                        }
+                    });
+                }
+
             intent = new Intent(this, MainActivity.class);
 
             intent.putExtra("where", data.get("where"));
@@ -115,5 +164,9 @@ public class MyMessageService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        handler.post(runnable);
     }
 }
