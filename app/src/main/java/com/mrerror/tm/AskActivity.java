@@ -348,7 +348,7 @@ public class AskActivity extends AppCompatActivity implements IPickResult {
                 @Override
                 public void run() {
                     HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httpost = new HttpPost("http://educationplatform.pythonanywhere.com/api/asks/create/");
+                    HttpPost httpost = new HttpPost(getString(R.string.domain)+"/api/asks/create/");
 
                     MultipartEntity entity = new MultipartEntity();
                     try {

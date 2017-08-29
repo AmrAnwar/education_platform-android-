@@ -135,7 +135,7 @@ public class LoginActivity2 extends AppCompatActivity implements  NetworkConnect
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            String url = "http://educationplatform.pythonanywhere.com/api/users/login/test/";
+            String url = getString(R.string.domain)+"/api/users/login/test/";
             new NetworkConnection(LoginActivity2.this).postData(this, url, new String[]{"username", "password"},
                     new String[]{email, password});
         }

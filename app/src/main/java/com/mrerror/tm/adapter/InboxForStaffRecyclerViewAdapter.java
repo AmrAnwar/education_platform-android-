@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.mrerror.tm.R;
 import com.mrerror.tm.ReplyForStaffActivity;
 import com.mrerror.tm.connection.NetworkConnection;
-import com.mrerror.tm.fragments.UnitFragment;
 import com.mrerror.tm.models.QuestionForStaff;
 
 import org.json.JSONException;
@@ -26,7 +25,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
 
     private ArrayList<QuestionForStaff> mValues;
     private Context mContext;
-    private UnitFragment.OnListFragmentInteractionListener mListener;
+
 
     public InboxForStaffRecyclerViewAdapter(ArrayList<QuestionForStaff> items) {
         mValues = items;

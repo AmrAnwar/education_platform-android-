@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 //                    }
 //                    mProgressBar.setVisibility(View.GONE);
 //                    blankText.setVisibility(View.GONE);
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance(getString(R.string.domain)+"/api/study/units/v2/")).commit();
 //                    return true;
 ////                case R.id.inbox:
 ////                    mTextMessage.setText(R.string.title_inbox);
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
                          }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance("http://educationplatform.pythonanywhere.com/api/study/units/v2/")).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.content, UnitFragment.newInstance(getString(R.string.domain)+"/api/study/units/v2/")).commit();
 
                         break;
                     case 2:
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
                     }
                     mProgressBar.setVisibility(View.GONE);
                     blankText.setVisibility(View.GONE);
-                    loadModelAnswerFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
                         break;
 
                 }
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             public void onError(String error) {
 
             }
-        }).patchData(this, "http://educationplatform.pythonanywhere.com/api/users/"
+        }).patchData(this, getString(R.string.domain)+"/api/users/"
                         + sp.getString("username", "") + "/profile",
                         new String[]{"token"}, new String[]{sp.getString("token", "")});
 
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             actionView.setText(String.valueOf(sp.getInt("questionsAnswersCount", 0)));
 
         } else {
-            url = "http://educationplatform.pythonanywhere.com/api/asks/";
+            url =getString(R.string.domain)+ "/api/asks/";
 
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             startActivity(new Intent(this, AboutActivity.class));
 
         } else if (id == R.id.nav_logout) {
-            url = "http://educationplatform.pythonanywhere.com/api/users/" + sp.getInt("id", 0) + "/logout/";
+            url = getString(R.string.domain)+"/api/users/" + sp.getInt("id", 0) + "/logout/";
             new NetworkConnection(this).getDataAsJsonObject(this);
 
         }
@@ -435,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             public void onError(String error) {
 
             }
-        }).patchData(this, "http://educationplatform.pythonanywhere.com/api/users/"
+        }).patchData(this, getString(R.string.domain)+"/api/users/"
                         + sp.getString("username", "") + "/profile",
                 new String[]{"token"}, new String[]{"له"});
 

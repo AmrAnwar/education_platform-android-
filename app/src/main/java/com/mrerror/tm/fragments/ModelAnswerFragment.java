@@ -60,10 +60,10 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     CheckBox cOther;
 
     String nextURl = "";
-    String url = "http://educationplatform.pythonanywhere.com/api/answers/";
-    String urlExamOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=b";
-    String urlSheetOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=a";
-    String urlOtherOnly = "http://educationplatform.pythonanywhere.com/api/answers/?type=c";
+    String url = "" ;//getString(R.string.domain)+"/api/answers/";
+    String urlExamOnly = "" ;//getString(R.string.domain)+"/api/answers/?type=b";
+    String urlSheetOnly ="" ; //getString(R.string.domain)+"/api/answers/?type=a";
+    String urlOtherOnly = "" ;//getString(R.string.domain)+"/api/answers/?type=c";
 
     String urlNextFilter = "";
 
@@ -85,6 +85,11 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+         url = getString(R.string.domain)+"/api/answers/";
+         urlExamOnly = getString(R.string.domain)+"/api/answers/?type=b";
+         urlSheetOnly = getString(R.string.domain)+"/api/answers/?type=a";
+         urlOtherOnly = getString(R.string.domain)+"/api/answers/?type=c";
+
         try {
             mOnclick = (OnItemClick) context;
         } catch (ClassCastException e) {

@@ -41,4 +41,8 @@
     </string>
     <string name="title_activity_login3">Sign in</string>
     <string name="Send">Send</string>
+
+    <!-- The current Domain is :http://educationplatform.pythonanywhere.com -->
+    <!-- test Domain is : http://mrtawfiq.pythonanywhere.com -->
+    <string name="domain">http://mrtawfiq.pythonanywhere.com</string>
 </resources>

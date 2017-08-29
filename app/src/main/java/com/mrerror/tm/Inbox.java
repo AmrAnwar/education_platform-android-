@@ -37,7 +37,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     int scrolFalg = 0;
     int countAll = 0;
     public static ReplyForStaffActivity.onReply replyListener;
-    String urlForStuff = "http://educationplatform.pythonanywhere.com/api/asks/";
+    String urlForStuff = "";
     InboxForStaffRecyclerViewAdapter adapter;
     ArrayList<QuestionForStaff> questionsForStuff;
     private boolean refreshing = false;
@@ -48,6 +48,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+        urlForStuff = getString(R.string.domain)+"/api/asks/";
         scrolFalg = 0;
         loadMoreData = new LoadMoreData() {
             @Override
@@ -72,7 +73,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 questionsForStuff = null;
                 adapter = null;
                 scrolFalg = 0;
-                urlForStuff = "http://educationplatform.pythonanywhere.com/api/asks/";
+                urlForStuff = getString(R.string.domain)+"/api/asks/";
                 nextURl = "null";
                 getData(sp.getString("group", "normal"));
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -133,7 +134,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     private void getData(String group) {
 
         if (group.equals("normal")) {
-            url = "http://educationplatform.pythonanywhere.com/api/asks/" + sp.getString("username", "");
+            url = getString(R.string.domain)+"/api/asks/" + sp.getString("username", "");
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {

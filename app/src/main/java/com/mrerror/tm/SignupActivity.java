@@ -79,11 +79,11 @@ public class SignupActivity extends AppCompatActivity {
         final String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
-        String url = "http://educationplatform.pythonanywhere.com/api/users/register/";
+        String url = getString(R.string.domain)+"/api/users/register/";
         new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
             @Override
             public void onCompleted(String result) throws JSONException {
-                String url = "http://educationplatform.pythonanywhere.com/api/users/login/";
+                String url = getString(R.string.domain)+"/api/users/login/";
                 new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                     @Override
                     public void onCompleted(String result) throws JSONException {

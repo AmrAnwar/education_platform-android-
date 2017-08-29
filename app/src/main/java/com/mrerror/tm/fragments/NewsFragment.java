@@ -95,7 +95,7 @@ public class NewsFragment extends Fragment implements NetworkConnection.OnComple
                 getData(urlNext);
             }
         };
-        url = "http://educationplatform.pythonanywhere.com/api/news/?type=" + mType;
+        url = getString(R.string.domain)+"/api/news/?type=" + mType;
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
 
