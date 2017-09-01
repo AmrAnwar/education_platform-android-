@@ -1,17 +1,24 @@
 package com.mrerror.tm.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
+import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.models.Word;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,6 +35,8 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         mValues = items;
     }
 
+    public void onChange(ArrayList<Word> newItems)
+    {mValues=newItems;}
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
@@ -47,6 +56,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mWordView.setText(mValues.get(position).getWord());
+        holder.mWordView.setChecked(holder.mItem.ismHasFav());
         holder.mTranslation.setText("Click to see the translation");
 
 
@@ -59,17 +69,44 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView mWordView;
+        final CheckBox mWordView;
         final ImageView mListenView;
         final TextView mTranslation;
+
         Word mItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mWordView = (TextView) view.findViewById(word);
+            mWordView = (CheckBox) view.findViewById(word);
             mTranslation = (TextView) view.findViewById(R.id.translation);
             mListenView = (ImageView) view.findViewById(R.id.listen);
+
+          final   SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(mContext);
+
+
+            mWordView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    NetworkConnection.url=mContext.getString(R.string.domain)+"/api/study/wordtoggle/"+mItem.getWordId()+"/"+sp.getInt("id",0);;
+                  new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+                      @Override
+                      public void onCompleted(String result) throws JSONException {
+                          JSONObject obj= new JSONObject(result);
+                          Boolean toggle=obj.getBoolean("toggle");
+                          mWordView.setChecked(toggle);
+
+                      }
+
+                      @Override
+                      public void onError(String error) {
+
+                      }
+                  }).getDataAsJsonObject(mContext);
+                }
+            });
+
             mListenView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

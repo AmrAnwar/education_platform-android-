@@ -1,6 +1,5 @@
 package com.mrerror.tm.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -39,7 +38,7 @@ public class UnitFragment extends Fragment implements NetworkConnection.OnComple
     private String mLink = "";
     private UnitsRecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener mListener;
-    private ProgressDialog progressdialog;
+
     LoadMoreData loadMoreData;
     String nextURl = "";
     int scrolFalg = 0;
