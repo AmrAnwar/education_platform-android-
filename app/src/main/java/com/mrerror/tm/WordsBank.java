@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +48,7 @@ public class WordsBank extends AppCompatActivity {
 
     HashSet<String> checkForDataFromServerAndSql;
     SharedPreferences sp;
-
+    Toolbar toolbarFlexibleSpace;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +79,16 @@ public class WordsBank extends AppCompatActivity {
         eWord= (EditText) findViewById(R.id.addword);
         eTranslate= (EditText) findViewById(R.id.addtranslate);
         recycle= (RecyclerView) findViewById(R.id.words_bank_list);
+        WordsRecyclerViewAdapter.BankWordDelete wordDelete=new WordsRecyclerViewAdapter.BankWordDelete() {
+            @Override
+            public void onDleteFromBankWord(int postion) {
+              changeStateToDelete(myItems.get(postion));
 
-        mAdapter = new WordsRecyclerViewAdapter(myItems,'B');
+            }
+        };
+
+
+        mAdapter = new WordsRecyclerViewAdapter(myItems,'B',wordDelete);
         saveButton.setOnClickListener(onClickListenerButton);
         recycle.setLayoutManager(new LinearLayoutManager(this));
         recycle.setAdapter(mAdapter);
@@ -164,7 +173,7 @@ private void getDataFromServer(){
                     ref.setmWordId(obj.getInt("id"));
                     addNewWordToTable(ref, STATE_LOCAL_SERVER);
                     checkForDataFromServerAndSql.add(mWord);
-                    myItems.add(ref);
+
                 }
             }
 
@@ -179,9 +188,42 @@ private void getDataFromServer(){
 
 
 }
+    //add to sqlLite and if it's online and  data not from server it will send data to server
+    private void addNewWordToTable(Word word,String state){
+
+        if(!checkForDataFromServerAndSql.contains(word.getWord())) {
+            SQLiteDatabase dp = mDbHelper.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Contract.TableForWrodsBank.COLUMN_WORD, word.getWord());
+            contentValues.put(Contract.TableForWrodsBank.COLUMN_TRANSLATE, word.getTranslation());
+            contentValues.put(Contract.TableForWrodsBank.COLUMN_STATE, state);
+            if (word.getWordId() != 0)
+                contentValues.put(Contract.TableForWrodsBank._ID, word.getWordId());
+
+            Long id = dp.insert(Contract.TableForWrodsBank.TABLE_NAME, null, contentValues);
+            if (id < 0) {
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            } else {
+
+                myItems.add(word);
+                checkForDataFromServerAndSql.add(word.getWord());
+                Toast.makeText(this, "Done Added To Device", Toast.LENGTH_SHORT).show();
+
+                mAdapter.notifyDataSetChanged();
+                if (state.equals(STATE_LOCAL) && isOnline()) {
+                    postToServer(word);
+                }
+            }
+        }else {
+            Toast.makeText(this, "You have enter this word once if you need to add it again " +
+                            "change last letter with _1 example and example_1 ",
+                    Toast.LENGTH_LONG).show();
+
+        }
+    }
 
 
-View.OnClickListener onClickListenerButton=new View.OnClickListener() {
+    View.OnClickListener onClickListenerButton=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String mWord="";
@@ -197,44 +239,14 @@ View.OnClickListener onClickListenerButton=new View.OnClickListener() {
                 Toast.makeText(WordsBank.this, "Enter Arabic please", Toast.LENGTH_SHORT).show();
                 return; }
 
+
             addNewWordToTable(new Word(mWord,mTranslate),STATE_LOCAL);
             mAdapter.notifyDataSetChanged();
+            eWord.setText("");
+            eTranslate.setText("");
+            
         }
     };
-
-//add to sqlLite and if it's online and  data not from server it will send data to server
-    private void addNewWordToTable(Word word,String state){
-
-      if(!checkForDataFromServerAndSql.contains(word.getWord())) {
-          SQLiteDatabase dp = mDbHelper.getWritableDatabase();
-          ContentValues contentValues = new ContentValues();
-          contentValues.put(Contract.TableForWrodsBank.COLUMN_WORD, word.getWord());
-          contentValues.put(Contract.TableForWrodsBank.COLUMN_TRANSLATE, word.getTranslation());
-          contentValues.put(Contract.TableForWrodsBank.COLUMN_STATE, state);
-          if (word.getWordId() != 0)
-              contentValues.put(Contract.TableForWrodsBank._ID, word.getWordId());
-
-          Long id = dp.insert(Contract.TableForWrodsBank.TABLE_NAME, null, contentValues);
-          if (id < 0) {
-              Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-          } else {
-
-              myItems.add(word);
-              checkForDataFromServerAndSql.add(word.getWord());
-              Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
-
-              mAdapter.notifyDataSetChanged();
-              if (state.equals(STATE_LOCAL) && isOnline()) {
-                  postToServer(word);
-              }
-          }
-      }else {
-          Toast.makeText(this, "You have enter this word once if you need to add it again " +
-                          "change last letter with _1 example and example_1 ",
-                  Toast.LENGTH_SHORT).show();
-
-      }
-    }
 
 
     private  void  postToServer(final Word word){
@@ -259,7 +271,7 @@ View.OnClickListener onClickListenerButton=new View.OnClickListener() {
                 if(num<0){
                     Toast.makeText(WordsBank.this, "Error", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(WordsBank.this, "Done", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordsBank.this, "Done added to your account", Toast.LENGTH_SHORT).show();
                     state_L.remove(word);
                 }
             }
@@ -279,27 +291,15 @@ View.OnClickListener onClickListenerButton=new View.OnClickListener() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private  void deleteFromServer(final Word word){
         if(word.getWordId()>0) {
+            deletefromDataBase(word);
             String url = getString(R.string.domain) + "/api/study/bank/" + word.getWordId() + "/?user=" + sp.getInt("id", 0);
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
-               deletefromDataBase(word);
+                    Toast.makeText(WordsBank.this, "Done deleted from your account", Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override
@@ -320,6 +320,7 @@ View.OnClickListener onClickListenerButton=new View.OnClickListener() {
         String selection = Contract.TableForWrodsBank.COLUMN_WORD + " LIKE ?";
         String[] selectionArgs = { word.getWord() };
         db.delete(Contract.TableForWrodsBank.TABLE_NAME, selection, selectionArgs);
+        state_D.remove(word);
     }
 
     private  void changeStateToDelete(Word word){
@@ -337,9 +338,12 @@ View.OnClickListener onClickListenerButton=new View.OnClickListener() {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         }else {
             state_D.add(word);
+            if(isOnline()){
+                deleteFromServer(word);
+            }
             myItems.remove(word);
             mAdapter.notifyDataSetChanged();
-            Toast.makeText(this, "Done Delete", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Done delete from device", Toast.LENGTH_SHORT).show();
         }
 
 

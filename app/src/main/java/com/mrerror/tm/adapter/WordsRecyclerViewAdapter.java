@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -31,12 +33,22 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     public static TextToSpeech ttobj;
     private Context mContext;
     char mFromWhere;
+    BankWordDelete mBankWordDelete;
+
+    public  interface  BankWordDelete{
+
+        public void onDleteFromBankWord(int postion);
+    }
 
     public WordsRecyclerViewAdapter(ArrayList<Word> items,char fromWhere) {
         mValues = items;
         mFromWhere=fromWhere;
     }
-
+    public WordsRecyclerViewAdapter(ArrayList<Word> items,char fromWhere,BankWordDelete bankWordDelete) {
+        mValues = items;
+        mFromWhere=fromWhere;
+        mBankWordDelete = bankWordDelete;
+    }
     public void onChange(ArrayList<Word> newItems)
     {mValues=newItems;}
     @Override
@@ -55,7 +67,7 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder,  int position) {
         holder.mItem = mValues.get(position);
      if(mFromWhere=='w') {
          holder.mWordBank.setVisibility(View.GONE);
@@ -66,6 +78,32 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
          holder.mWordView.setVisibility(View.GONE);
          holder.mWordBank.setVisibility(View.VISIBLE);
          holder.mWordBank.setText(mValues.get(position).getWord());
+
+         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+             @Override
+             public boolean onLongClick(View v) {
+                 PopupMenu menu= new PopupMenu(mContext,holder.mView.findViewById(R.id.word));
+                 menu.inflate(R.menu.bank_word_delete_option);
+                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                     @Override
+                     public boolean onMenuItemClick(MenuItem item) {
+                         switch (item.getItemId()){
+                            case R.id.delete_word:
+                            {
+                               mBankWordDelete.onDleteFromBankWord(holder.getLayoutPosition());
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                         return false;
+                     }
+                 });
+                 menu.show();
+                 return true;}
+         });
+
+
      }
         holder.mTranslation.setText("Click to see the translation");
 

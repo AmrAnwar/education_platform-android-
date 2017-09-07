@@ -45,4 +45,5 @@
     <!-- The current Domain is :http://educationplatform.pythonanywhere.com -->
     <!-- test Domain is : http://mrtawfiq.pythonanywhere.com -->
     <string name="domain">http://mrtawfiq.pythonanywhere.com</string>
+    <string name="delete">delete</string>
 </resources>
