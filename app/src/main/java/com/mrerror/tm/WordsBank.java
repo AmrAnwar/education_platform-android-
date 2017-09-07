@@ -285,7 +285,7 @@ private void getDataFromServer(){
                 if(num<0){
                     Toast.makeText(WordsBank.this, "Error", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(WordsBank.this, "Done added to your account", Toast.LENGTH_SHORT).show();
+
                     state_L.remove(word);
                 }
             }
@@ -312,7 +312,7 @@ private void getDataFromServer(){
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
-                    Toast.makeText(WordsBank.this, "Done deleted from your account", Toast.LENGTH_SHORT).show();
+                    
 
                 }
 
