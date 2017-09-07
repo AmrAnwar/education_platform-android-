@@ -29,6 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -244,7 +247,7 @@ private void getDataFromServer(){
             mAdapter.notifyDataSetChanged();
             eWord.setText("");
             eTranslate.setText("");
-            
+
         }
     };
 
@@ -256,6 +259,16 @@ private void getDataFromServer(){
             @Override
             public void onCompleted(String result) throws JSONException {
                 SQLiteDatabase db=mDbHelper.getWritableDatabase();
+
+                try{
+                    String encoding= URLEncoder.encode(result,"ISO-8859-1");
+                    result= URLDecoder.decode(encoding,"UTF-8");
+
+                }catch (UnsupportedEncodingException e){
+
+                }
+
+
                 JSONObject obj=new JSONObject(result);
                 int wordid= obj.getInt("id");
                 word.setmWordId(wordid);
@@ -266,6 +279,7 @@ private void getDataFromServer(){
                 values.put(Contract.TableForWrodsBank.COLUMN_STATE,STATE_LOCAL_SERVER);
                 String selection = Contract.TableForWrodsBank.COLUMN_WORD + " LIKE ?";
                 String[] selectionArgs = { wordString };
+
 
                 int num=     db.update(Contract.TableForWrodsBank.TABLE_NAME,values,selection,selectionArgs);
                 if(num<0){
