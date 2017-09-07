@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private String count;
+    public static TextView actionView;
+    public static AHBottomNavigation bottomNavigation;
 
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -99,11 +102,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
 //        }
 //
 //    };
-    private String count;
-    public static TextView actionView;
-    public static AHBottomNavigation bottomNavigation;
 
-    public void loadModelAnswerFragment() {
+
+    private void loadModelAnswerFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new ModelAnswerFragment()).commit();
     }
 
@@ -379,7 +380,10 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         } else if (id == R.id.nav_about) {
             startActivity(new Intent(this, AboutActivity.class));
 
-        } else if (id == R.id.nav_logout) {
+        }else if(id== R.id.nav_wordsBank){
+            startActivity(new Intent(this,WordsBank.class));
+        }
+        else if (id == R.id.nav_logout) {
             url = getString(R.string.domain)+"/api/users/" + sp.getInt("id", 0) + "/logout/";
             new NetworkConnection(this).getDataAsJsonObject(this);
 

@@ -19,13 +19,17 @@ public class Word implements Parcelable {
     SharedPreferences sp;
    private int mWordId;
 
+    public void setmWordId(int mWordId) {
+        this.mWordId = mWordId;
+    }
 
     public int getWordId() {
         return mWordId;
     }
 
     public boolean ismHasFav() {
-for (int i=0;i<mUsers.length();i++){
+       if(mUsers==null){return false; }  else {
+ for (int i=0;i<mUsers.length();i++){
     int id=0;
     try {
       id  = (int) mUsers.get(i);
@@ -36,12 +40,17 @@ for (int i=0;i<mUsers.length();i++){
 
      return  true;
     }
+ }
 }
 
 
         return false;
     }
+public  Word(String word,String translation  ){
+    this.word = word;
+    this.translation = translation;
 
+}
     public Word(String word, String translation , JSONArray users,int wordId,SharedPreferences sharedprefrences) {
         this.word = word;
         this.translation = translation;

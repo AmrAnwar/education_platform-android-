@@ -30,9 +30,11 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     private ArrayList<Word> mValues;
     public static TextToSpeech ttobj;
     private Context mContext;
+    char mFromWhere;
 
-    public WordsRecyclerViewAdapter(ArrayList<Word> items) {
+    public WordsRecyclerViewAdapter(ArrayList<Word> items,char fromWhere) {
         mValues = items;
+        mFromWhere=fromWhere;
     }
 
     public void onChange(ArrayList<Word> newItems)
@@ -55,8 +57,16 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mWordView.setText(mValues.get(position).getWord());
+     if(mFromWhere=='w') {
+         holder.mWordBank.setVisibility(View.GONE);
+         holder.mWordView.setVisibility(View.VISIBLE);
+         holder.mWordView.setText(mValues.get(position).getWord());
         holder.mWordView.setChecked(holder.mItem.ismHasFav());
+     }else {
+         holder.mWordView.setVisibility(View.GONE);
+         holder.mWordBank.setVisibility(View.VISIBLE);
+         holder.mWordBank.setText(mValues.get(position).getWord());
+     }
         holder.mTranslation.setText("Click to see the translation");
 
 
@@ -72,12 +82,15 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
         final CheckBox mWordView;
         final ImageView mListenView;
         final TextView mTranslation;
+        final  TextView mWordBank;
 
         Word mItem;
 
         ViewHolder(View view) {
             super(view);
+
             mView = view;
+            mWordBank= (TextView) view.findViewById(R.id.WordsBank_textView);
             mWordView = (CheckBox) view.findViewById(word);
             mTranslation = (TextView) view.findViewById(R.id.translation);
             mListenView = (ImageView) view.findViewById(R.id.listen);

@@ -116,7 +116,7 @@ public class WordsFragment extends Fragment implements NetworkConnection.OnCompl
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.model_answerlist);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         mWordsList = new ArrayList<>();
-        adapter = new WordsRecyclerViewAdapter(mWordsList);
+        adapter = new WordsRecyclerViewAdapter(mWordsList,'w');
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         getData();

@@ -18,5 +18,14 @@ public class Contract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_FILE_LOCATION = "location";
     }
+    public static class TableForWrodsBank {
+        public static final String TABLE_NAME = "wordsBank";
+        public static final String _ID = "id";
+        public static final String COLUMN_WORD = "word";
+        public static final String COLUMN_TRANSLATE = "translate";
+        public static final String COLUMN_STATE = "state";
+
+    }
+
 
 }
