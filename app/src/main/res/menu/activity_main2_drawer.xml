@@ -9,6 +9,11 @@
             app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_inbox_black_24dp"
             android:title="Questions" />
+        <item
+            android:id="@+id/publicQuestions"
+            app:actionViewClass="android.widget.TextView"
+            android:icon="@drawable/ic_collections_bookmark_black_24px"
+            android:title="Public Questions" />
         <!--<item-->
         <!--android:id="@+id/nav_settings"-->
         <!--android:icon="@drawable/ic_menu_manage"-->

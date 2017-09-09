@@ -1,5 +1,6 @@
 package com.mrerror.tm;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -43,17 +44,28 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     private boolean refreshing = false;
     private int firstVisibleInListview;
     private SharedPreferences.Editor editor;
+    private String urlForPublic="";
+    private Boolean isPublic=false;
+    ArrayList<Question> questions;
+    InboxRecyclerViewAdapter pAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
         urlForStuff = getString(R.string.domain)+"/api/asks/";
+        urlForPublic=getString(R.string.domain)+"/api/asks/?public=true";
+        questions=new ArrayList<>();
+        Intent mIntent=getIntent();
+       isPublic= mIntent.getBooleanExtra("fp",false);
+
         scrolFalg = 0;
         loadMoreData = new LoadMoreData() {
             @Override
             public void loadMorData(String url) {
-                urlForStuff = nextURl;
+               if(isPublic){
+                   urlForPublic=nextURl;
+               }else{ urlForStuff = nextURl;}
                 getData(sp.getString("group", ""));
             }
         };
@@ -70,10 +82,15 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
             @Override
             public void onRefresh() {
                 refreshing = true;
+                questions=null;
+                pAdapter=null;
+                urlForPublic=getString(R.string.domain)+"/api/asks/?public=true" ;
+
                 questionsForStuff = null;
                 adapter = null;
                 scrolFalg = 0;
-                urlForStuff = getString(R.string.domain)+"/api/asks/";
+
+                urlForStuff =  getString(R.string.domain)+"/api/asks/";
                 nextURl = "null";
                 getData(sp.getString("group", "normal"));
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -133,81 +150,149 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
 
     private void getData(String group) {
 
-        if (group.equals("normal")) {
-            url = getString(R.string.domain)+"/api/asks/" + sp.getString("username", "");
-            new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
-                @Override
-                public void onCompleted(String result) throws JSONException {
+        if(isPublic){
+            getPublicData();
 
-                    JSONArray jsonArray = new JSONArray(result);
-                    ArrayList<Question> questions = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject questionObj = jsonArray.getJSONObject(i);
-                        Question question;
-                        question = new Question(questionObj.getString("question"), questionObj.getString("replay")
-                                , questionObj.getString("image_staff"), questionObj.getString("file_staff"));
-                        questions.add(question);
-                    }
-                    InboxRecyclerViewAdapter adapter = new InboxRecyclerViewAdapter(questions);
-                    recyclerView.setAdapter(adapter);
-                    if(refreshing){
-                        refreshing=false;
-                    }
-                }
-
-                @Override
-                public void onError(String error) {
-
-                }
-            }).getDataAsJsonArray(this);
-
-
-        } else {
-            nextURl = "null";
-            url = urlForStuff;
-
-            new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
-                @Override
-                public void onCompleted(String result) throws JSONException {
-                    if (questionsForStuff == null) {
-                        questionsForStuff = new ArrayList<>();
-                    }
-                    JSONObject jsonObject = new JSONObject(result);
-                    nextURl = jsonObject.getString("next");
-                    Log.d("hell", url);
-                    countAll = jsonObject.getInt("count");
-                    JSONArray jsonArray = jsonObject.getJSONArray("results");
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject questionObj = jsonArray.getJSONObject(i);
-                        QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
-                                null, questionObj.getString("edit_url"), questionObj.getString("delete_url")
-                                , questionObj.getJSONObject("user").getString("username")
-                                , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
-                        questionsForStuff.add(question);
-                    }
-
-
-                    if (adapter == null) {
-                        adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
-                        recyclerView.setAdapter(adapter);
-                    }
-
-
-                    adapter.onChange(questionsForStuff);
-                    adapter.notifyDataSetChanged();
-                    if(refreshing){
-                        refreshing=false;
-                    }
-                }
-
-                @Override
-                public void onError(String error) {
-
-                }
-            }).getDataAsJsonObject(this);
         }
-        Log.e("urlll", url);
+        else {
+
+            if (group.equals("normal")) {
+                getNormalData();
+
+            } else {
+                getStaffData();
+            }
+        }
+            Log.e("urlll", url);
+
+    }
+
+    private void  getPublicData(){
+
+        url = urlForPublic;
+        nextURl = "null";
+
+
+        new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+            @Override
+            public void onCompleted(String result) throws JSONException {
+                if (questions == null) {
+                questions = new ArrayList<>();
+                }
+                JSONObject jsonObject = new JSONObject(result);
+                nextURl = jsonObject.getString("next");
+                Log.d("hell", url);
+                countAll = jsonObject.getInt("count");
+                JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject questionObj = jsonArray.getJSONObject(i);
+                    Question question = new Question(questionObj.getString("question"), questionObj.getString("replay")
+                            , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
+                    questions.add(question);
+                }
+
+
+                if (pAdapter == null) {
+                    pAdapter = new InboxRecyclerViewAdapter(questions);
+                    recyclerView.setAdapter(pAdapter);
+                }
+
+
+                if(refreshing){
+                    refreshing=false;
+                }
+
+                pAdapter.onChange(questions);
+                pAdapter.notifyDataSetChanged();
+                if(refreshing){
+                    refreshing=false;
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        }).getDataAsJsonObject(this);
+
+    }
+
+// this method for staff priavte inBox Question
+    private void getStaffData() {
+        nextURl = "null";
+        url = urlForStuff;
+
+        new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+            @Override
+            public void onCompleted(String result) throws JSONException {
+                if (questionsForStuff == null) {
+                    questionsForStuff = new ArrayList<>();
+                }
+                JSONObject jsonObject = new JSONObject(result);
+                nextURl = jsonObject.getString("next");
+                Log.d("hell", url);
+                countAll = jsonObject.getInt("count");
+                JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject questionObj = jsonArray.getJSONObject(i);
+                    QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
+                            null, questionObj.getString("edit_url"), questionObj.getString("delete_url")
+                            , questionObj.getJSONObject("user").getString("username")
+                            , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
+                    questionsForStuff.add(question);
+                }
+
+
+                if (adapter == null) {
+                    adapter = new InboxForStaffRecyclerViewAdapter(questionsForStuff);
+                    recyclerView.setAdapter(adapter);
+                }
+
+
+                adapter.onChange(questionsForStuff);
+                adapter.notifyDataSetChanged();
+                if(refreshing){
+                    refreshing=false;
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        }).getDataAsJsonObject(this);
+    }
+
+    // this for student private inbox
+    private void getNormalData() {
+        url = getString(R.string.domain)+"/api/asks/" + sp.getString("username", "");
+        new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
+            @Override
+            public void onCompleted(String result) throws JSONException {
+
+                JSONArray jsonArray = new JSONArray(result);
+                ArrayList<Question> questions = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject questionObj = jsonArray.getJSONObject(i);
+                    Question question;
+                    question = new Question(questionObj.getString("question"), questionObj.getString("replay")
+                            , questionObj.getString("image_staff"), questionObj.getString("file_staff"));
+                    questions.add(question);
+                }
+                InboxRecyclerViewAdapter adapter = new InboxRecyclerViewAdapter(questions);
+                recyclerView.setAdapter(adapter);
+                if(refreshing){
+                    refreshing=false;
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        }).getDataAsJsonArray(this);
     }
 
     @Override

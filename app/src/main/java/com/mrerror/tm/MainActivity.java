@@ -377,7 +377,16 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
                 actionView.setText("0");
             }
                 startActivity(new Intent(this, Inbox.class));
-        } else if (id == R.id.nav_about) {
+        }else if(id == R.id.publicQuestions){
+            if (sp.getString("group", "normal").equals("normal")) {
+
+                actionView.setText("0");
+            }
+            Intent intent=new Intent(this, Inbox.class);
+            intent.putExtra("fp",true);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_about) {
             startActivity(new Intent(this, AboutActivity.class));
 
         }else if(id== R.id.nav_wordsBank){

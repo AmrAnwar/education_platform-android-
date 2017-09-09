@@ -85,10 +85,18 @@
             android:layout_marginRight="24dp"
             tools:text="By : Ahmed Nader"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkPublicQuestion"
+            android:layout_gravity="center"
+            android:text="Public Question"
+            android:fontFamily="sans-serif-smallcaps"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/primary_darker"/>
         <EditText
             android:id="@+id/reply"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="22dp"
             android:layout_marginBottom="32dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"

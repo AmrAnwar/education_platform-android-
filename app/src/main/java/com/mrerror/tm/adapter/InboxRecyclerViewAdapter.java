@@ -26,7 +26,10 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
     public InboxRecyclerViewAdapter(ArrayList<Question> items) {
         mValues = items;
     }
-
+    public  void onChange(ArrayList<Question> newValues)
+    {
+        mValues=newValues;
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();

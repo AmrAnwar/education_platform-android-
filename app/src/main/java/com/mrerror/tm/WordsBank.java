@@ -312,7 +312,7 @@ private void getDataFromServer(){
             new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
                 @Override
                 public void onCompleted(String result) throws JSONException {
-                    
+
 
                 }
 

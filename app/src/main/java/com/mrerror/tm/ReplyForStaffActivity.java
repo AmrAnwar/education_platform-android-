@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -87,14 +88,14 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
     private MediaPlayer mediaPlayer2;
     private QuestionForStaff questionForStaff;
     private ProgressDialog progressDialog;
-
+ private CheckBox cPublic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reply_for_staff);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        cPublic= (CheckBox) findViewById(R.id.checkPublicQuestion);
         questionForStaff = getIntent().getParcelableExtra("question");
         TextView question = (TextView) findViewById(R.id.question);
         TextView username = (TextView) findViewById(R.id.username);
@@ -466,6 +467,9 @@ public class ReplyForStaffActivity extends AppCompatActivity implements IPickRes
                 try {
                     entity.addPart("question", new StringBody(questionForStaff.getQuestion()));
                     entity.addPart("replay", new StringBody(reply.getText().toString()));
+                    if(cPublic.isChecked()){
+                        entity.addPart("public", new StringBody("true"));
+                    }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
