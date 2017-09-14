@@ -105,8 +105,9 @@
         </activity>
         <activity
             android:name=".WordsBank"
-            android:label="WordsBank"
-           ></activity>
+            android:label="WordsBank" />
+        <activity android:name=".ExerciseActivity" />
+        <activity android:name=".QuestionsForExerciseActivity"></activity>
     </application>
 
 </manifest>

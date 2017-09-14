@@ -392,6 +392,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         }else if(id== R.id.nav_wordsBank){
             startActivity(new Intent(this,WordsBank.class));
         }
+        else if(id== R.id.nav_excercise){
+            startActivity(new Intent(this,ExerciseActivity.class));
+        }
         else if (id == R.id.nav_logout) {
             url = getString(R.string.domain)+"/api/users/" + sp.getInt("id", 0) + "/logout/";
             new NetworkConnection(this).getDataAsJsonObject(this);

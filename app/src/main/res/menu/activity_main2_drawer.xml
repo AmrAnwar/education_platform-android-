@@ -18,19 +18,26 @@
         <!--android:id="@+id/nav_settings"-->
         <!--android:icon="@drawable/ic_menu_manage"-->
         <!--android:title="Settings" />-->
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_about"
-            android:title="About" />
+
         <item
             android:id="@+id/nav_wordsBank"
             android:icon="@drawable/ic_assignment_black_24dp"
             android:title="Your Words Bank"
             />
         <item
+            android:id="@+id/nav_excercise"
+            android:icon="@drawable/ic_import_contacts_black_24dp"
+            android:title="Exercise"
+            />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_about"
+            android:title="About" />
+        <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
             android:title="Logout" />
+
     </group>
 
 </menu>
