@@ -42,6 +42,7 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mQuest.setText(mValues.get(position).getQuestion());
+        holder.mTime.setText(mValues.get(position).getDate());
     }
 
     @Override
@@ -57,12 +58,14 @@ public class InboxForStaffRecyclerViewAdapter extends RecyclerView.Adapter<Inbox
         final View mView;
         final TextView mQuest;
         final ImageView mDelete;
+        final TextView mTime;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
             mQuest = (TextView) view.findViewById(R.id.text1);
             mDelete = (ImageView) view.findViewById(R.id.delete);
+            mTime = (TextView) view.findViewById(R.id.timeTv);
             mDelete.setVisibility(View.VISIBLE);
             mDelete.setOnClickListener(this);
             mView.setOnClickListener(this);

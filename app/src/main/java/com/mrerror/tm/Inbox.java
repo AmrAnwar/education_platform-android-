@@ -58,6 +58,9 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
         questions=new ArrayList<>();
         Intent mIntent=getIntent();
        isPublic= mIntent.getBooleanExtra("fp",false);
+        if(isPublic){
+            setTitle("Public Questions");
+        }
 
         scrolFalg = 0;
         loadMoreData = new LoadMoreData() {
@@ -188,7 +191,8 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject questionObj = jsonArray.getJSONObject(i);
                     Question question = new Question(questionObj.getString("question"), questionObj.getString("replay")
-                            , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
+                            , questionObj.getString("image_sender"), questionObj.getString("file_sender")
+                    ,questionObj.getString("timestamp"));
                     questions.add(question);
                 }
 
@@ -240,7 +244,8 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     QuestionForStaff question = new QuestionForStaff(questionObj.getString("question"),
                             null, questionObj.getString("edit_url"), questionObj.getString("delete_url")
                             , questionObj.getJSONObject("user").getString("username")
-                            , questionObj.getString("image_sender"), questionObj.getString("file_sender"));
+                            , questionObj.getString("image_sender"), questionObj.getString("file_sender")
+                    ,questionObj.getString("timestamp"));
                     questionsForStuff.add(question);
                 }
 
@@ -278,7 +283,8 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
                     JSONObject questionObj = jsonArray.getJSONObject(i);
                     Question question;
                     question = new Question(questionObj.getString("question"), questionObj.getString("replay")
-                            , questionObj.getString("image_staff"), questionObj.getString("file_staff"));
+                            , questionObj.getString("image_staff"), questionObj.getString("file_staff"),
+                            "");
                     questions.add(question);
                 }
                 InboxRecyclerViewAdapter adapter = new InboxRecyclerViewAdapter(questions);

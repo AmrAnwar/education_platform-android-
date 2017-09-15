@@ -41,6 +41,7 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         String quest = mValues.get(position).getQuestion();
+        holder.mTime.setText(mValues.get(position).getDate());
         if (quest.length() > 2)
             holder.mQuest.setText(mValues.get(position).getQuestion());
         else
@@ -61,10 +62,12 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final View mView;
         final TextView mQuest;
+        final TextView mTime;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
+            mTime= (TextView) view.findViewById(R.id.timeTv);
             mQuest = (TextView) view.findViewById(R.id.text1);
             mView.setOnClickListener(this);
         }

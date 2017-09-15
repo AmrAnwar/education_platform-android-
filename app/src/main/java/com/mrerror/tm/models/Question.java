@@ -12,12 +12,14 @@ public class Question implements Parcelable {
     private String answer;
     private String linkForImg;
     private String linkForRec;
+    private String date;
 
-    public Question(String question, String answer, String img, String rec) {
+    public Question(String question, String answer, String img, String rec,String date) {
         this.question = question;
         this.answer = answer;
         this.linkForImg = img;
         this.linkForRec = rec;
+        this.date=TimeAndDate.timeHandeler(date);
     }
 
     public String getQuestion() {
@@ -35,12 +37,14 @@ public class Question implements Parcelable {
     public String getLinkForRec() {
         return linkForRec;
     }
+    public String getDate(){return date;}
 
     protected Question(Parcel in) {
         question = in.readString();
         answer = in.readString();
         linkForImg = in.readString();
         linkForRec = in.readString();
+        date=in.readString();
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
@@ -66,5 +70,6 @@ public class Question implements Parcelable {
         dest.writeString(answer);
         dest.writeString(linkForImg);
         dest.writeString(linkForRec);
+        dest.writeString(date);
     }
 }

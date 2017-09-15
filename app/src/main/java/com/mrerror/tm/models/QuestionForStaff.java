@@ -15,9 +15,10 @@ public class QuestionForStaff implements Parcelable {
     private String username;
     private String studentImg;
     private String studentRec;
+    private String date;
 
     public QuestionForStaff(String question, String answer, String linkToEdit, String linkToDelete, String username,
-                            String stImg, String stRec) {
+                            String stImg, String stRec,String date) {
         this.question = question;
         this.answer = answer;
         this.linkToEdit = linkToEdit;
@@ -25,6 +26,7 @@ public class QuestionForStaff implements Parcelable {
         this.username = username;
         this.studentImg = stImg;
         this.studentRec = stRec;
+        this.date=TimeAndDate.timeHandeler(date);
     }
 
     public String getQuestion() {
@@ -55,6 +57,8 @@ public class QuestionForStaff implements Parcelable {
         return username;
     }
 
+    public String getDate() {return date;}
+
     protected QuestionForStaff(Parcel in) {
         question = in.readString();
         answer = in.readString();
@@ -63,6 +67,7 @@ public class QuestionForStaff implements Parcelable {
         username = in.readString();
         studentImg = in.readString();
         studentRec = in.readString();
+        date=in.readString();
     }
 
     public static final Creator<QuestionForStaff> CREATOR = new Creator<QuestionForStaff>() {
@@ -91,5 +96,6 @@ public class QuestionForStaff implements Parcelable {
         dest.writeString(username);
         dest.writeString(studentImg);
         dest.writeString(studentRec);
+        dest.writeString(date);
     }
 }
