@@ -16,6 +16,7 @@ public class TimeAndDate {
     private static final long MINUTE_MILLIS = 1000 * 60;
     private static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final long DAY_MILLIS = 24 * HOUR_MILLIS;
+    private static final long _2DAYS_MILLIS=48*HOUR_MILLIS;
 
 
 
@@ -52,7 +53,10 @@ public class TimeAndDate {
                 long minutes = Math.round((now - dateMillis) / HOUR_MILLIS);
                 date = String.valueOf(minutes) + "h";
             }
-        } else {
+        }else if(now -dateMillis <(_2DAYS_MILLIS)){
+            date="Yesterday";
+        }
+        else {
             Date dateDate = new Date(dateMillis);
             date = sDateFormat.format(dateDate);
         }
