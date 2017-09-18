@@ -68,16 +68,19 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder,  int position) {
-        holder.mItem = mValues.get(position);
+
      if(mFromWhere=='w') {
+         holder.mItem = mValues.get(position);
          holder.mWordBank.setVisibility(View.GONE);
          holder.mWordView.setVisibility(View.VISIBLE);
          holder.mWordView.setText(mValues.get(position).getWord());
         holder.mWordView.setChecked(holder.mItem.ismHasFav());
      }else {
-         holder.mWordView.setVisibility(View.GONE);
-         holder.mWordBank.setVisibility(View.VISIBLE);
-         holder.mWordBank.setText(mValues.get(position).getWord());
+
+             holder.mItem = mValues.get(position);
+             holder.mWordView.setVisibility(View.GONE);
+             holder.mWordBank.setVisibility(View.VISIBLE);
+             holder.mWordBank.setText(mValues.get(position).getWord());
 
          holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
              @Override
@@ -112,7 +115,9 @@ public class WordsRecyclerViewAdapter extends RecyclerView.Adapter<WordsRecycler
 
     @Override
     public int getItemCount() {
+
         return mValues.size();
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

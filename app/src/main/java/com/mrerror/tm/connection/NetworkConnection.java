@@ -87,8 +87,9 @@ public class NetworkConnection {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
-                        OnCompleteFetchingData.onError(error.networkResponse.data.toString());
-
+                  try {
+                      OnCompleteFetchingData.onError(error.networkResponse.data.toString());
+                  }catch (NullPointerException e){}
                     }
                 });
 
@@ -120,7 +121,8 @@ public class NetworkConnection {
             public void onErrorResponse(VolleyError error) {
                 try {
                     OnCompleteFetchingData.onError(new String(error.networkResponse.data,"UTF-8"));
-                } catch (UnsupportedEncodingException e) {
+                } catch (NullPointerException e){}
+                catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                         Toast.makeText(context,

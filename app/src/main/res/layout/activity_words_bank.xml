@@ -5,20 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mrerror.tm.WordsBank">
+    tools:context="com.mrerror.tm.WordsBank"
+    >
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/fragment_news"
+            android:id="@+id/words_bank_list"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.v4.widget.NestedScrollView>
 
 
-<android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:listitem="@layout/fragment_news"
-    android:id="@+id/words_bank_list"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
-      android:background="#fff"
+        android:background="#fff"
         android:layout_height="200dp"
        >
 
@@ -29,6 +38,7 @@
             android:layout_height="match_parent"
             app:contentScrim="#fff"
             app:expandedTitleMarginStart="48dp"
+
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
 
