@@ -82,6 +82,7 @@ public class WordsBank extends AppCompatActivity {
         eWord= (EditText) findViewById(R.id.addword);
         eTranslate= (EditText) findViewById(R.id.addtranslate);
         recycle= (RecyclerView) findViewById(R.id.words_bank_list);
+
         WordsRecyclerViewAdapter.BankWordDelete wordDelete=new WordsRecyclerViewAdapter.BankWordDelete() {
             @Override
             public void onDleteFromBankWord(int postion) {
@@ -94,6 +95,7 @@ public class WordsBank extends AppCompatActivity {
         mAdapter = new WordsRecyclerViewAdapter(myItems,'B',wordDelete);
         saveButton.setOnClickListener(onClickListenerButton);
         recycle.setLayoutManager(new LinearLayoutManager(this));
+        recycle.setNestedScrollingEnabled(false);
         recycle.setAdapter(mAdapter);
     }
 

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/fragment_news"
             android:id="@+id/words_bank_list"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+             />
 
     </android.support.v4.widget.NestedScrollView>
 
