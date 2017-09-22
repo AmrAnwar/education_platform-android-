@@ -56,6 +56,7 @@ public class WordsBank extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words_bank);
+
         initView();
         mDbHelper = new ModelAnswerDbHelper(this);
         sp= PreferenceManager.getDefaultSharedPreferences(this);
@@ -73,6 +74,7 @@ public class WordsBank extends AppCompatActivity {
 
     }
     private void initView() {
+
         checkForDataFromServerAndSql=new HashSet<>();
 
         myItems=new ArrayList<>();
