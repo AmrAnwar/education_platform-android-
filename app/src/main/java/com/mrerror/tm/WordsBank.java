@@ -57,6 +57,7 @@ public class WordsBank extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words_bank);
 
+
         initView();
         mDbHelper = new ModelAnswerDbHelper(this);
         sp= PreferenceManager.getDefaultSharedPreferences(this);
@@ -74,7 +75,8 @@ public class WordsBank extends AppCompatActivity {
 
     }
     private void initView() {
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         checkForDataFromServerAndSql=new HashSet<>();
 
         myItems=new ArrayList<>();
@@ -374,5 +376,12 @@ private void getDataFromServer(){
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
 
 }

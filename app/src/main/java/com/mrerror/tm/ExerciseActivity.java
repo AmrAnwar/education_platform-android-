@@ -55,6 +55,8 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         mProgressBar= (ProgressBar) findViewById(R.id.progressbarEx);
         mBlankTextView=(TextView) findViewById(R.id.blanktextviewEx);
 
@@ -124,5 +126,10 @@ public class ExerciseActivity extends AppCompatActivity {
               mBlankTextView.setVisibility(View.VISIBLE);
           }
       }).getDataAsJsonArray(this);
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
