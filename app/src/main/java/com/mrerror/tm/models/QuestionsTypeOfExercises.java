@@ -16,7 +16,7 @@ public class QuestionsTypeOfExercises implements Parcelable {
     public QuestionsTypeOfExercises(String type, int stype){
 
         mTypeQuestion =type;
-mType=stype;
+        mType=stype;
     }
     public int getmType() {
         return mType;

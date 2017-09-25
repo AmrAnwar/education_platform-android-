@@ -14,7 +14,7 @@ import org.json.JSONException;
 public class Word implements Parcelable {
     private String word;
     private String translation;
-    public JSONArray mUsers;
+    private JSONArray mUsers;
 
     SharedPreferences sp;
    private int mWordId;
@@ -28,7 +28,8 @@ public class Word implements Parcelable {
     }
 
     public boolean ismHasFav() {
-       if(mUsers==null){return false; }  else {
+       if(mUsers==null){return false;}
+       else {
  for (int i=0;i<mUsers.length();i++){
     int id=0;
     try {
