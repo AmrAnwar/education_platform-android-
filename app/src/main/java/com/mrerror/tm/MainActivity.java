@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         FirebaseMessaging.getInstance().unsubscribeFromTopic("new_question");
         FirebaseMessaging.getInstance().unsubscribeFromTopic("news");
         FirebaseMessaging.getInstance().unsubscribeFromTopic("answers");
-
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("public_question");
         new NetworkConnection(new NetworkConnection.OnCompleteFetchingData() {
             @Override
             public void onCompleted(String result) throws JSONException {
