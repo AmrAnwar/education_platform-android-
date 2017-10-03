@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
     private String count;
     public static TextView actionView;
     public static AHBottomNavigation bottomNavigation;
+    private NavigationView navigationView;
 
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         actionView = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_inbox));
 
@@ -290,10 +293,22 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             }
         }
     }
-
+    private void unCheckAllMenuItems(@NonNull final Menu menu) {
+        int size = menu.size();
+        for (int i = 0; i < size; i++) {
+            final MenuItem item = menu.getItem(i);
+            if(item.hasSubMenu()) {
+                // Un check sub menu items
+                unCheckAllMenuItems(item.getSubMenu());
+            } else {
+                item.setChecked(false);
+            }
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        unCheckAllMenuItems(navigationView.getMenu());
         getCount(sp.getString("group", "normal"));
             if(sp.getInt("newsCount", 0)!=0)
                 bottomNavigation.setNotification(String.valueOf(sp.getInt("newsCount", 0)), 0);
@@ -394,6 +409,9 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
         }
         else if(id== R.id.nav_excercise){
             startActivity(new Intent(this,ExerciseActivity.class));
+        }
+        else if(id== R.id.nav_exams){
+            startActivity(new Intent(this,ExamsActivity.class));
         }
         else if (id == R.id.nav_logout) {
             url = getString(R.string.domain)+"/api/users/" + sp.getInt("id", 0) + "/logout/";

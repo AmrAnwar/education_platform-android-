@@ -49,11 +49,7 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     OnItemClick mOnclick;
     ModelAnswer refrence;
     public static boolean shouldResume = false;
-    HashMap<Integer, ModelAnswer> itemInDataBase;
-    ArrayList<ModelAnswer> arryWithOutNetAll;
-    ArrayList<ModelAnswer> exams;
-    ArrayList<ModelAnswer> sheets;
-    ArrayList<ModelAnswer> others;
+
     RecyclerView recyclerView;
     CheckBox cExam;
     CheckBox cSheet;
@@ -73,6 +69,11 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     int countOther = 0;
     int scrolFalg = 0;
     SwipeRefreshLayout swipeRefreshLayout;
+    HashMap<Integer, ModelAnswer> itemInDataBase;
+    ArrayList<ModelAnswer> arryWithOutNetAll;
+    ArrayList<ModelAnswer> exams;
+    ArrayList<ModelAnswer> sheets;
+    ArrayList<ModelAnswer> others;
     ArrayList<ModelAnswer> examAndsheets;
     ArrayList<ModelAnswer> examAndOther;
     ArrayList<ModelAnswer> sheetAndOther;
@@ -112,18 +113,6 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
         mOnclick.onItemClickLestiner(modelAnswer);
     }
 
-    public interface OnItemClick {
-
-        public void onItemClickLestiner(ModelAnswer item);
-    }
-
-    //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
 
     public void initializeDb() {
         itemInDataBase = new HashMap<>();
@@ -202,6 +191,8 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
+
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -485,4 +476,16 @@ public class ModelAnswerFragment extends Fragment implements NetworkConnection.O
     }
 
 
+    public interface OnItemClick {
+
+        void onItemClickLestiner(ModelAnswer item);
+    }
+
+    //here I get items from data base in hashmap to check after that when i get data from server if I donwload it or not
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 }

@@ -28,7 +28,7 @@ public class choicesFragment extends Fragment {
     private Test mTest;
 
 
-    Button submit, next;
+    Button submit,showAnswer, next;
     //for choices
     TextView questionTV, choice1TV, choice2TV, choice3TV;
     ImageView choice1True, choice1False, choice2True, choice2False, choice3True, choice3False;
@@ -69,10 +69,17 @@ public class choicesFragment extends Fragment {
         View v = inflater.inflate(R.layout.content_exam_choices, container, false);
         next = (Button) v.findViewById(R.id.next_btn);
         submit = (Button) v.findViewById(R.id.submit_btn);
+        showAnswer = (Button) v.findViewById(R.id.showAnswer_btn);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submit(v);
+            }
+        });
+        showAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnswer(v);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +191,7 @@ public class choicesFragment extends Fragment {
                 choice1TV.setEnabled(false);
                 choice2TV.setEnabled(false);
                 choice3TV.setEnabled(false);
+                showAnswer.setVisibility(View.GONE);
                 submit.setVisibility(View.GONE);
                 next.setVisibility(View.VISIBLE);
             } else {
@@ -220,9 +228,33 @@ public class choicesFragment extends Fragment {
                     .setAction("Action", null).show();
         }
     }
+    public void showAnswer(View view) {
+        String answer = mTest.getTestChoicesList().get(choicesCounter).getAnswer();
+        choice1TV.setTextColor(getContext().getResources().getColor(R.color.black));
+        choice2TV.setTextColor(getContext().getResources().getColor(R.color.black));
+        choice3TV.setTextColor(getContext().getResources().getColor(R.color.black));
+        choice2False.setVisibility(View.GONE);
+        choice1False.setVisibility(View.GONE);
+        choice3False.setVisibility(View.GONE);
+
+        if(answer.equals(choice1TV.getText().toString())){
+            choice1TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+            choice1True.setVisibility(View.VISIBLE);
+        }else if(answer.equals(choice2TV.getText().toString())){
+            choice2TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+            choice2True.setVisibility(View.VISIBLE);
+        }else if(answer.equals(choice3TV.getText().toString())){
+            choice3TV.setTextColor(getContext().getResources().getColor(R.color.true_text));
+            choice3True.setVisibility(View.VISIBLE);
+        }
+        submit.setVisibility(View.GONE);
+        showAnswer.setVisibility(View.GONE);
+        next.setVisibility(View.VISIBLE);
+    }
 
     public void next(View view) {
         submit.setVisibility(View.VISIBLE);
+        showAnswer.setVisibility(View.VISIBLE);
         next.setVisibility(View.GONE);
 
         if ((choicesCounter + 1) < testChoicesArrayList.size()) {

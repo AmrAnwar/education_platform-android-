@@ -88,8 +88,8 @@ public class ExerciseActivity extends AppCompatActivity {
                     new QuestionsTypeOfExercises("Dialog",2),
                     new QuestionsTypeOfExercises("Choices",3),
             new QuestionsTypeOfExercises("Find the mistake",4),
-            new QuestionsTypeOfExercises("Article",5),
-        new QuestionsTypeOfExercises("Story",6),
+            new QuestionsTypeOfExercises("Passage",5),
+        new QuestionsTypeOfExercises("Novel",6),
         new QuestionsTypeOfExercises("Translation",7),
         new QuestionsTypeOfExercises("Paragraph",8));
     }

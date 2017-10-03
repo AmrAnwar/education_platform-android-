@@ -1,20 +1,18 @@
-package com.mrerror.tm.fragments;
+package com.mrerror.tm;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mrerror.tm.MainActivity;
-import com.mrerror.tm.R;
+import com.mrerror.tm.adapter.ExamsRecyclerViewAdapter;
 import com.mrerror.tm.adapter.TestsRecyclerViewAdapter;
 import com.mrerror.tm.connection.NetworkConnection;
 import com.mrerror.tm.models.Test;
@@ -31,76 +29,42 @@ import java.util.ArrayList;
 
 import static com.mrerror.tm.connection.NetworkConnection.url;
 
-public class TestsFragment extends Fragment implements NetworkConnection.OnCompleteFetchingData {
-    // TODO: Customize parameter argument names
-    private static final String ARG_TYPE = "type";
-    // TODO: Customize parameters
+public class ExamsActivity extends AppCompatActivity implements NetworkConnection.OnCompleteFetchingData {
+    TextView blankText;
+    ProgressBar mProgressBar;
+    String no_list = "List_is_empty";
     private String mTestUrl = null;
     private ArrayList<Test> mTestsList = null;
     private ArrayList<String> mTestsTitlesList = null;
-    private TestsRecyclerViewAdapter adapter;
-    ProgressBar mProgressBar;
-    String noInterNet = "No_InterNet";
-    String no_list = "List_is_empty";
-    TextView blankText;
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public TestsFragment() {
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static TestsFragment newInstance(String wordsUrl) {
-        TestsFragment fragment = new TestsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_TYPE, wordsUrl);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    private ExamsRecyclerViewAdapter adapter;
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_exams);
+        getSupportActionBar().setTitle("Exams");
+        mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        blankText = (TextView)findViewById(R.id.no_list_net);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mTestsList = new ArrayList<>();
+        mTestsTitlesList = new ArrayList<>();
 
-        if (getArguments() != null) {
-            mTestUrl = getArguments().getString(ARG_TYPE);
-        }
-    }
+        adapter = new ExamsRecyclerViewAdapter(mTestsTitlesList, mTestsList);
+        recyclerView.setAdapter(adapter);
+        getData();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_testpart_list, container, false);
-        mProgressBar = (ProgressBar) ((MainActivity) getActivity()).findViewById(R.id.progressbar);
-        blankText = (TextView) ((MainActivity) getActivity()).findViewById(R.id.no_list_net);
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mTestsList = new ArrayList<>();
-            mTestsTitlesList = new ArrayList<>();
-
-            adapter = new TestsRecyclerViewAdapter(mTestsTitlesList, mTestsList);
-            getData();
-            recyclerView.setAdapter(adapter);
-        }
-        return view;
     }
-
     private void getData() {
         if (isOnline()) {
             mProgressBar.setVisibility(View.VISIBLE);
             blankText.setVisibility(View.GONE);
 
-            url = mTestUrl;
-            new NetworkConnection(this).getDataAsJsonObject(getContext());
+            url = getString(R.string.domain)+"/api/study/mcq/";
+            new NetworkConnection(this).getDataAsJsonObject(this);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            blankText.setText(noInterNet);
+            blankText.setText(getString(R.string.no_interNet));
             blankText.setVisibility(View.VISIBLE);
 
         }
@@ -108,7 +72,7 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
 
     public boolean isOnline() {
         ConnectivityManager cm =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
@@ -120,7 +84,7 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
             mTestsList = new ArrayList<>();
         if (mTestsTitlesList.size() > 0)
             mTestsTitlesList = new ArrayList<>();
-        JSONArray testsJsonArray = testsObj.getJSONArray("tests");
+        JSONArray testsJsonArray = testsObj.getJSONArray("results");
         for (int i = 0; i < testsJsonArray.length(); i++) {
             JSONObject testObj = testsJsonArray.getJSONObject(i);
             String testTitle = testObj.getString("title");
@@ -171,6 +135,7 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
             Test test = new Test(testTitle, testChoicesArrayList, testCompleteArrayList, testDialogArrayList, testMistakeArrayList);
             mTestsList.add(test);
         }
+        Log.e("list exams",mTestsList.size()+"");
         adapter.notifyDataSetChanged();
         mProgressBar.setVisibility(View.GONE);
         blankText.setVisibility(View.GONE);
@@ -184,6 +149,4 @@ public class TestsFragment extends Fragment implements NetworkConnection.OnCompl
         blankText.setText("an error happened ");
         blankText.setVisibility(View.VISIBLE);
     }
-
-
 }

@@ -8,20 +8,38 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.mrerror.tm.ExamActivity"
     android:orientation="vertical">
-
-    <TextView
+    <RelativeLayout
+        android:id="@+id/questionRL"
         android:layout_alignParentTop="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TextView
+        android:layout_toLeftOf="@+id/timer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="left"
         android:id="@+id/question"
         tools:text="A ... is a man who helps people and keep them safe from any danger?"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:textStyle="bold"
         android:textColor="@color/primary_darker"
         android:textSize="16sp" />
+    <TextView
+        android:background="@drawable/border"
+        android:padding="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timer"
+        android:layout_alignParentRight="true"
+        tools:text="30 Sec"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+    </RelativeLayout>
 
     <TextView
-        android:layout_below="@+id/question"
+        android:layout_below="@+id/questionRL"
         android:id="@+id/answers_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -127,31 +145,8 @@
                 android:padding="@dimen/appbar_padding_top" />
         </LinearLayout>
     </LinearLayout>
-<LinearLayout
-    android:layout_alignParentBottom="true"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/submit_btn"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Submit"
-        android:layout_marginRight="2dp"
-        android:textColor="#fff"
-        android:textSize="22sp" />
-    <Button
-        android:id="@+id/showAnswer_btn"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Show Answer"
-        android:layout_marginLeft="2dp"
-        android:textColor="#fff"
-        android:textSize="22sp" />
-</LinearLayout>
+
+
     <Button
         android:id="@+id/next_btn"
         android:layout_width="match_parent"
@@ -159,7 +154,6 @@
         android:background="@color/primary_darker"
         android:layout_alignParentBottom="true"
         android:text="Next"
-        android:visibility="gone"
         android:textColor="#fff"
         android:textSize="22sp" />
 

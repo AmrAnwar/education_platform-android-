@@ -13,13 +13,34 @@ public class TestChoices implements Parcelable {
     private String choice2;
     private String choice3;
     private String answer;
+    private String user_answer;
 
-    public TestChoices(String question, String choice1, String choice2, String choice3, String answer) {
+    public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public void setChoice1(String choice1) {
         this.choice1 = choice1;
+    }
+
+    public void setChoice2(String choice2) {
         this.choice2 = choice2;
+    }
+
+    public void setChoice3(String choice3) {
         this.choice3 = choice3;
+    }
+
+    public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public void setUser_answer(String user_answer) {
+        this.user_answer = user_answer;
+    }
+
+    public String getUser_answer() {
+        return user_answer;
     }
 
     protected TestChoices(Parcel in) {
@@ -28,8 +49,11 @@ public class TestChoices implements Parcelable {
         choice2 = in.readString();
         choice3 = in.readString();
         answer = in.readString();
+        user_answer = in.readString();
     }
+    public TestChoices(){
 
+    }
     public static final Creator<TestChoices> CREATOR = new Creator<TestChoices>() {
         @Override
         public TestChoices createFromParcel(Parcel in) {
@@ -75,5 +99,6 @@ public class TestChoices implements Parcelable {
         dest.writeString(choice2);
         dest.writeString(choice3);
         dest.writeString(answer);
+        dest.writeString(user_answer);
     }
 }

@@ -39,7 +39,6 @@
             android:name=".AskActivity"
             android:label="@string/title_activity_ask"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ReplyActivity"
             android:label="@string/title_activity_reply"
@@ -99,26 +98,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Inbox"
             android:label="@string/title_activity_inbox"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".WordsBank"
-            android:label="WordsBank"
-           /> >
-
-
-
-        <activity android:name=".ExerciseActivity"/>
-
-
-        <activity android:name=".QuestionsForExerciseActivity"/>
-
-
+            android:label="WordsBank" />
+        >
+        <activity android:name=".ExerciseActivity" />
+        <activity android:name=".QuestionsForExerciseActivity" />
+        <activity android:name=".ExamsActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".NewExamActivity"
+            android:parentActivityName=".ExamsActivity"/>
+        <activity android:name=".ExamResult"
+            android:parentActivityName=".ExamsActivity"></activity>
     </application>
 
 </manifest>

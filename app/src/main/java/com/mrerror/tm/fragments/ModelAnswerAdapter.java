@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mrerror.tm.R;
@@ -72,6 +73,7 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
         TextView note;
         TextView type;
         View mView;
+        ImageView mDownloadOrNotImage;
 
         ModelAnswerViewHolder(View view) {
             super(view);
@@ -79,6 +81,7 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
             title = (TextView) view.findViewById(R.id.title);
             note = (TextView) view.findViewById(R.id.note);
             type = (TextView) view.findViewById(R.id.downlaodbutton);
+            mDownloadOrNotImage= (ImageView) view.findViewById(R.id.downloadOrNot);
 
             mView.setOnClickListener(this);
 
@@ -89,6 +92,9 @@ public class ModelAnswerAdapter extends RecyclerView.Adapter<ModelAnswerAdapter.
             type.setText(modelAnswer.getType());
             title.setText(modelAnswer.getTitle());
             note.setText(modelAnswer.getNote());
+            if(modelAnswer.getDwonload()){
+                mDownloadOrNotImage.setImageResource(R.drawable.ic_turned_in_black_24dp);
+            }else {mDownloadOrNotImage.setImageResource(R.drawable.ic_turned_in_not_black_24dp);}
 
         }
 

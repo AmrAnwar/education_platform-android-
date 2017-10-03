@@ -110,19 +110,6 @@ public class ReplyActivity extends AppCompatActivity {
         playBtn = (ImageButton) findViewById(R.id.play_btn);
         if (question1.getLinkForRec().length() > 5) {
             playBtn.setVisibility(View.VISIBLE);
-            mediaPlayer2 = new MediaPlayer();
-            try {
-                mediaPlayer2.setDataSource(question1.getLinkForRec());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    playBtn.setImageResource(R.drawable.ic_play);
-                    playing = false;
-                }
-            });
         }
     }
 
@@ -135,13 +122,29 @@ public class ReplyActivity extends AppCompatActivity {
     public void playRec(View view) {
         if (!playing) {
             try {
+                mediaPlayer2 = new MediaPlayer();
+                mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        playBtn.setImageResource(R.drawable.ic_play);
+                        playing = false;
+                    }
+                });
+                mediaPlayer2.setDataSource(getString(R.string.domain)+question1.getLinkForRec());
                 mediaPlayer2.prepare();
+                mediaPlayer2.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+
+                        mediaPlayer2.start();
+
+                        playBtn.setImageResource(R.drawable.ic_stop);
+                        playing = true;
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mediaPlayer2.start();
-            playBtn.setImageResource(R.drawable.ic_stop);
-            playing = true;
         } else {
             playBtn.setImageResource(R.drawable.ic_play);
             mediaPlayer2.stop();
