@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mrerror.tm.Inbox;
 import com.mrerror.tm.R;
 import com.mrerror.tm.ReplyActivity;
-import com.mrerror.tm.fragments.UnitFragment;
 import com.mrerror.tm.models.Question;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
 
     private ArrayList<Question> mValues;
     private Context mContext;
-    private UnitFragment.OnListFragmentInteractionListener mListener;
+
 
     public InboxRecyclerViewAdapter(ArrayList<Question> items) {
         mValues = items;
@@ -80,7 +80,7 @@ public class InboxRecyclerViewAdapter extends RecyclerView.Adapter<InboxRecycler
         @Override
         public void onClick(View v) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-            if (sp.getString("group", "normal").equals("normal")) {
+            if (sp.getString("group", "normal").equals("normal")||Inbox.isPublic) {
                 mContext.startActivity(new Intent(mContext, ReplyActivity.class).putExtra("question", mValues.get(getAdapterPosition())));
             } else {
 

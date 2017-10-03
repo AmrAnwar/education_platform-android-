@@ -123,6 +123,11 @@ public class MyMessageService extends FirebaseMessagingService {
             intent = new Intent(this, MainActivity.class);
 
             intent.putExtra("where", data.get("where"));
+        } else if (mWhere.equals("public_question")){
+            intent = new Intent(this, Inbox.class);
+            intent.putExtra("fp",true);
+
+
         }
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -145,7 +150,7 @@ public class MyMessageService extends FirebaseMessagingService {
         }else {message_title="Mr.TAWFIK";}
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_school_black_24dp)
+                .setSmallIcon(R.drawable.ic_school_white_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
 //                .setStyle(new NotificationCompat.BigTextStyle()

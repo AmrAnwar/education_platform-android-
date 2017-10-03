@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements UnitFragment.OnLi
             FirebaseMessaging.getInstance().subscribeToTopic("new_question");
 
         }
-
+        FirebaseMessaging.getInstance().subscribeToTopic("public_question");
         FirebaseMessaging.getInstance().subscribeToTopic("news");
         FirebaseMessaging.getInstance().subscribeToTopic("answers");
         Bundle extras = getIntent().getExtras();

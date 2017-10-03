@@ -45,7 +45,7 @@ public class Inbox extends AppCompatActivity implements NetworkConnection.OnComp
     private int firstVisibleInListview;
     private SharedPreferences.Editor editor;
     private String urlForPublic="";
-    private Boolean isPublic=false;
+    public static Boolean isPublic=false;
     ArrayList<Question> questions;
     InboxRecyclerViewAdapter pAdapter;
 
